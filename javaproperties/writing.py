@@ -34,8 +34,17 @@ def _esc(m):
     try:
         return _escapes[c]
     except KeyError:
-        ### TODO: Handle characters outside the BMP!
-        return r'\u{:04x}'.format(c)
+        if c > 0xFFFF:
+            # Does Python really not have a decent builtin way to calculate
+            # surrogate pairs?
+            assert c <= 0x10FFFF
+            c -= 0x10000
+            return r'\u{:04x}\u{:04x}'.format(
+                0xD800 + (c >> 10),
+                0xDC00 + (c & 0x3FF)
+            )
+        else:
+            return r'\u{:04x}'.format(c)
 
 def _base_escape(field):
     return re.sub(r'([^\x20-\x7E]|[\\#!=:])', _esc, field)
