@@ -27,22 +27,23 @@ def join_key_value(key, value, separator='='):
         + re.sub(r'^ +', lambda m: r'\ ' * m.end(), _base_escape(value))
 
 _escapes = {
-    0x09: r'\t',
-    0x0A: r'\n',
-    0x0C: r'\f',
-    0x0D: r'\r',
-    0x21: r'\!',
-    0x23: r'\#',
-    0x3A: r'\:',
-    0x3D: r'\=',
-    0x5C: r'\\',
+    '\t': r'\t',
+    '\n': r'\n',
+    '\f': r'\f',
+    '\r': r'\r',
+    '!': r'\!',
+    '#': r'\#',
+    ':': r'\:',
+    '=': r'\=',
+    '\\': r'\\',
 }
 
 def _esc(m):
-    c = ord(m.group(1))
+    c = m.group()
     try:
         return _escapes[c]
     except KeyError:
+        c = ord(c)
         if c > 0xFFFF:
             # Does Python really not have a decent builtin way to calculate
             # surrogate pairs?
@@ -56,7 +57,7 @@ def _esc(m):
             return r'\u{:04x}'.format(c)
 
 def _base_escape(field):
-    return re.sub(r'([^\x20-\x7E]|[\\#!=:])', _esc, field)
+    return re.sub(r'[^\x20-\x7E]|[\\#!=:]', _esc, field)
 
 def escape(field):
     # Escapes `field` so that it can be used as either a key or a value
