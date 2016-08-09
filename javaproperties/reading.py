@@ -45,6 +45,10 @@ def _unesc(m):
     else:
         return unichr(int(esc[1:], 16))
 
+def _unsurrogate(m):
+    c,d = map(ord, m.group())
+    return unichr(((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000)
+
 def unescape(field):
-    ### TODO: Handle surrogate pairs somehow???
-    return re.sub(r'\\(u[0-9A-Fa-f]{4}|.)', _unesc, field)
+    return re.sub(r'[\uD800-\uDBFF][\uDC00-\uDFFF]', _unsurrogate,
+                  re.sub(r'\\(u[0-9A-Fa-f]{4}|.)', _unesc, field))
