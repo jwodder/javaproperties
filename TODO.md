@@ -14,3 +14,4 @@
 
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `parse_properties` for writing triples?
+- Support `str` keys & values for `Properties` in Python 2?

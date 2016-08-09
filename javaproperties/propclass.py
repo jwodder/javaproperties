@@ -1,8 +1,13 @@
 import collections
-from   six      import text_type  ### `string_types` instead?
+from   six      import PY2, text_type  ### `string_types` instead?
 from   .reading import read_properties
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
+
+if PY2:
+    _type_err = 'Keys & values of Properties objects must be `unicode`'
+else:
+    _type_err = 'Keys & values of Properties objects must be `str`'
 
 class Properties(collections.MutableMapping):
     def __init__(self, defaults=None):
@@ -12,7 +17,7 @@ class Properties(collections.MutableMapping):
 
     def __getitem__(self, key):
         if not isinstance(key, text_type):
-            raise TypeError  ####
+            raise TypeError(_type_err)
         try:
             return self.data[key]
         except KeyError:
@@ -23,12 +28,12 @@ class Properties(collections.MutableMapping):
 
     def __setitem__(self, key, value):
         if not isinstance(key, text_type) or not isinstance(value, text_type):
-            raise TypeError  ####
+            raise TypeError(_type_err)
         self.data[key] = value
 
     def __delitem__(self, key):
         if not isinstance(key, text_type):
-            raise TypeError  ####
+            raise TypeError(_type_err)
         del self.data[key]
 
     def __iter__(self):
