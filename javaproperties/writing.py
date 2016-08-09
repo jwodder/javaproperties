@@ -1,15 +1,24 @@
 from   __future__  import unicode_literals
 from   collections import Mapping
+from   datetime    import datetime
 import re
 
-def write_properties(props, fp, separator='='):
-    ### Add arguments for comment and/or timestamp
+def write_properties(props, fp, separator='=', comment=None, timestamp=True):
+    ### TODO: Add arguments for comment and/or timestamp
     if isinstance(props, Mapping):
         items = (k, props[k] for k in props)
     else:
         items = props
+
+    if timestamp:
+        if not isinstance(timestamp, datetime):
+            timestamp =
+
     for k,v in items:
         fp.write(join_key_value(k, v, separator) + '\n')
+
+def escape_comment(comment):
+    ###
 
 def join_key_value(key, value, separator='='):
     # Escapes `key` and `value` the same way as java.util.Properties.store()
@@ -52,7 +61,3 @@ def _base_escape(field):
 def escape(field):
     # Escapes `field` so that it can be used as either a key or a value
     return _base_escape(field).replace(' ', r'\ ')
-
-### Write a variant of `join_key_value` that escapes as few (ASCII) characters as possible?
-
-### Something for writing triples???

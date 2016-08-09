@@ -32,12 +32,18 @@ class Properties(collections.MutableMapping):
         del self.data[key]
 
     def __iter__(self):
+        return iter(self.data)
 
     def __len__(self):
+        return len(self.data)
 
     def __repr__(self):
+        ???
 
     def __eq__(self, other):
+        return type(self) == type(other) and \
+                self.data == other.data and \
+                self.defaults == other.defaults
 
     def __ne__(self, other):
         return not (self == other)
@@ -62,7 +68,8 @@ class Properties(collections.MutableMapping):
     def setProperty(self, key, value):
         self[key] = value
 
-    def store(self, out, comments=None)
+    def store(self, out, comments=None):
+        ???
 
     def stringPropertyNames(self):
         names = set(self.data)
@@ -70,8 +77,11 @@ class Properties(collections.MutableMapping):
             names.update(self.defaults.stringPropertyNames())
         return names
 
-    def loadFromXML(self, fp)
+    def loadFromXML(self, fp):
+        ???
 
-    def storeToXML(self, out, comment=None, encoding=None)
+    def storeToXML(self, out, comment=None, encoding=None):
+        ???
 
-    def list(self, out)
+    def list(self, out):
+        ???
