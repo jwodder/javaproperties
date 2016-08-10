@@ -1,6 +1,7 @@
 import collections
 from   six      import PY2, text_type  ### `string_types` instead?
 from   .reading import read_properties
+from   .writing import write_properties
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
@@ -11,7 +12,7 @@ else:
 
 class Properties(collections.MutableMapping):
     def __init__(self, defaults=None):
-        ### Add arguments for constructing from/like a `dict`?
+        ### TODO: Add arguments for constructing from/like a `dict`?
         self.data = {}
         self.defaults = defaults
 
@@ -21,6 +22,7 @@ class Properties(collections.MutableMapping):
         try:
             return self.data[key]
         except KeyError:
+            ### TODO: Don't use self.defaults here; only use it in getProperty?
             if self.defaults is not None:
                 return self.defaults[key]
             else:
@@ -43,10 +45,11 @@ class Properties(collections.MutableMapping):
         return len(self.data)
 
     def __repr__(self):
-        ???
+        return '{__class__.__name__}(data={data!r}, defaults={defaults!r})'\
+                .format(**dir(self))
 
     def __eq__(self, other):
-        return type(self) == type(other) and \
+        return type(self) is type(other) and \
                 self.data == other.data and \
                 self.defaults == other.defaults
 
@@ -74,7 +77,7 @@ class Properties(collections.MutableMapping):
         self[key] = value
 
     def store(self, out, comments=None):
-        ???
+        write_properties(self.data, out, comment=comments)
 
     def stringPropertyNames(self):
         names = set(self.data)
