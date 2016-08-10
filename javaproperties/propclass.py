@@ -11,9 +11,12 @@ else:
     _type_err = 'Keys & values of Properties objects must be `str`'
 
 class Properties(collections.MutableMapping):
-    def __init__(self, defaults=None):
-        ### TODO: Add arguments for constructing from/like a `dict`?
+    def __init__(self, data=None, defaults=None):
+        # `defaults` must be a Properties object
         self.data = {}
+        if data is not None:
+            ### TODO: Handle non-string keys & values!
+            self.data.update(data)
         self.defaults = defaults
 
     def __getitem__(self, key):
