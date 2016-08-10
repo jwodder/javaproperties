@@ -1,24 +1,36 @@
-from   __future__  import unicode_literals
+from   __future__  import print_function, unicode_literals
 from   collections import Mapping
 from   datetime    import datetime
 import re
 
 def write_properties(props, fp, separator='=', comment=None, timestamp=True):
-    ### TODO: Add arguments for comment and/or timestamp
     if isinstance(props, Mapping):
         items = (k, props[k] for k in props)
     else:
         items = props
-
+    if comment is not None:
+        print('#' + escape_comment(comment), file=fp)
     if timestamp:
         if not isinstance(timestamp, datetime):
-            timestamp =
-
+            try:
+                from dateutil.tz import tzlocal
+            except ImportError:
+                tz = None
+            else:
+                tz = tzlocal()
+            timestamp = datetime.now(tz)
+        ### TODO: Make strftime use the C locale (or, failing that, convert the
+        ### return value to Latin-1)
+        print(timestamp.strftime('#%a %b %d %H:%M:%S %Z %Y'), file=fp)
+        ### Squash the double-space around %Z when the timestamp is naive?
     for k,v in items:
-        fp.write(join_key_value(k, v, separator) + '\n')
+        print(join_key_value(k, v, separator), file=fp)
 
 def escape_comment(comment):
     ###
+    comment = re.sub(r'(\r\n?|\n)(?![#!])', r'\1#', comment)
+    ### Convert non-Latin-1 characters to \uXXXX escape sequences
+    ### Should this add the leading '#' as well?
 
 def join_key_value(key, value, separator='='):
     # Escapes `key` and `value` the same way as java.util.Properties.store()
