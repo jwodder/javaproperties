@@ -19,14 +19,7 @@ class Properties(collections.MutableMapping):
     def __getitem__(self, key):
         if not isinstance(key, text_type):
             raise TypeError(_type_err)
-        try:
-            return self.data[key]
-        except KeyError:
-            ### TODO: Don't use self.defaults here; only use it in getProperty?
-            if self.defaults is not None:
-                return self.defaults[key]
-            else:
-                raise
+        return self.data[key]
 
     def __setitem__(self, key, value):
         if not isinstance(key, text_type) or not isinstance(value, text_type):
@@ -60,7 +53,10 @@ class Properties(collections.MutableMapping):
         try:
             return self[key]
         except KeyError:
-            return defaultValue
+            if self.defaults is not None:
+                return self.defaults.getProperty(key, defaultValue)
+            else:
+                return defaultValue
 
     def load(self, fp):
         self.data.update(read_properties(fp))
