@@ -52,7 +52,7 @@ class Properties(collections.MutableMapping):
     def __ne__(self, other):
         return not (self == other)
 
-    def getProperty(self, key, defaultValue=None)
+    def getProperty(self, key, defaultValue=None):
         try:
             return self[key]
         except KeyError:
@@ -69,7 +69,7 @@ class Properties(collections.MutableMapping):
             yield k
         if self.defaults is not None:
             for k in self.defaults.propertyNames():
-                if k is not in self.data:
+                if k not in self.data:
                     yield k
 
     def setProperty(self, key, value):
@@ -84,11 +84,11 @@ class Properties(collections.MutableMapping):
             names.update(self.defaults.stringPropertyNames())
         return names
 
-    def loadFromXML(self, fp):
-        ???
+    ###def loadFromXML(self, fp):
+    ###    ???
 
-    def storeToXML(self, out, comment=None, encoding=None):
-        ???
+    ###def storeToXML(self, out, comment=None, encoding=None):
+    ###    ???
 
-    def list(self, out):
-        ???
+    ###def list(self, out):
+    ###    ???
