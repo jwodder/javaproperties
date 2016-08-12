@@ -9,7 +9,7 @@ def write_properties(props, fp, separator='=', comment=None, timestamp=True):
     else:
         items = props
     if comment is not None:
-        print('#' + escape_comment(comment), file=fp)
+        print(to_comment(comment), file=fp)
     if timestamp:
         if not isinstance(timestamp, datetime):
             try:
@@ -19,18 +19,15 @@ def write_properties(props, fp, separator='=', comment=None, timestamp=True):
             else:
                 tz = tzlocal()
             timestamp = datetime.now(tz)
-        ### TODO: Make strftime use the C locale (or, failing that, convert the
-        ### return value to Latin-1)
-        print(timestamp.strftime('#%a %b %d %H:%M:%S %Z %Y'), file=fp)
+        ### TODO: Make strftime use the C locale
+        print(to_comment(timestamp.strftime('%a %b %d %H:%M:%S %Z %Y')),file=fp)
         ### Squash the double-space around %Z when the timestamp is naive?
     for k,v in items:
         print(join_key_value(k, v, separator), file=fp)
 
-def escape_comment(comment):
-    ###
-    comment = re.sub(r'(\r\n?|\n)(?![#!])', r'\1#', comment)
-    ### Convert non-Latin-1 characters to \uXXXX escape sequences
-    ### Should this add the leading '#' as well?
+def to_comment(comment):
+    return '#' + re.sub(r'[^\x00-\xFF]', _esc,
+                        re.sub(r'(\r\n?|\n)(?![#!])', r'\1#', comment))
 
 def join_key_value(key, value, separator='='):
     # Escapes `key` and `value` the same way as java.util.Properties.store()
