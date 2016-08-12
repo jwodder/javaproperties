@@ -1,7 +1,4 @@
 - Add functions for reading from & writing to strings instead of files?
-- Add a setup.py file
-    - requirement: six
-    - extra requirement: python-dateutil
 - Write tests
     - Test working with both `str` and `unicode` in Python 2
     - Test reading & writing surrogate pairs
@@ -24,3 +21,5 @@
 - Support `str` keys & values for `Properties` in Python 2?
 - `parse_properties`: Support files not opened in universal newlines mode
 - `parse_properties`: Support files opened in binary mode
+- Add a README
+- Finish the Properties class
