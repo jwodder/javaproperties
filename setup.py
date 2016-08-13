@@ -24,7 +24,7 @@ setup(
     keywords='java properties javaproperties configfile config configuration parsing',
     description='Read & write Java .properties files',
     ###long_description=long_desc,
-    #url='https://github.com/jwodder/javaproperties',
+    url='https://github.com/jwodder/javaproperties',
 
     #setup_requires=['pytest-runner>=2.0,<3'],
     install_requires=['six'],
