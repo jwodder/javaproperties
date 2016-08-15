@@ -5,6 +5,7 @@
     - Test reading & writing unpaired surrogates
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
+    - Add a module docstring to `__init__.py`
 - Add a command for converting JSON to .properties (stringifying scalar values,
   erroring on aggregate values)
     - Add a function (`dict2properties`?) that converts a `dict` to .properties
