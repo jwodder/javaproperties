@@ -3,13 +3,13 @@ from   collections import Mapping
 from   datetime    import datetime
 import re
 
-def write_properties(props, fp, separator='=', comment=None, timestamp=True):
+def write_properties(props, fp, separator='=', comments=None, timestamp=True):
     if isinstance(props, Mapping):
         items = ((k, props[k]) for k in props)
     else:
         items = props
-    if comment is not None:
-        print(to_comment(comment), file=fp)
+    if comments is not None:
+        print(to_comment(comments), file=fp)
     if timestamp:
         if not isinstance(timestamp, datetime):
             try:

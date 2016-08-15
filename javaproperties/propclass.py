@@ -76,7 +76,7 @@ class Properties(collections.MutableMapping):
         self[key] = value
 
     def store(self, out, comments=None):
-        write_properties(self.data, out, comment=comments)
+        write_properties(self.data, out, comments=comments)
 
     def stringPropertyNames(self):
         names = set(self.data)
