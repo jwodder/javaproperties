@@ -6,10 +6,8 @@
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
-- Add a command for converting JSON to .properties (stringifying scalar values,
-  erroring on aggregate values)
-    - Add a function (`dict2properties`?) that converts a `dict` to .properties
-      using the same rules?
+- Add a function (`dict2properties`?) that converts a `dict` to .properties or
+  another `dict` using the same rules as `json2properties`?
 - Add a command for setting/unsetting entries in a .properties file:
 
         setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
@@ -24,3 +22,4 @@
 - `parse_properties`: Support files opened in binary mode
 - Add a README
 - Finish the Properties class
+- Give the commands `--help` options

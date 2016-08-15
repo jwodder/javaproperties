@@ -18,7 +18,7 @@ def main():
         infile = codecs.getreader('iso-8859-1')(infile)
 
     if len(sys.argv) > 2 and sys.argv[2] != "-":
-        outfile = open(sys.argv[2], 'wb')
+        outfile = open(sys.argv[2], 'w')
     else:
         outfile = sys.stdout
 
