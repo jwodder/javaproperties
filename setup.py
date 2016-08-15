@@ -17,7 +17,7 @@ with open(join(dirname(__file__), 'javaproperties', '__init__.py')) as fp:
 setup(
     name='javaproperties',
     version=version,
-    packages=['javaproperties'],
+    packages=['javaproperties', 'javaproperties.commands'],
     license='MIT',
     author='John Thorvald Wodder II',
     author_email='javaproperties@varonathe.org',
