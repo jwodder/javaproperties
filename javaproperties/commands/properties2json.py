@@ -3,7 +3,7 @@ import codecs
 import io
 import json
 import sys
-from   .reading import read_properties
+from   ..reading import read_properties
 
 # cf. <https://github.com/simplejson/simplejson/blob/master/simplejson/tool.py>
 

@@ -3,8 +3,8 @@ import codecs
 import io
 import json
 import sys
-from   six      import iteritems, string_types
-from   .writing import write_properties
+from   six       import iteritems, string_types
+from   ..writing import write_properties
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] != "-":

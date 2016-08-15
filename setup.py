@@ -57,8 +57,8 @@ setup(
 
     entry_points={
         "console_scripts": [
-            'properties2json = javaproperties.properties2json:main',
-            'json2properties = javaproperties.json2properties:main',
+            'properties2json = javaproperties.commands.properties2json:main',
+            'json2properties = javaproperties.commands.json2properties:main',
         ]
     },
 )
