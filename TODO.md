@@ -6,8 +6,6 @@
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
-- Add a function (`dict2properties`?) that converts a `dict` to .properties or
-  another `dict` using the same rules as `json2properties`?
 - Add a command for setting/unsetting entries in a .properties file:
 
         setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
@@ -17,7 +15,7 @@
 - Add a command for printing out specified values in a .properties file?
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `parse_properties` for writing triples?
-- Support `str` keys & values for `Properties` in Python 2?
+- Support `str` keys & values for `Properties` in Python 2
 - `parse_properties`: Support files not opened in universal newlines mode
 - `parse_properties`: Support files opened in binary mode
 - Add a README

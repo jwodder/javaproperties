@@ -1,6 +1,7 @@
 import collections
 from   six      import PY2, text_type  ### `string_types` instead?
 from   .reading import read_properties
+from   .util    import strify_dict
 from   .writing import write_properties
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
@@ -15,8 +16,7 @@ class Properties(collections.MutableMapping):
         # `defaults` must be a Properties object
         self.data = {}
         if data is not None:
-            ### TODO: Handle non-string keys & values!
-            self.data.update(data)
+            self.data.update(strify_dict(data))
         self.defaults = defaults
 
     def __getitem__(self, key):
