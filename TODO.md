@@ -18,6 +18,10 @@
 - Support `str` keys & values for `Properties` in Python 2
 - `parse_properties`: Support files not opened in universal newlines mode
 - `parse_properties`: Support files opened in binary mode
+- `write_properties`: Support files opened in binary mode
 - Add a README
 - Finish the Properties class
 - Give the commands `--help` options
+- Should there be a variant of `write_properties` that outputs Unicode and
+  leaves non-Latin-1 characters as-is?  (cf. the different `store` methods of
+  the Java class)

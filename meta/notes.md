@@ -22,6 +22,9 @@
         - empty key
     - [first nonblank character in a line is a colon or =]
         - empty key
+    - [writing a comment containing a backslash followed by a non-Latin-1
+      character]
+        - The comment will contain `\\uXXXX`
 
 - Terminating newlines are discarded, but not other trailing whitespace.
 
