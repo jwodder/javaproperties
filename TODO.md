@@ -10,18 +10,21 @@
 
         setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
 
-    - Include an option for setting whether to update the timestamp?
+    - Include an option for controlling whether to update the timestamp
 
-- Add a command for printing out specified values in a .properties file?
+- Add a command (`getproperty`) for printing out specified values in a
+  .properties file
 - Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add an inverse of `parse_properties` for writing triples?
+- Add an inverse of `readitems3` for writing triples?
 - Support `str` keys & values for `Properties` in Python 2
-- `parse_properties`: Support files not opened in universal newlines mode
-- `parse_properties`: Support files opened in binary mode
-- `write_properties`: Support files opened in binary mode
+- `readitems3`: Support files not opened in universal newlines mode
+- `readitems3`: Support files opened in binary mode
+- `write`: Support files opened in binary mode
 - Add a README
 - Finish the Properties class
+    - Support reading & writing properties as XML
+    - Implement the `list` method?
 - Give the commands `--help` options
-- Should there be a variant of `write_properties` that outputs Unicode and
-  leaves non-Latin-1 characters as-is?  (cf. the different `store` methods of
-  the Java class)
+- Should there be a variant of `write` that outputs Unicode and leaves
+  non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
+  class)

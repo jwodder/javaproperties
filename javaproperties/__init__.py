@@ -1,7 +1,6 @@
 from .propclass import Properties
-from .reading   import (read_properties, iter_properties, parse_properties,
-                        unescape)
-from .writing   import write_properties, join_key_value, escape, to_comment
+from .reading   import read, readitems, readitems3, unescape
+from .writing   import write, join_key_value, escape, to_comment
 
 __version__      = '0.1.0.dev1'
 __author__       = 'John Thorvald Wodder II'
@@ -12,11 +11,11 @@ __url__          = 'https://github.com/jwodder/javaproperties'
 __all__ = [
     'Properties',
     'escape',
-    'iter_properties',
     'join_key_value',
-    'parse_properties',
-    'read_properties',
+    'read',
+    'readitems',
+    'readitems3',
     'to_comment',
     'unescape',
-    'write_properties',
+    'write',
 ]

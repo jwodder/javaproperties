@@ -3,7 +3,7 @@ from   collections import Mapping
 from   datetime    import datetime
 import re
 
-def write_properties(props, fp, separator='=', comments=None, timestamp=True):
+def write(props, fp, separator='=', comments=None, timestamp=True):
     # `fp` must have been opened as a text file with a Latin-1-compatible
     # encoding.
     if isinstance(props, Mapping):

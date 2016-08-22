@@ -2,15 +2,15 @@ from   __future__ import unicode_literals
 import re
 from   six        import unichr
 
-def read_properties(fp):
-    return dict(iter_properties(fp))
+def read(fp):
+    return dict(readitems(fp))
 
-def iter_properties(fp):
-    for k,v,_ in parse_properties(fp):
+def readitems(fp):
+    for k,v,_ in readitems3(fp):
         if k is not None:
             yield (k,v)
 
-def parse_properties(fp):
+def readitems3(fp):
     # `fp` must have been opened as Latin-1 in universal newlines mode.
     # Returns an iterator of `(key, value, source_lines)` tuples; blank lines &
     # comments have `key` & `value` values of `None`

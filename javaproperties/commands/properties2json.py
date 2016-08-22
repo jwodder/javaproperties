@@ -3,7 +3,7 @@ import codecs
 import io
 import json
 import sys
-from   ..reading import read_properties
+from   ..reading import read
 
 # cf. <https://github.com/simplejson/simplejson/blob/master/simplejson/tool.py>
 
@@ -23,7 +23,7 @@ def main():
         outfile = sys.stdout
 
     with infile, outfile:
-        props = read_properties(infile)
+        props = read(infile)
         json.dump(props, outfile, sort_keys=True, indent=4,
                                   separators=(',', ': '))
         outfile.write('\n')
