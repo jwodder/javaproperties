@@ -26,9 +26,9 @@ setup(
     ###long_description=long_desc,
     url='https://github.com/jwodder/javaproperties',
 
-    #setup_requires=['pytest-runner>=2.0,<3'],
+    setup_requires=['pytest-runner>=2.0,<3'],
     install_requires=['six'],
-    #tests_require=['pytest>=2.8,<3'],
+    tests_require=['pytest>=2.8,<3'],
 
     extras_require={
         'dateutil': ['python-dateutil'],

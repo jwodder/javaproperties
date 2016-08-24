@@ -2,6 +2,7 @@
     - Test working with both `str` and `unicode` in Python 2
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
+    - Test `load` and `dump` on actual files???
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
