@@ -4,7 +4,7 @@ import io
 import json
 import sys
 from   ..util    import strify_dict
-from   ..writing import write
+from   ..writing import dump
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] != "-":
@@ -25,7 +25,7 @@ def main():
         props = json.load(infile)
 
     with outfile:
-        write(strify_dict(props), outfile)
+        dump(strify_dict(props), outfile)
 
 if __name__ == '__main__':
     main()

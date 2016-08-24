@@ -1,5 +1,5 @@
-- Add functions for reading from & writing to strings instead of files?
-- Write tests
+- Add functions for reading from & writing to strings instead of files
+- Write tests (and set up Travis integration)
     - Test working with both `str` and `unicode` in Python 2
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
@@ -28,3 +28,4 @@
 - Should there be a variant of `write` that outputs Unicode and leaves
   non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
   class)
+- Try to handle "narrow" Python builds

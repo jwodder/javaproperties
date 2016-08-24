@@ -1,8 +1,8 @@
 import collections
 from   six      import PY2, text_type  ### `string_types` instead?
-from   .reading import read
+from   .reading import load
 from   .util    import strify_dict
-from   .writing import write
+from   .writing import dump
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
@@ -62,7 +62,7 @@ class Properties(collections.MutableMapping):
                 return defaultValue
 
     def load(self, fp):
-        self.data.update(read(fp))
+        self.data.update(load(fp))
 
     def propertyNames(self):
         for k in self.data:
@@ -76,7 +76,7 @@ class Properties(collections.MutableMapping):
         self[key] = value
 
     def store(self, out, comments=None):
-        write(self.data, out, comments=comments)
+        dump(self.data, out, comments=comments)
 
     def stringPropertyNames(self):
         names = set(self.data)
