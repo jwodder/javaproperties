@@ -1,4 +1,3 @@
-- Add functions for reading from & writing to strings instead of files
 - Write tests (and set up Travis integration)
     - Test working with both `str` and `unicode` in Python 2
     - Test reading & writing surrogate pairs
@@ -29,3 +28,6 @@
   non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
   class)
 - Try to handle "narrow" Python builds
+- Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
+  argument?
+- Add string-reading equivalents of `load_items` and `load_items3`?

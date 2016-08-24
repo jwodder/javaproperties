@@ -1,9 +1,12 @@
 from   __future__ import unicode_literals
 import re
-from   six        import unichr
+from   six        import StringIO, unichr
 
 def load(fp):
     return dict(load_items(fp))
+
+def loads(s):
+    return load(StringIO(s))
 
 def load_items(fp):
     for k,v,_ in load_items3(fp):

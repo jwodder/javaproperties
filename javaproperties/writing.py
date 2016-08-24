@@ -2,6 +2,7 @@ from   __future__  import print_function, unicode_literals
 from   collections import Mapping
 from   datetime    import datetime
 import re
+from   six         import StringIO
 
 def dump(props, fp, separator='=', comments=None, timestamp=True):
     # `fp` must have been opened as a text file with a Latin-1-compatible
@@ -26,6 +27,11 @@ def dump(props, fp, separator='=', comments=None, timestamp=True):
         ### Squash the double-space around %Z when the timestamp is naive?
     for k,v in items:
         print(join_key_value(k, v, separator), file=fp)
+
+def dumps(props, separator='=', comments=None, timestamp=True):
+    s = StringIO()
+    dump(props, s, separator=separator, comments=comments, timestamp=timestamp)
+    return s.getvalue()
 
 def to_comment(comment):
     return '#' + re.sub(r'[^\x00-\xFF]', _esc,
