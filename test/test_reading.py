@@ -29,3 +29,75 @@ def test_loads_leading_space():
 
 def test_loads_space_equals_space():
     assert loads(' = ') == {"": ""}
+
+def test_loads_equals_only():
+    assert loads('=') == {"": ""}
+
+def test_loads_nothing():
+    assert loads('') == {}
+
+def test_loads_space():
+    assert loads(' ') == {}
+
+
+def test_loads_comment():
+    assert loads('#This is a comment.') == {}
+
+def test_loads_comment_key_value():
+    assert loads('#This is a comment.\nkey = value') == {"key": "value"}
+
+def test_loads_key_value_comment():
+    assert loads('key = value\n#This is a comment.') == {"key": "value"}
+
+
+def test_loads_bang_comment():
+    assert loads('!This is a comment.') == {}
+
+def test_loads_bang_comment_key_value():
+    assert loads('!This is a comment.\nkey = value') == {"key": "value"}
+
+def test_loads_key_value_bang_comment():
+    assert loads('key = value\n!This is a comment.') == {"key": "value"}
+
+
+def test_loads_continued_value():
+    assert loads('key = val\\\nue') == {"key": "value"}
+
+def test_loads_continued_value_spaced():
+    assert loads('key = val\\\n    ue') == {"key": "value"}
+
+def test_loads_continued_key():
+    assert loads('ke\\\ny = value') == {"key": "value"}
+
+def test_loads_continued_key_spaced():
+    assert loads('ke\\\n    y = value') == {"key": "value"}
+
+def test_loads_three_words():
+    assert loads('one two three') == {"one": "two three"}
+
+def test_loads_simple_linefeed():
+    assert loads('foo=bar\n') == {"foo": "bar"}
+
+def test_loads_simple_crlf():
+    assert loads('foo=bar\r\n') == {"foo": "bar"}
+
+def test_loads_simple_cr():
+    assert loads('foo=bar\r') == {"foo": "bar"}
+
+
+# multiline line continuations
+# \uXXXX escape sequences
+# surrogate pairs
+# \n, \r, etc. escape sequences
+# comment character in middle of line
+# escaped space/=/: in key
+# escaped non-special character
+# comment after line continuation
+# blank line after line continuation
+# blank lines
+# multiple key-value entries
+# multiple key-value entries with the same key
+# series of all-whitespace lines joined with line continuations
+# EOF after line continuation
+# CRLF
+# multiple backslashes (even & odd numbers) in a row

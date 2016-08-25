@@ -15,20 +15,21 @@
 - Add a command (`getproperty`) for printing out specified values in a
   .properties file
 - Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add an inverse of `readitems3` for writing triples?
+- Add an inverse of `load_items3` for writing triples?
 - Support `str` keys & values for `Properties` in Python 2
-- `readitems3`: Support files not opened in universal newlines mode
-- `readitems3`: Support files opened in binary mode
-- `write`: Support files opened in binary mode
+- `load_items3`: Support files not opened in universal newlines mode
+- `load_items3`: Support files opened in binary mode
+- `dump`: Support files opened in binary mode
 - Add a README
 - Finish the Properties class
     - Support reading & writing properties as XML
     - Implement the `list` method?
 - Give the commands `--help` options
-- Should there be a variant of `write` that outputs Unicode and leaves
+- Should there be a variant of `dump` that outputs Unicode and leaves
   non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
   class)
 - Try to handle "narrow" Python builds
 - Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
   argument?
 - Add string-reading equivalents of `load_items` and `load_items3`?
+- Support Python 3.2?
