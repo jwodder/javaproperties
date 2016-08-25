@@ -14,22 +14,23 @@ def load_items(fp):
             yield (k,v)
 
 def load_items3(fp):
-    # `fp` must have been opened as Latin-1 in universal newlines mode.
+    # `fp` must have been opened as Latin-1 (doesn't have to be universal
+    # newlines mode) and must support the `readline` method
     # Returns an iterator of `(key, value, source_lines)` tuples; blank lines &
     # comments have `key` & `value` values of `None`
     while True:
         line = source = fp.readline()
         if line == '':
             return
-        if re.match(r'^[ \t\f]*(?:[#!]|$)', line):
+        if re.match(r'^[ \t\f]*(?:[#!]|\r?\n?$)', line):
             yield (None, None, source)
             continue
-        line = line.lstrip(' \t\f').rstrip('\n')
+        line = line.lstrip(' \t\f').rstrip('\r\n')
         while re.search(r'(?<!\\)(?:\\\\)*\\$', line):
             line = line[:-1]
             nextline = fp.readline()  # '' at EOF
             source += nextline
-            line += nextline.lstrip(' \t\f').rstrip('\n')
+            line += nextline.lstrip(' \t\f').rstrip('\r\n')
         if line == '':  # series of otherwise-blank lines with continuations
             yield (None, None, source)
             continue

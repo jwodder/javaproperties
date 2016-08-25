@@ -39,6 +39,15 @@ def test_loads_nothing():
 def test_loads_space():
     assert loads(' ') == {}
 
+def test_loads_linefeed():
+    assert loads('\n') == {}
+
+def test_loads_crlf():
+    assert loads('\r\n') == {}
+
+def test_loads_cr():
+    assert loads('\r') == {}
+
 
 def test_loads_comment():
     assert loads('#This is a comment.') == {}
