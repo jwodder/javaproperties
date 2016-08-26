@@ -93,15 +93,28 @@ def test_loads_simple_crlf():
 def test_loads_simple_cr():
     assert loads('foo=bar\r') == {"foo": "bar"}
 
+def test_loads_key_colon_value():
+    assert loads('key:value') == {"key": "value"}
+
+def test_loads_key_space_value():
+    assert loads('key value') == {"key": "value"}
+
+def test_loads_surrogate_pair():
+    assert loads('goat = \\uD83D\\uDC10') == {"goat": u"\U0001F410"}
+
+def test_loads_bad_surrogate():
+    assert loads('taog = \\uDC10\\uD83D') == {"taog": u"\uDC10\uD83D"}
+
+def test_loads_continue_comment():
+    assert loads('foo = bar\\\n    # comment') == {"foo": "bar# comment"}
+
 
 # multiline line continuations
 # \uXXXX escape sequences
-# surrogate pairs
 # \n, \r, etc. escape sequences
 # comment character in middle of line
 # escaped space/=/: in key
 # escaped non-special character
-# comment after line continuation
 # blank line after line continuation
 # blank lines
 # multiple key-value entries
@@ -110,3 +123,4 @@ def test_loads_simple_cr():
 # EOF after line continuation
 # CRLF
 # multiple backslashes (even & odd numbers) in a row
+# "continuation" in a comment

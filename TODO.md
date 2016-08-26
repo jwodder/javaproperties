@@ -32,3 +32,6 @@
   argument?
 - Add string-reading equivalents of `load_items` and `load_items3`?
 - Support Python 3.2?
+- Move the command-line commands back to the top level of the package so that
+  they can be invoked with `python -m javaproperties.COMMAND` instead of
+  `python -m javaproperties.commands.COMMAND`?
