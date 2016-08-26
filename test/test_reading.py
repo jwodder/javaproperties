@@ -1,31 +1,31 @@
 from javaproperties import loads
 
 def test_loads_simple():
-    assert loads('foo=bar') == {"foo": "bar"}
+    assert loads('key=value') == {"key": "value"}
 
 def test_loads_key_only():
-    assert loads("foo") == {"foo": ""}
+    assert loads("key") == {"key": ""}
 
 def test_loads_space_equals():
-    assert loads("foo =bar") == {"foo": "bar"}
+    assert loads("key =value") == {"key": "value"}
 
 def test_loads_equals_space():
-    assert loads("foo= bar") == {"foo": "bar"}
+    assert loads("key= value") == {"key": "value"}
 
 def test_loads_padded_equals():
-    assert loads("foo = bar") == {"foo": "bar"}
+    assert loads("key = value") == {"key": "value"}
 
 def test_loads_nokey():
-    assert loads("=bar") == {"": "bar"}
+    assert loads("=value") == {"": "value"}
 
 def test_loads_spacekey():
-    assert loads(" =bar") == {"": "bar"}
+    assert loads(" =value") == {"": "value"}
 
 def test_loads_trailing_space():
-    assert loads("foo=bar ") == {"foo": "bar "}
+    assert loads("key=value ") == {"key": "value "}
 
 def test_loads_leading_space():
-    assert loads(" foo=bar") == {"foo": "bar"}
+    assert loads(" key=value") == {"key": "value"}
 
 def test_loads_space_equals_space():
     assert loads(' = ') == {"": ""}
@@ -85,13 +85,13 @@ def test_loads_three_words():
     assert loads('one two three') == {"one": "two three"}
 
 def test_loads_simple_linefeed():
-    assert loads('foo=bar\n') == {"foo": "bar"}
+    assert loads('key=value\n') == {"key": "value"}
 
 def test_loads_simple_crlf():
-    assert loads('foo=bar\r\n') == {"foo": "bar"}
+    assert loads('key=value\r\n') == {"key": "value"}
 
 def test_loads_simple_cr():
-    assert loads('foo=bar\r') == {"foo": "bar"}
+    assert loads('key=value\r') == {"key": "value"}
 
 def test_loads_key_colon_value():
     assert loads('key:value') == {"key": "value"}
@@ -106,7 +106,7 @@ def test_loads_bad_surrogate():
     assert loads('taog = \\uDC10\\uD83D') == {"taog": u"\uDC10\uD83D"}
 
 def test_loads_continue_comment():
-    assert loads('foo = bar\\\n    # comment') == {"foo": "bar# comment"}
+    assert loads('key = value\\\n    # comment') == {"key": "value# comment"}
 
 
 # multiline line continuations
