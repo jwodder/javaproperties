@@ -41,7 +41,7 @@ class Properties(collections.MutableMapping):
         return len(self.data)
 
     def __repr__(self):
-        return '{__class__.__name__}(data={data!r}, defaults={defaults!r})'\
+        return '{__class__.__name__}({data!r}, defaults={defaults!r})'\
                 .format(**dir(self))
 
     def __eq__(self, other):
@@ -51,6 +51,11 @@ class Properties(collections.MutableMapping):
 
     def __ne__(self, other):
         return not (self == other)
+
+    def __nonzero__(self):
+        return bool(self.data)
+
+    __bool__ = __nonzero__
 
     def getProperty(self, key, defaultValue=None):
         try:
