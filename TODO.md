@@ -17,8 +17,8 @@
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `load_items3` for writing triples?
 - Support `str` keys & values for `Properties` in Python 2
-- `load_items3`: Support files opened in binary mode
 - `dump`: Support files opened in binary mode
+- `loads`: Support binary strings in Python 3?
 - Add a README
 - Finish the Properties class
     - Support reading & writing properties as XML

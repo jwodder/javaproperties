@@ -1,6 +1,6 @@
 from   __future__ import unicode_literals
 import re
-from   six        import StringIO, unichr
+from   six        import binary_type, StringIO, unichr
 
 def load(fp):
     return dict(load_items(fp))
@@ -14,12 +14,19 @@ def load_items(fp):
             yield (k,v)
 
 def load_items3(fp):
-    # `fp` must have been opened as Latin-1 (doesn't have to be universal
-    # newlines mode) and must support the `readline` method
+    # `fp` may be either a text or binary filehandle, with or without universal
+    # newlines support, but it must support the `readline` method.  If `fp` is
+    # a binary filehandle, its contents are assumed to be in Latin-1.  If it is
+    # a text filehandle, it is assumed to have been opened as Latin-1.
     # Returns an iterator of `(key, value, source_lines)` tuples; blank lines &
     # comments have `key` & `value` values of `None`
+    def readline():
+        ln = fp.readline()
+        if isinstance(ln, binary_type):
+            ln = ln.decode('iso-8859-1')
+        return ln
     while True:
-        line = source = fp.readline()
+        line = source = readline()
         if line == '':
             return
         if re.match(r'^[ \t\f]*(?:[#!]|\r?\n?$)', line):
@@ -28,7 +35,7 @@ def load_items3(fp):
         line = line.lstrip(' \t\f').rstrip('\r\n')
         while re.search(r'(?<!\\)(?:\\\\)*\\$', line):
             line = line[:-1]
-            nextline = fp.readline()  # '' at EOF
+            nextline = readline()  # '' at EOF
             source += nextline
             line += nextline.lstrip(' \t\f').rstrip('\r\n')
         if line == '':  # series of otherwise-blank lines with continuations
