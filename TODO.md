@@ -6,6 +6,29 @@
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
+- Add a README
+- Support `str` keys & values for `Properties` in Python 2
+- `dump`: Support files opened in binary mode
+- `loads`: Support binary strings in Python 3?
+- Finish the Properties class
+    - Support reading & writing properties as XML
+    - Implement the `list` method?
+- Do I need to handle "narrow" Python builds?
+- Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
+  argument?
+- Support Python 3.2?
+
+New Functions
+-------------
+- Add a variant of `join_key_value` that escapes as few characters as possible?
+- Add an inverse of `load_items3` for writing triples?
+- Should there be a variant of `dump` that outputs Unicode and leaves
+  non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
+  class)
+- Add string-reading equivalents of `load_items` and `load_items3`?
+
+Commands
+--------
 - Add a command for setting/unsetting entries in a .properties file:
 
         setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
@@ -14,24 +37,7 @@
 
 - Add a command (`getproperty`) for printing out specified values in a
   .properties file
-- Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add an inverse of `load_items3` for writing triples?
-- Support `str` keys & values for `Properties` in Python 2
-- `dump`: Support files opened in binary mode
-- `loads`: Support binary strings in Python 3?
-- Add a README
-- Finish the Properties class
-    - Support reading & writing properties as XML
-    - Implement the `list` method?
 - Give the commands `--help` options
-- Should there be a variant of `dump` that outputs Unicode and leaves
-  non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
-  class)
-- Try to handle "narrow" Python builds
-- Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
-  argument?
-- Add string-reading equivalents of `load_items` and `load_items3`?
-- Support Python 3.2?
 - Move the command-line commands back to the top level of the package so that
   they can be invoked with `python -m javaproperties.COMMAND` instead of
   `python -m javaproperties.commands.COMMAND`?
