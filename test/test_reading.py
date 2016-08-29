@@ -162,3 +162,4 @@ def test_loads_hash_in_value():
 # escaped non-special character
 # blank lines
 # multiple backslashes (even & odd numbers) in a row
+# `str`s in Python 2
