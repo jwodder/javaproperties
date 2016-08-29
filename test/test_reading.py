@@ -48,7 +48,6 @@ def test_loads_crlf():
 def test_loads_cr():
     assert loads('\r') == {}
 
-
 def test_loads_comment():
     assert loads('#This is a comment.') == {}
 
@@ -58,7 +57,6 @@ def test_loads_comment_key_value():
 def test_loads_key_value_comment():
     assert loads('key = value\n#This is a comment.') == {"key": "value"}
 
-
 def test_loads_bang_comment():
     assert loads('!This is a comment.') == {}
 
@@ -67,7 +65,6 @@ def test_loads_bang_comment_key_value():
 
 def test_loads_key_value_bang_comment():
     assert loads('key = value\n!This is a comment.') == {"key": "value"}
-
 
 def test_loads_continued_value():
     assert loads('key = val\\\nue') == {"key": "value"}
@@ -108,19 +105,60 @@ def test_loads_bad_surrogate():
 def test_loads_continue_comment():
     assert loads('key = value\\\n    # comment') == {"key": "value# comment"}
 
+def test_loads_continue_empty():
+    assert loads('key = value\\\n') == {"key": "value"}
 
-# multiline line continuations
-# \uXXXX escape sequences
+def test_loads_continue_EOF():
+    assert loads('key = value\\') == {"key": "value"}
+
+def test_loads_continue_space():
+    assert loads('key = value\\\n    ') == {"key": "value"}
+
+def test_loads_comment_continue():
+    assert loads('# comment\\\nkey = value') == {"key": "value"}
+
+def test_loads_blank_continue():
+    assert loads('\\\n') == {}
+
+def test_loads_continue_pair():
+    assert loads('\\\nkey = value') == {"key": "value"}
+
+def test_loads_space_continue_pair():
+    assert loads(' \\\nkey = value') == {"key": "value"}
+
+def test_loads_multiple():
+    assert loads('key = value\nfoo = bar') == {"key": "value", "foo": "bar"}
+
+def test_loads_reassign():
+    assert loads('key = value1\nkey = value2') == {"key": "value2"}
+
+def test_loads_bmp_escape():
+    assert loads('snowman = \\u2603') == {"snowman": u"\u2603"}
+
+def test_loads_latin1_escape():
+    assert loads('pokmon = \\u00E9') == {"pokmon": u"\u00E9"}
+
+def test_loads_long_escape():
+    assert loads('newline = \\u000a') == {"newline": "\n"}
+
+def test_loads_continue_continue():
+    assert loads('key = value\\\n\\\nend') == {"key": "valueend"}
+
+def test_loads_continue_space_continue():
+    assert loads('key = value\\\n    \\\nend') == {"key": "valueend"}
+
+def test_loads_escaped_continue():
+    assert loads('key = value\\\\\nend') == {"key": "value\\", "end": ""}
+
+def test_loads_hash_in_key():
+    assert loads('c#sharp = sucks') == {"c#sharp": "sucks"}
+
+def test_loads_hash_in_value():
+    assert loads('fifth = #5') == {"fifth": "#5"}
+
+
 # \n, \r, etc. escape sequences
-# comment character in middle of line
 # escaped space/=/: in key
 # escaped non-special character
-# blank line after line continuation
 # blank lines
-# multiple key-value entries
-# multiple key-value entries with the same key
-# series of all-whitespace lines joined with line continuations
-# EOF after line continuation
-# CRLF
 # multiple backslashes (even & odd numbers) in a row
-# "continuation" in a comment
