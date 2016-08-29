@@ -1,5 +1,5 @@
 import collections
-from   six      import PY2, text_type  ### `string_types` instead?
+from   six      import PY2, string_types
 from   .reading import load
 from   .util    import strify_dict
 from   .writing import dump
@@ -7,7 +7,7 @@ from   .writing import dump
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
 if PY2:
-    _type_err = 'Keys & values of Properties objects must be `unicode`'
+    _type_err = 'Keys & values of Properties objects must be `str` or `unicode`'
 else:
     _type_err = 'Keys & values of Properties objects must be `str`'
 
@@ -20,17 +20,18 @@ class Properties(collections.MutableMapping):
         self.defaults = defaults
 
     def __getitem__(self, key):
-        if not isinstance(key, text_type):
+        if not isinstance(key, string_types):
             raise TypeError(_type_err)
         return self.data[key]
 
     def __setitem__(self, key, value):
-        if not isinstance(key, text_type) or not isinstance(value, text_type):
+        if not isinstance(key, string_types) or \
+                not isinstance(value, string_types):
             raise TypeError(_type_err)
         self.data[key] = value
 
     def __delitem__(self, key):
-        if not isinstance(key, text_type):
+        if not isinstance(key, string_types):
             raise TypeError(_type_err)
         del self.data[key]
 

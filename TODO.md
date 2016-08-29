@@ -7,7 +7,7 @@
 - Add docstrings
     - Add a module docstring to `__init__.py`
 - Add a README
-- Support `str` keys & values for `Properties` in Python 2
+- `dump`: Support writing `str`s in Python 2
 - `dump`: Support files opened in binary mode
 - `loads`: Support binary strings in Python 3?
 - Finish the Properties class
@@ -17,6 +17,7 @@
 - Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
   argument?
 - Support Python 3.2?
+- Force use of the C locale when generating timestamps
 
 New Functions
 -------------
