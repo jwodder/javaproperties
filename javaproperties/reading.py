@@ -1,6 +1,6 @@
 from   __future__ import unicode_literals
 import re
-from   six        import binary_type, StringIO, unichr
+from   six        import binary_type, StringIO, BytesIO, unichr
 
 def load(fp, object_pairs_hook=dict):
     return object_pairs_hook(
@@ -9,7 +9,11 @@ def load(fp, object_pairs_hook=dict):
     )
 
 def loads(s, object_pairs_hook=dict):
-    return load(StringIO(s), object_pairs_hook=object_pairs_hook)
+    if isinstance(s, binary_type):
+        fp = BytesIO(s)
+    else:
+        fp = StringIO(s)
+    return load(fp, object_pairs_hook=object_pairs_hook)
 
 def load_items3(fp):
     # `fp` may be either a text or binary filehandle, with or without universal
