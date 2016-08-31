@@ -1,5 +1,5 @@
 from .propclass import Properties
-from .reading   import load, loads, load_items, load_items3, unescape
+from .reading   import load, loads, load_items3, unescape
 from .writing   import dump, dumps, join_key_value, escape, to_comment
 
 __version__      = '0.1.0.dev1'
@@ -16,7 +16,6 @@ __all__ = [
     'join_key_value',
     'load',
     'loads',
-    'load_items',
     'load_items3',
     'to_comment',
     'unescape',

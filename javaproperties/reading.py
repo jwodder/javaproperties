@@ -2,16 +2,14 @@ from   __future__ import unicode_literals
 import re
 from   six        import binary_type, StringIO, unichr
 
-def load(fp):
-    return dict(load_items(fp))
+def load(fp, object_pairs_hook=dict):
+    return object_pairs_hook(
+        (k,v) for k,v,_ in load_items3(fp)
+              if k is not None
+    )
 
-def loads(s):
-    return load(StringIO(s))
-
-def load_items(fp):
-    for k,v,_ in load_items3(fp):
-        if k is not None:
-            yield (k,v)
+def loads(s, object_pairs_hook=dict):
+    return load(StringIO(s), object_pairs_hook=object_pairs_hook)
 
 def load_items3(fp):
     # `fp` may be either a text or binary filehandle, with or without universal

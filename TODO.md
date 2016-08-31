@@ -14,10 +14,9 @@
     - Support reading & writing properties as XML
     - Implement the `list` method?
 - Do I need to handle "narrow" Python builds?
-- Eliminate the need for `load_items` by giving `load` an `object_pairs_hook`
-  argument?
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
+- Rename `load_items3` (to `parse`?)
 
 New Functions
 -------------
