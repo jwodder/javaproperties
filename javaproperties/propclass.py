@@ -1,15 +1,12 @@
 import collections
-from   six      import PY2, string_types
+from   six      import string_types
 from   .reading import load
 from   .util    import strify_dict
 from   .writing import dump
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
-if PY2:
-    _type_err = 'Keys & values of Properties objects must be `str` or `unicode`'
-else:
-    _type_err = 'Keys & values of Properties objects must be `str`'
+_type_err = 'Keys & values of Properties objects must be strings'
 
 class Properties(collections.MutableMapping):
     def __init__(self, data=None, defaults=None):
