@@ -23,8 +23,8 @@ def dump(props, fp, separator='=', comments=None, timestamp=True):
                 tz = tzlocal()
             timestamp = datetime.now(tz)
         ### TODO: Make strftime use the C locale
-        print(to_comment(timestamp.strftime('%a %b %d %H:%M:%S %Z %Y')),file=fp)
-        ### Squash the double-space around %Z when the timestamp is naive?
+        print(to_comment(timestamp.strftime('%a %b %d %H:%M:%S %Z %Y')
+                                  .replace('  ', ' ')),file=fp)
     for k,v in items:
         print(join_key_value(k, v, separator), file=fp)
 

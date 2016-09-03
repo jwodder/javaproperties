@@ -17,6 +17,7 @@
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
+- Give `dump` and `dumps` `ensure_ascii` arguments
 
 New Functions
 -------------
