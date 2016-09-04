@@ -3,6 +3,7 @@ import codecs
 import io
 import json
 import sys
+from   six       import iteritems
 from   ..util    import strify_dict
 from   ..writing import dump
 
@@ -17,12 +18,11 @@ def main():
         outfile = sys.stdout
         if sys.version_info[0] >= 3:
             outfile = outfile.buffer
-        ### TODO: Enable universal newlines mode?
         outfile = codecs.getwriter('iso-8859-1')(outfile)
     with infile:
         props = json.load(infile)
     with outfile:
-        dump(strify_dict(props), outfile)
+        dump(sorted(iteritems(strify_dict(props))), outfile)
 
 if __name__ == '__main__':
     main()

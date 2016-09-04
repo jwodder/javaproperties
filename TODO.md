@@ -4,6 +4,7 @@
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
+    - Test writing timestamps with & without python-dateutil installed
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
@@ -13,7 +14,7 @@
 - Finish the Properties class
     - Support reading & writing properties as XML
     - Implement the `list` method?
-- Do I need to handle "narrow" Python builds?
+- Handle "narrow" Python builds (all Python versions < 3.3)
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
