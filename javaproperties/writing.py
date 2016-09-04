@@ -66,12 +66,12 @@ def _esc(m):
             # surrogate pairs?
             assert c <= 0x10FFFF
             c -= 0x10000
-            return '\\u{:04x}\\u{:04x}'.format(
+            return '\\u{0:04x}\\u{1:04x}'.format(
                 0xD800 + (c >> 10),
                 0xDC00 + (c & 0x3FF)
             )
         else:
-            return '\\u{:04x}'.format(c)
+            return '\\u{0:04x}'.format(c)
 
 def _base_escape(field):
     return re.sub(r'[^\x20-\x7E]|[\\#!=:]', _esc, field)
