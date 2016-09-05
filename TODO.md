@@ -10,7 +10,6 @@
     - Add a module docstring to `__init__.py`
 - Add a README
 - `dump`: Support writing `str`s in Python 2
-- `dump`: Support files opened in binary mode
 - Finish the Properties class
     - Support reading & writing properties as XML
     - Implement the `list` method?
@@ -19,6 +18,9 @@
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
 - Give `dump` and `dumps` `ensure_ascii` arguments
+- Give `dump` and `dumps` `sort_keys` arguments?
+- `Properties.__init__`: Convert numeric, boolean, and null keys in `data` to
+  strings
 
 New Functions
 -------------

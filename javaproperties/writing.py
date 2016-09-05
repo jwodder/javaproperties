@@ -1,12 +1,13 @@
 from   __future__  import print_function, unicode_literals
+import codecs
 from   collections import Mapping
 from   datetime    import datetime
 import re
-from   six         import StringIO
+from   six         import BytesIO
 
 def dump(props, fp, separator='=', comments=None, timestamp=True):
-    # `fp` must have been opened as a text file with a Latin-1-compatible
-    # encoding.
+    # `fp` must have been opened as a binary file.
+    fp = codecs.getwriter('iso-8859-1')(fp)
     if isinstance(props, Mapping):
         items = ((k, props[k]) for k in props)
     else:
@@ -24,14 +25,14 @@ def dump(props, fp, separator='=', comments=None, timestamp=True):
             timestamp = datetime.now(tz)
         ### TODO: Make strftime use the C locale
         print(to_comment(timestamp.strftime('%a %b %d %H:%M:%S %Z %Y')
-                                  .replace('  ', ' ')),file=fp)
+                                  .replace('  ', ' ')), file=fp)
     for k,v in items:
         print(join_key_value(k, v, separator), file=fp)
 
 def dumps(props, separator='=', comments=None, timestamp=True):
-    s = StringIO()
+    s = BytesIO()
     dump(props, s, separator=separator, comments=comments, timestamp=timestamp)
-    return s.getvalue()
+    return s.getvalue().decode('iso-8859-1')
 
 def to_comment(comment):
     return '#' + re.sub(r'[^\x00-\xFF]', _esc,

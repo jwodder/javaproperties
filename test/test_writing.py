@@ -20,7 +20,7 @@ def test_dumps_astral_plane():
         'goat=\\ud83d\\udc10\n'
 
 
-# characters outside the [\x20-\xFF] range
+# characters outside the [\x20-\x7E] range
 # backslashes
 # '#' and '!'
 # \n, \r, etc.
@@ -28,5 +28,7 @@ def test_dumps_astral_plane():
 # spaces in values
 # timestamps with & without a timezone
 # comments
+# non-Latin-1 characters in comments
+# multiline comments
 # `str`s in Python 2 (Separate test file?)
 # custom separator?
