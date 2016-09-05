@@ -159,6 +159,7 @@ def test_loads_hash_in_value():
 
 # \n, \r, etc. escape sequences
 # escaped space/=/: in key
+# escaped space in value
 # escaped non-special character
 # blank lines
 # multiple backslashes (even & odd numbers) in a row

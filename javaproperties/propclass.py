@@ -90,7 +90,7 @@ class Properties(collections.MutableMapping):
     ###def loadFromXML(self, fp):
     ###    ???
 
-    ###def storeToXML(self, out, comment=None, encoding=None):
+    ###def storeToXML(self, out, comment=None, encoding='UTF-8'):
     ###    ???
 
     ###def list(self, out):

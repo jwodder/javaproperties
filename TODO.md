@@ -24,9 +24,9 @@ New Functions
 -------------
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `load_items3` for writing triples?
-- Should there be a variant of `dump` that outputs Unicode and leaves
-  non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
-  class)
+- Should there be a variant of `dump` (or `dumps`?) that outputs Unicode and
+  leaves non-Latin-1 characters as-is?  (cf. the different `store` methods of
+  the Java class)
 - Should there be a variant of `dumps` that outputs bytes?
 - Add string-reading equivalent of `load_items3`?
 
