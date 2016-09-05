@@ -19,8 +19,6 @@
 - Rename `load_items3` (to `parse`?)
 - Give `dump` and `dumps` `ensure_ascii` arguments
 - Give `dump` and `dumps` `sort_keys` arguments?
-- `Properties.__init__`: Convert numeric, boolean, and null keys in `data` to
-  strings
 
 New Functions
 -------------
