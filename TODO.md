@@ -13,7 +13,7 @@
 - Finish the Properties class
     - Support reading & writing properties as XML
     - Implement the `list` method?
-- Handle "narrow" Python builds (all Python versions < 3.3)
+- Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
@@ -29,9 +29,8 @@ New Functions
 - Should there be a variant of `dump` that outputs Unicode and leaves
   non-Latin-1 characters as-is?  (cf. the different `store` methods of the Java
   class)
+- Should there be a variant of `dumps` that outputs bytes?
 - Add string-reading equivalent of `load_items3`?
-- Add functions that take filenames instead of file objects so that the caller
-  doesn't have to worry about encodings?
 
 Commands
 --------
@@ -40,6 +39,7 @@ Commands
         setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
 
     - Include an option for controlling whether to update the timestamp
+    - Include an option for setting the separator
 
 - Add a command (`getproperty`) for printing out specified values in a
   .properties file
