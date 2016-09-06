@@ -19,6 +19,8 @@
 - Rename `load_items3` (to `parse`?)
 - Give `dump` and `dumps` `ensure_ascii` arguments
 - Give `dump` and `dumps` `sort_keys` arguments?
+- Set up a Readthedocs site?
+- Use `lxml` for XML processing if it's installed?
 
 New Functions
 -------------
@@ -29,6 +31,7 @@ New Functions
   the Java class)
 - Should there be a variant of `dumps` that outputs bytes?
 - Add string-reading equivalent of `load_items3`?
+- Add an equivalent of `load_items3` for XML that can extract the comment?
 
 Commands
 --------
