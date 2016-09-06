@@ -1,3 +1,4 @@
+import collections
 import json
 import numbers
 from   six import iteritems, string_types
@@ -16,3 +17,12 @@ def strify_dict(d):
         else:
             strdict[k] = json.dumps(v)
     return strdict
+
+def itemize(kvs, sort_keys=False):
+    if isinstance(kvs, collections.Mapping):
+        items = ((k, kvs[k]) for k in kvs)
+    else:
+        items = kvs
+    if sort_keys:
+        items = sorted(items)
+    return items

@@ -18,7 +18,6 @@
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
 - Give the dump functions `ensure_ascii` arguments
-- Give the dump functions `sort_keys` arguments
 - Set up a Readthedocs site?
 - Use `lxml` for XML processing if it's installed?
 

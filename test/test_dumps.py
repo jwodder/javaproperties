@@ -61,3 +61,4 @@ def test_dumps_backslash():
 # `str`s in Python 2 (Separate test file?)
 # custom separator?
 # OrderedDict
+# sorting keys

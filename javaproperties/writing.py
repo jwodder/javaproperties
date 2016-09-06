@@ -1,16 +1,13 @@
-from   __future__  import print_function, unicode_literals
-from   collections import Mapping
-from   datetime    import datetime
+from   __future__ import print_function, unicode_literals
+from   datetime   import datetime
 import re
-from   six         import StringIO
+from   six        import StringIO
+from   .util      import itemize
 
-def dump(props, fp, separator='=', comments=None, timestamp=True):
+def dump(props, fp, separator='=', comments=None, timestamp=True,
+         sort_keys=False):
     # `fp` must have been opened as a text file with a Latin-1-compatible
     # encoding.
-    if isinstance(props, Mapping):
-        items = ((k, props[k]) for k in props)
-    else:
-        items = props
     if comments is not None:
         print(to_comment(comments), file=fp)
     if timestamp:
@@ -25,12 +22,13 @@ def dump(props, fp, separator='=', comments=None, timestamp=True):
         ### TODO: Make strftime use the C locale
         print(to_comment(timestamp.strftime('%a %b %d %H:%M:%S %Z %Y')
                                   .replace('  ', ' ')), file=fp)
-    for k,v in items:
+    for k,v in itemize(props, sort_keys=sort_keys):
         print(join_key_value(k, v, separator), file=fp)
 
-def dumps(props, separator='=', comments=None, timestamp=True):
+def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     s = StringIO()
-    dump(props, s, separator=separator, comments=comments, timestamp=timestamp)
+    dump(props, s, separator=separator, comments=comments, timestamp=timestamp,
+         sort_keys=sort_keys)
     return s.getvalue()
 
 def to_comment(comment):

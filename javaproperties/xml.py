@@ -1,9 +1,9 @@
 from   __future__            import absolute_import, print_function, \
                                     unicode_literals
 import codecs
-from   collections           import Mapping
 import xml.etree.ElementTree as ET
 from   xml.sax.saxutils      import escape, quoteattr
+from   .util                 import itemize
 
 def load_xml(fp, object_pairs_hook=dict):
     tree = ET.parse(fp)
@@ -22,26 +22,22 @@ def _fromXML(root):
             raise ValueError('<entry> is missing "key" attribute')
         yield (key, entry.text)
 
-def dump_xml(props, fp, comment=None, encoding='UTF-8'):
+def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     # `fp` must be a binary filehandle
     fp = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
     print('<?xml version="1.0" encoding={0} standalone="no"?>'\
           .format(quoteattr(encoding)), file=fp)
-    for s in _stream_xml(props, comment):
+    for s in _stream_xml(props, comment, sort_keys):
         print(s, file=fp)
 
-def dumps_xml(props, comment=None):
-    return ''.join(s + '\n' for s in _stream_xml(props, comment))
+def dumps_xml(props, comment=None, sort_keys=False):
+    return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
 
-def _stream_xml(props, comment=None):
-    if isinstance(props, Mapping):
-        items = ((k, props[k]) for k in props)
-    else:
-        items = props
+def _stream_xml(props, comment=None, sort_keys=False):
     yield '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">'
     yield '<properties>'
     if comment is not None:
         yield '<comment>' + escape(comment) + '</comment>'
-    for k,v in items:
+    for k,v in itemize(props, sort_keys=sort_keys):
         yield '<entry key={0}>{1}</entry>'.format(quoteattr(k), escape(v))
     yield '</properties>'
