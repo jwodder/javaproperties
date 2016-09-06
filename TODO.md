@@ -4,6 +4,8 @@
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
+    - Test reading & writing XML
+    - Test reading & writing XML in various encodings
     - Test writing timestamps with & without python-dateutil installed
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
@@ -15,8 +17,8 @@
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
 - Rename `load_items3` (to `parse`?)
-- Give `dump` and `dumps` `ensure_ascii` arguments
-- Give `dump` and `dumps` `sort_keys` arguments?
+- Give the dump functions `ensure_ascii` arguments
+- Give the dump functions `sort_keys` arguments
 - Set up a Readthedocs site?
 - Use `lxml` for XML processing if it's installed?
 

@@ -1,13 +1,12 @@
 from   __future__  import print_function, unicode_literals
-import codecs
 from   collections import Mapping
 from   datetime    import datetime
 import re
-from   six         import BytesIO
+from   six         import StringIO
 
 def dump(props, fp, separator='=', comments=None, timestamp=True):
-    # `fp` must have been opened as a binary file.
-    fp = codecs.getwriter('iso-8859-1')(fp)
+    # `fp` must have been opened as a text file with a Latin-1-compatible
+    # encoding.
     if isinstance(props, Mapping):
         items = ((k, props[k]) for k in props)
     else:
@@ -30,9 +29,9 @@ def dump(props, fp, separator='=', comments=None, timestamp=True):
         print(join_key_value(k, v, separator), file=fp)
 
 def dumps(props, separator='=', comments=None, timestamp=True):
-    s = BytesIO()
+    s = StringIO()
     dump(props, s, separator=separator, comments=comments, timestamp=timestamp)
-    return s.getvalue().decode('iso-8859-1')
+    return s.getvalue()
 
 def to_comment(comment):
     return '#' + re.sub(r'[^\x00-\xFF]', _esc,
