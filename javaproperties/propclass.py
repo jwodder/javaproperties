@@ -3,6 +3,7 @@ from   six      import string_types
 from   .reading import load
 from   .util    import strify_dict
 from   .writing import dump
+from   .xml     import load_xml, dump_xml
 
 # https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
@@ -87,11 +88,11 @@ class Properties(collections.MutableMapping):
             names.update(self.defaults.stringPropertyNames())
         return names
 
-    ###def loadFromXML(self, fp):
-    ###    ???
+    def loadFromXML(self, fp):
+        self.data.update(load_xml(fp))
 
-    ###def storeToXML(self, out, comment=None, encoding='UTF-8'):
-    ###    ???
+    def storeToXML(self, out, comment=None, encoding='UTF-8'):
+        dump_xml(self.data, out, comment=comment, encoding=encoding)
 
     ###def list(self, out):
     ###    ???

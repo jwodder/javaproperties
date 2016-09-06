@@ -10,9 +10,7 @@
     - Add a module docstring to `__init__.py`
 - Add a README
 - `dump`: Support writing `str`s in Python 2
-- Finish the Properties class
-    - Support reading & writing properties as XML
-    - Implement the `list` method?
+- Implement `Properties.list`?
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
