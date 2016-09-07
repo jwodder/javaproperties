@@ -1,6 +1,5 @@
 - Write tests
-    - Test working with both `str` and `unicode` in Python 2
-    - Test working with bytes in both Python 2 and Python 3
+    - Test reading & writing bytes in both Python 2 and Python 3
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???

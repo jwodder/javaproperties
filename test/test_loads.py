@@ -1,3 +1,4 @@
+from __future__     import unicode_literals
 from javaproperties import loads
 
 def test_loads_simple():
@@ -97,10 +98,10 @@ def test_loads_key_space_value():
     assert loads('key value') == {"key": "value"}
 
 def test_loads_surrogate_pair():
-    assert loads('goat = \\uD83D\\uDC10') == {"goat": u"\U0001F410"}
+    assert loads('goat = \\uD83D\\uDC10') == {"goat": "\U0001F410"}
 
 def test_loads_bad_surrogate():
-    assert loads('taog = \\uDC10\\uD83D') == {"taog": u"\uDC10\uD83D"}
+    assert loads('taog = \\uDC10\\uD83D') == {"taog": "\uDC10\uD83D"}
 
 def test_loads_continue_comment():
     assert loads('key = value\\\n    # comment') == {"key": "value# comment"}
@@ -133,10 +134,10 @@ def test_loads_reassign():
     assert loads('key = value1\nkey = value2') == {"key": "value2"}
 
 def test_loads_bmp_escape():
-    assert loads('snowman = \\u2603') == {"snowman": u"\u2603"}
+    assert loads('snowman = \\u2603') == {"snowman": "\u2603"}
 
 def test_loads_latin1_escape():
-    assert loads('pokmon = \\u00E9') == {"pokmon": u"\u00E9"}
+    assert loads('pokmon = \\u00E9') == {"pokmon": "\u00E9"}
 
 def test_loads_long_escape():
     assert loads('newline = \\u000a') == {"newline": "\n"}
@@ -156,6 +157,15 @@ def test_loads_hash_in_key():
 def test_loads_hash_in_value():
     assert loads('fifth = #5') == {"fifth": "#5"}
 
+def test_dumps_latin_1():
+    assert loads('edh = \xF0') == {"edh": "\xF0"}
+
+def test_dumps_non_latin_1():
+    assert loads('snowman = \u2603') == {"snowman": "\u2603"}
+
+def test_loads_astral_plane():
+    assert loads('goat = \U0001F410') == {"goat": "\U0001F410"}
+
 
 # \n, \r, etc. escape sequences
 # escaped space/=/: in key
@@ -163,4 +173,3 @@ def test_loads_hash_in_value():
 # escaped non-special character
 # blank lines
 # multiple backslashes (even & odd numbers) in a row
-# `str`s in Python 2
