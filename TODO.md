@@ -3,7 +3,6 @@
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
-    - Test reading & writing XML
     - Test reading & writing XML in various encodings
     - Test writing timestamps with & without python-dateutil installed
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
@@ -19,6 +18,9 @@
 - Give the dump functions `ensure_ascii` arguments
 - Set up a Readthedocs site?
 - Use `lxml` for XML processing if it's installed?
+- Give `load` and `loads` a `timestamp_key`(?) argument that, if supplied,
+  causes the timestamp in a .properties file to be extracted and saved in the
+  given key
 
 New Functions
 -------------
@@ -33,16 +35,24 @@ New Functions
 
 Commands
 --------
-- Add a command for setting/unsetting entries in a .properties file:
+- Add a `javaproperties` command (as `javaproperties.__main__`?) with the
+  following subcommands:
 
-        setproperty [-d] [-i | -o <outfile>] <file> <key> [<value>]
+        get [--defaults <file>] [--no-newline] [--no-key] <file> <key> ...
 
-    - Include an option for controlling whether to update the timestamp
-    - Include an option for setting the separator
+        set [--in-place | --outfile <file>] [--backup <file>] <file> <key> <value>
+        # Include an option for controlling whether to update the timestamp
+        # Include an option for setting the separator
 
-- Add a command (`getproperty`) for printing out specified values in a
-  .properties file
-- Give the commands `--help` options
+        # Deleting entries; rename "del"? "delete"?:
+        unset [--in-place | --outfile <file>] [--backup <file>] <file> <key> ...
+        # Include an option for controlling whether to update the timestamp
+
+    - Give all of the subcommands options for controlling whether escape
+      sequences in keys & values on the command line should be interpolated or
+      used literally
+
+- Give all commands `--help` options
 - Move the command-line commands back to the top level of the package so that
   they can be invoked with `python -m javaproperties.COMMAND` instead of
   `python -m javaproperties.commands.COMMAND`?

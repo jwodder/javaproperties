@@ -7,6 +7,9 @@ def test_loads_simple():
 def test_loads_key_only():
     assert loads("key") == {"key": ""}
 
+def test_loads_key_space_only():
+    assert loads("key ") == {"key": ""}
+
 def test_loads_space_equals():
     assert loads("key =value") == {"key": "value"}
 
