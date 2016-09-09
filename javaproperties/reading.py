@@ -45,7 +45,7 @@ def load_items3(fp):
             continue
         m = re.search(r'(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*', line)
         if m:
-            yield (unescape(line[:m.start()]), unescape(line[m.end():]), source)
+            yield (unescape(line[:m.start(1)]),unescape(line[m.end():]),source)
         else:
             yield (unescape(line), '', source)
 

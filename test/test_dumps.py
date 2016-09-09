@@ -74,8 +74,10 @@ def test_dumps_non_latin_1_comment():
 def test_dumps_astral_plane_comment():
     assert dumps({"key": "value"}, comments='goat=\U0001F410', timestamp=False) == '#goat=\\ud83d\\udc10\nkey=value\n'
 
+def test_dumps_tab_separator():
+    assert dumps({"key": "value"}, separator='\t', timestamp=False) == 'key\tvalue\n'
 
-# characters outside the [\x20-\x7E] range
+
 # =, :, #, and !
 # \n, \r, etc.
 # timestamps with & without a timezone

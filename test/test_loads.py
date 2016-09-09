@@ -169,10 +169,33 @@ def test_dumps_non_latin_1():
 def test_loads_astral_plane():
     assert loads('goat = \U0001F410') == {"goat": "\U0001F410"}
 
+def test_loads_esc_n():
+    assert loads('newline = \\n') == {"newline": "\n"}
 
-# \n, \r, etc. escape sequences
-# escaped space/=/: in key
+def test_loads_esc_r():
+    assert loads('carriage.return = \\r') == {"carriage.return": "\r"}
+
+def test_loads_esc_t():
+    assert loads('tab = \\t') == {"tab": "\t"}
+
+def test_loads_esc_f():
+    assert loads('form.feed = \\f') == {"form.feed": "\f"}
+
+def test_loads_space_in_key():
+    assert loads('two\\ words = one key') == {"two words": "one key"}
+
+def test_loads_colon_in_key():
+    assert loads('hour\\:minute = 1440') == {"hour:minute": "1440"}
+
+def test_loads_equals_in_key():
+    assert loads('E\\=mc^2 = Einstein') == {"E=mc^2": "Einstein"}
+
+def test_loads_double_backslash():
+    assert loads('two\\\\ words = not a key') == {"two\\": "words = not a key"}
+
+def test_loads_triple_backslash():
+    assert loads('two\\\\\\ words = one key') == {"two\\ words": "one key"}
+
 # escaped space in value
 # escaped non-special character
 # blank lines
-# multiple backslashes (even & odd numbers) in a row
