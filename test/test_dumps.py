@@ -1,4 +1,6 @@
 from __future__     import unicode_literals
+from datetime       import datetime
+from dateutil.tz    import tzoffset
 from javaproperties import dumps
 
 def test_dumps_nothing():
@@ -77,11 +79,28 @@ def test_dumps_astral_plane_comment():
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) == 'key\tvalue\n'
 
+def test_dumps_naive_timestamp():
+    assert dumps(
+        {"key": "value"},
+        timestamp=datetime.utcfromtimestamp(1473703254)
+    ) == '#Mon Sep 12 18:00:54 2016\nkey=value\n'
+
+def test_dumps_aware_timestamp():
+    assert dumps(
+        {"key": "value"},
+        timestamp=datetime.fromtimestamp(1473703254, tzoffset('EDT', -14400))
+    ) == '#Mon Sep 12 14:00:54 EDT 2016\nkey=value\n'
+
+def test_dumps_timestamp_and_comment():
+    assert dumps(
+        {"key": "value"},
+        comments='This is a comment.',
+        timestamp=datetime.utcfromtimestamp(1473703254)
+    ) == '#This is a comment.\n#Mon Sep 12 18:00:54 2016\nkey=value\n'
+
 
 # =, :, #, and !
 # \n, \r, etc.
-# timestamps with & without a timezone
-# comment and timestamp
 # custom separator
 # OrderedDict
 # sorting keys

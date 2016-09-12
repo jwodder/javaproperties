@@ -4,7 +4,8 @@
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
     - Test reading & writing XML in various encodings
-    - Test writing timestamps with & without python-dateutil installed
+    - Test writing the current timestamp with & without python-dateutil
+      installed?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Add docstrings
     - Add a module docstring to `__init__.py`
@@ -21,6 +22,7 @@
 - Give `load` and `loads` a `timestamp_key`(?) argument that, if supplied,
   causes the timestamp in a .properties file to be extracted and saved in the
   given key
+- Look into minimum version requirements for python-dateutil
 
 New Functions
 -------------

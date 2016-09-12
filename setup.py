@@ -28,7 +28,7 @@ setup(
 
     setup_requires=['pytest-runner>=2.0,<3'],
     install_requires=['six>=1.4.0,<2'],
-    tests_require=['pytest>=2.8,<3'],
+    tests_require=['pytest>=2.8,<3', 'python-dateutil'],
 
     extras_require={
         'dateutil': ['python-dateutil'],
