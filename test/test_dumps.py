@@ -98,8 +98,19 @@ def test_dumps_timestamp_and_comment():
         timestamp=datetime.utcfromtimestamp(1473703254)
     ) == '#This is a comment.\n#Mon Sep 12 18:00:54 2016\nkey=value\n'
 
+def test_dumps_equals():
+    assert dumps({"equals": "="}, timestamp=False) == 'equals=\\=\n'
 
-# =, :, #, and !
+def test_dumps_colon():
+    assert dumps({"colon": ":"}, timestamp=False) == 'colon=\\:\n'
+
+def test_dumps_hash():
+    assert dumps({"hash": "#"}, timestamp=False) == 'hash=\\#\n'
+
+def test_dumps_exclamation():
+    assert dumps({"exclamation": "!"}, timestamp=False) == 'exclamation=\\!\n'
+
+
 # \n, \r, etc.
 # custom separator
 # OrderedDict
