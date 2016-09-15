@@ -23,8 +23,6 @@
   causes the timestamp in a .properties file to be extracted and saved in the
   given key
 - Look into minimum version requirements for python-dateutil
-- Look into ways to avoid specifying the test requirements in both setup.py and
-  tox.ini
 
 New Functions
 -------------
