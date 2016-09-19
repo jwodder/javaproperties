@@ -10,22 +10,24 @@
 - Add docstrings
     - Add a module docstring to `__init__.py`
 - Add a README
-- `dump`: Support writing `str`s in Python 2
-- Implement `Properties.list`?
+- Set up a Readthedocs site?
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Force use of the C locale when generating timestamps
-- Rename `load_items3` (to `parse`?)
-- Give the dump functions `ensure_ascii` arguments
-- Set up a Readthedocs site?
+    - cf. <http://stackoverflow.com/a/24070673/744178>
+    - Use Babel <http://babel.pocoo.org> ?
+- Rename `load_items3` (to `parse`? `scan`? `_load`?)
 - Use `lxml` for XML processing if it's installed?
+- Look into minimum version requirements for python-dateutil
+
+New Features
+------------
+- `dump`: Support writing `str`s in Python 2
+- Implement `Properties.list`?
+- Give the dump functions `ensure_ascii` arguments
 - Give `load` and `loads` a `timestamp_key`(?) argument that, if supplied,
   causes the timestamp in a .properties file to be extracted and saved in the
   given key
-- Look into minimum version requirements for python-dateutil
-
-New Functions
--------------
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `load_items3` for writing triples?
 - Should there be a variant of `dump` (or `dumps`?) that outputs Unicode and

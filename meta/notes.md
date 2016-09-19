@@ -4,7 +4,8 @@
   Oracle Java does the same things!):
 
     - [comment after a line continuation]
-        - The comment's comment-ness is ignored.
+        - The comment's comment-ness is ignored.  This applies even if the
+          first line is blank/all-whitespace.
     - [blank line after a line continuation]
         - The blank line is not ignored.
     - [whitespace at the start of a line after a line continuation]
@@ -24,7 +25,7 @@
         - empty key
     - [writing a comment containing a backslash followed by a non-Latin-1
       character]
-        - The comment will contain `\\uXXXX`
+        - The comment will contain `\\uXXXX` (i.e., two literal backslashes)
 
 - Terminating newlines are discarded, but not other trailing whitespace.
 

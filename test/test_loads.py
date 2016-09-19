@@ -106,6 +106,12 @@ def test_loads_surrogate_pair():
 def test_loads_bad_surrogate():
     assert loads('taog = \\uDC10\\uD83D') == {"taog": "\uDC10\uD83D"}
 
+def test_loads_blank_continue_comment():
+    assert loads('\\\n# comment') == {"#": "comment"}
+
+def test_loads_space_continue_comment():
+    assert loads('   \\\n# comment') == {"#": "comment"}
+
 def test_loads_continue_comment():
     assert loads('key = value\\\n    # comment') == {"key": "value# comment"}
 

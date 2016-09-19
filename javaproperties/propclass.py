@@ -10,7 +10,10 @@ from   .xml     import load_xml, dump_xml
 _type_err = 'Keys & values of Properties objects must be strings'
 
 class Properties(collections.MutableMapping):
+    """ TODO """
+
     def __init__(self, data=None, defaults=None):
+        """ TODO """
         # `defaults` must be a Properties object
         self.data = {}
         if data is not None:
@@ -57,6 +60,7 @@ class Properties(collections.MutableMapping):
     __bool__ = __nonzero__
 
     def getProperty(self, key, defaultValue=None):
+        """ TODO """
         try:
             return self[key]
         except KeyError:
@@ -66,9 +70,11 @@ class Properties(collections.MutableMapping):
                 return defaultValue
 
     def load(self, fp):
+        """ TODO """
         self.data.update(load(fp))
 
     def propertyNames(self):
+        """ TODO """
         for k in self.data:
             yield k
         if self.defaults is not None:
@@ -77,21 +83,26 @@ class Properties(collections.MutableMapping):
                     yield k
 
     def setProperty(self, key, value):
+        """ TODO """
         self[key] = value
 
     def store(self, out, comments=None):
+        """ TODO """
         dump(self.data, out, comments=comments)
 
     def stringPropertyNames(self):
+        """ TODO """
         names = set(self.data)
         if self.defaults is not None:
             names.update(self.defaults.stringPropertyNames())
         return names
 
     def loadFromXML(self, fp):
+        """ TODO """
         self.data.update(load_xml(fp))
 
     def storeToXML(self, out, comment=None, encoding='UTF-8'):
+        """ TODO """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
 
     ###def list(self, out):
