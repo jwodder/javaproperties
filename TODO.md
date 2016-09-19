@@ -7,12 +7,15 @@
     - Test writing the current timestamp with & without python-dateutil
       installed?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
-- Add docstrings
-    - Add a module docstring to `__init__.py`
-- Add a README
-- Set up a Readthedocs site?
+- Documentation:
+    - Add docstrings
+        - Add a module docstring to `__init__.py`
+    - Add a README
+    - Set up a Readthedocs site
+    - Fix the Sphinx HTML documentation sidebar
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
+- Handle files with CR line endings not opened in universal newlines mode?
 - Force use of the C locale when generating timestamps
     - cf. <http://stackoverflow.com/a/24070673/744178>
     - Use Babel <http://babel.pocoo.org> ?
@@ -60,5 +63,6 @@ Commands
 - Move the command-line commands back to the top level of the package so that
   they can be invoked with `python -m javaproperties.COMMAND` instead of
   `python -m javaproperties.commands.COMMAND`?
+    - Rename the files `to_json` and `from_json`?
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?

@@ -11,8 +11,9 @@ Welcome to javaproperties's documentation!
 
 Contents:
 
-.. toctree::
-   :maxdepth: 2
+.. contents::
+   :depth: 2
+   :local:
 
 .. todo::
 
@@ -20,7 +21,6 @@ Contents:
 
 Reading & Writing ``.properties`` Files
 =======================================
-
 .. autofunction:: dump
 .. autofunction:: dumps
 .. autofunction:: load
@@ -28,7 +28,6 @@ Reading & Writing ``.properties`` Files
 
 Reading & Writing ``.properties`` Files as XML
 ==============================================
-
 .. autofunction:: dump_xml
 .. autofunction:: dumps_xml
 .. autofunction:: load_xml
@@ -40,7 +39,6 @@ Reading & Writing ``.properties`` Files as XML
 
 Low-Level Utilities
 ===================
-
 .. autofunction:: escape
 .. autofunction:: join_key_value
 .. autofunction:: load_items3
@@ -49,6 +47,5 @@ Low-Level Utilities
 
 Indices and tables
 ==================
-
 * :ref:`genindex`
 * :ref:`search`

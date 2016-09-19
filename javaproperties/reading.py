@@ -108,7 +108,7 @@ def _unsurrogate(m):
 def unescape(field):
     """
     Decode escape sequences in a ``.properties`` key or value.  The following
-    escape sequences are supported::
+    escape sequences are recognized::
 
         \\t \\n \\f \\r \\uXXXX \\\\
 
