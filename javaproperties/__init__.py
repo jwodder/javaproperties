@@ -1,5 +1,5 @@
 from .propclass import Properties
-from .reading   import load, loads, load_items3, unescape
+from .reading   import load, loads, parse, unescape
 from .writing   import dump, dumps, join_key_value, escape, to_comment
 from .xml       import load_xml, loads_xml, dump_xml, dumps_xml
 
@@ -18,10 +18,10 @@ __all__ = [
     'escape',
     'join_key_value',
     'load',
-    'load_items3',
     'load_xml',
     'loads',
     'loads_xml',
+    'parse',
     'to_comment',
     'unescape',
 ]

@@ -25,10 +25,7 @@ def load(fp, object_pairs_hook=dict):
         key-value pairs
     :rtype: `dict` or the return value of ``object_pairs_hook``
     """
-    return object_pairs_hook(
-        (k,v) for k,v,_ in load_items3(fp)
-              if k is not None
-    )
+    return object_pairs_hook((k,v) for k,v,_ in parse(fp) if k is not None)
 
 def loads(s, object_pairs_hook=dict):
     """
@@ -57,7 +54,7 @@ def loads(s, object_pairs_hook=dict):
         fp = StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
 
-def load_items3(fp):
+def parse(fp):
     """ TODO """
     # `fp` may be either a text or binary filehandle, with or without universal
     # newlines support, but it must support the `readline` method.  If `fp` is

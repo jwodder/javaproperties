@@ -19,7 +19,6 @@
 - Force use of the C locale when generating timestamps
     - cf. <http://stackoverflow.com/a/24070673/744178>
     - Use Babel <http://babel.pocoo.org> ?
-- Rename `load_items3` (to `parse`? `scan`? `_load`?)
 - Use `lxml` for XML processing if it's installed?
 - Look into minimum version requirements for python-dateutil
 
@@ -35,10 +34,10 @@ New Features
   causes the timestamp in a .properties file to be extracted and saved in the
   given key
 - Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add an inverse of `load_items3` for writing triples?
+- Add an inverse of `parse` for writing triples?
 - Should there be a variant of `dumps` that outputs bytes?
-- Add string-reading equivalent of `load_items3`?
-- Add an equivalent of `load_items3` for XML that can extract the comment?
+- Add a string-reading equivalent of `parse`?
+- Add an equivalent of `parse` for XML that can extract the comment?
 
 Commands
 --------
