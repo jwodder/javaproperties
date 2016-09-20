@@ -1,11 +1,11 @@
 import collections
 import json
 import numbers
-from   six import iteritems, string_types
+from   six import string_types
 
 def strify_dict(d):
     strdict = {}
-    for k,v in iteritems(d):
+    for k,v in itemize(d):
         if isinstance(k, (numbers.Number, bool, type(None))):
             k = json.dumps(k)
         elif not isinstance(k, string_types):

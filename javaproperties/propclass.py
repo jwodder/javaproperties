@@ -5,19 +5,40 @@ from   .util    import strify_dict
 from   .writing import dump
 from   .xml     import load_xml, dump_xml
 
-# https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
-
 _type_err = 'Keys & values of Properties objects must be strings'
 
 class Properties(collections.MutableMapping):
-    """ TODO """
+    """
+    A port of |Properties|_ that tries to match its behavior as much as is
+    Pythonically possible.  `Properties` behaves like a normal
+    `~collections.MutableMapping` class (i.e., you can do ``props[key] =
+    value`` and so forth), except that it may only be used to store strings
+    (`str` and `unicode` in Python 2; just `str` in Python 3).  Attempts to use
+    a non-string object as a key or value will produce a
+    `~exceptions.TypeError`.
+
+    :param data: A mapping or iterable of ``(key, value)`` pairs with which to
+        initialize the `Properties` object.  Numeric, boolean, and `None` keys
+        and non-`list`, non-`dict` values will be coverted to strings with
+        `json.dumps`.  Any other non-string keys or values will produce a
+        `~exceptions.TypeError`.
+    :type data: mapping or `None`
+    :param defaults: a set of default properties that will be used as fallback
+        for `getProperty`
+    :type defaults: `Properties` or `None`
+
+    .. |Properties| replace:: Java 8's ``java.net.Properties`` class
+    .. _Properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
+    """
 
     def __init__(self, data=None, defaults=None):
-        """ TODO """
-        # `defaults` must be a Properties object
         self.data = {}
         if data is not None:
             self.data.update(strify_dict(data))
+        #: A set of default properties used as fallback for `getProperty`.
+        #: Only `getProperty`, `propertyNames`, and `stringPropertyNames` use
+        #: this attribute; all other methods (including the standard mapping
+        #: methods) ignore it.
         self.defaults = defaults
 
     def __getitem__(self, key):
@@ -43,8 +64,8 @@ class Properties(collections.MutableMapping):
         return len(self.data)
 
     def __repr__(self):
-        return '{__class__.__name__}({data!r}, defaults={defaults!r})'\
-                .format(**dir(self))
+        return'{0}.{1.__class__.__name__}({1.data!r}, defaults={1.defaults!r})'\
+                .format(__package__, self)
 
     def __eq__(self, other):
         return type(self) is type(other) and \

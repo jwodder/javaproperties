@@ -28,14 +28,14 @@ New Features
 - `dump`: Support writing `str`s in Python 2
 - Implement `Properties.list`?
 - Give the dump functions `ensure_ascii` arguments
+- Give the dump functions `keep_unicode`(?) arguments (mutually exclusive with
+  `ensure_ascii`) for outputting Unicode and leaving non-Latin-1 characters
+  as-is  (cf. the different `store` methods of the Java class)
 - Give `load` and `loads` a `timestamp_key`(?) argument that, if supplied,
   causes the timestamp in a .properties file to be extracted and saved in the
   given key
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `load_items3` for writing triples?
-- Should there be a variant of `dump` (or `dumps`?) that outputs Unicode and
-  leaves non-Latin-1 characters as-is?  (cf. the different `store` methods of
-  the Java class)
 - Should there be a variant of `dumps` that outputs bytes?
 - Add string-reading equivalent of `load_items3`?
 - Add an equivalent of `load_items3` for XML that can extract the comment?

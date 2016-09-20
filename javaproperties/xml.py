@@ -6,10 +6,12 @@ from   xml.sax.saxutils      import escape, quoteattr
 from   .util                 import itemize
 
 def load_xml(fp, object_pairs_hook=dict):
+    """ TODO """
     tree = ET.parse(fp)
     return object_pairs_hook(_fromXML(tree.getroot()))
 
 def loads_xml(s, object_pairs_hook=dict):
+    """ TODO """
     elem = ET.fromstring(s)
     return object_pairs_hook(_fromXML(elem))
 
@@ -23,6 +25,7 @@ def _fromXML(root):
         yield (key, entry.text)
 
 def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
+    """ TODO """
     # `fp` must be a binary filehandle
     fp = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
     print('<?xml version="1.0" encoding={0} standalone="no"?>'\
@@ -31,6 +34,7 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
         print(s, file=fp)
 
 def dumps_xml(props, comment=None, sort_keys=False):
+    """ TODO """
     return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
 
 def _stream_xml(props, comment=None, sort_keys=False):

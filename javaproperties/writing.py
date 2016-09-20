@@ -6,9 +6,36 @@ from   .util      import itemize
 
 def dump(props, fp, separator='=', comments=None, timestamp=True,
          sort_keys=False):
-    """ TODO """
-    # `fp` must have been opened as a text file with a Latin-1-compatible
-    # encoding.
+    """
+    Write a series ``props`` of key-value pairs to ``fp`` in the format of a
+    ``.properties`` file.  All keys and values in ``props`` must be text
+    strings.
+
+    ``fp`` must have been opened as a text file with a Latin-1-compatible
+    encoding.
+
+    :param props: a mapping or iterable of ``(key, value)`` pairs to write to
+        ``fp``
+    :param fp: a file-like object to which to write the values of ``props``
+    :param separator: the string to use for separating keys & values.  Only
+        ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
+        ever be used as the separator.
+    :type separator: text string
+    :param comments: if non-`None`, ``comments`` will be written to ``fp`` as a
+        comment before any other content
+    :type comments: text string or `None`
+    :param timestamp: If true, a timestamp in the form of ``Mon Sep 12 14:00:54
+        EDT 2016`` is written as a comment to ``fp`` after ``comments`` (if
+        non-`None`) and before the key-value pairs.  If ``timestamp`` is a
+        `datetime.datetime` object, its value is used for the timestamp;
+        otherwise, the current date & time are used.  (The current date & time
+        may not include a timezone if `python-dateutil
+        <https://pypi.python.org/pypi/python-dateutil>`_ is not installed.)
+    :type timestamp: `bool` or `datetime.datetime`
+    :param bool sort_keys: if true, the elements of ``props`` are sorted
+        lexicographically by key in the output
+    :rtype: `None`
+    """
     if comments is not None:
         print(to_comment(comments), file=fp)
     if timestamp:
