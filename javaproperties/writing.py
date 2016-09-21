@@ -27,12 +27,12 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
         non-`None`) and before the key-value pairs.  If ``timestamp`` is a
         `datetime.datetime` object, its value is used for the timestamp;
         otherwise, the current date & time are used.  (The current date & time
-        may not include a timezone if `python-dateutil
-        <https://pypi.python.org/pypi/python-dateutil>`_ is not installed.)
+        will only include a timezone if `python-dateutil
+        <https://pypi.python.org/pypi/python-dateutil>`_ is installed.)
     :type timestamp: `bool` or `datetime.datetime`
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
-    :rtype: `None`
+    :return: `None`
     """
     if comments is not None:
         print(to_comment(comments), file=fp)
@@ -70,8 +70,8 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
         and before the key-value pairs.  If ``timestamp`` is a
         `datetime.datetime` object, its value is used for the timestamp;
         otherwise, the current date & time are used.  (The current date & time
-        may not include a timezone if `python-dateutil
-        <https://pypi.python.org/pypi/python-dateutil>`_ is not installed.)
+        will only include a timezone if `python-dateutil
+        <https://pypi.python.org/pypi/python-dateutil>`_ is installed.)
     :type timestamp: `bool` or `datetime.datetime`
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output

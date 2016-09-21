@@ -8,12 +8,17 @@
       installed?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
-    - Add docstrings
-        - Add a module docstring to `__init__.py`
+    - Add a module docstring to `__init__.py`
     - Add docstrings for the private functions
     - Add a README
     - Set up a Readthedocs site
     - Fix the Sphinx HTML documentation sidebar
+    - Figure out exactly what types of filehandles & strings
+      `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
+      `loadFromXML` documentation
+    - Add simple descriptions of/introductions to the `.properties` and XML
+      formats to the documentation sections for reading & writing the
+      respective formats
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -22,6 +27,8 @@
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
 - Look into minimum version requirements for python-dateutil
+- Rethink whether the `Properties` contructor should stringify the elements of
+  `data`
 
 New Features
 ------------

@@ -5,9 +5,9 @@
 
 .. module:: javaproperties
 
-==========================================
-Welcome to javaproperties's documentation!
-==========================================
+==============================================================
+javaproperties — Read & write Java .properties files in Python
+==============================================================
 
 Contents:
 
@@ -18,6 +18,10 @@ Contents:
 .. todo::
 
     Document the CLI commands
+
+
+Throughout the following, "text string" means a Unicode character string —
+`unicode` in Python 2, `str` in Python 3.
 
 Reading & Writing ``.properties`` Files
 =======================================

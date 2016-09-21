@@ -6,12 +6,57 @@ from   xml.sax.saxutils      import escape, quoteattr
 from   .util                 import itemize
 
 def load_xml(fp, object_pairs_hook=dict):
-    """ TODO """
+    """
+    Parse the contents of the file-like object ``fp`` as an XML properties file
+    and return a `dict` of the key-value pairs.
+
+    Beyond basic XML well-formedness, `load_xml` only checks that the root
+    element is named ``properties`` and that all of its ``entry`` children have
+    ``key`` attributes; no further validation is performed.
+
+    By default, the key-value pairs extracted from ``fp`` are combined into a
+    `dict` with later occurrences of a key overriding previous occurrences of
+    the same key.  To change this behavior, pass a callable as the
+    ``object_pairs_hook`` argument; it will be called with one argument, a
+    generator of ``(key, value)`` pairs representing the key-value entries in
+    ``fp`` (including duplicates) in order of occurrence.  `load_xml` will then
+    return the value returned by ``object_pairs_hook``.
+
+    :param fp: the file from which to read the XML properties document
+    :type fp: file-like object
+    :param callable object_pairs_hook: class or function for combining the
+        key-value pairs
+    :rtype: `dict` or the return value of ``object_pairs_hook``
+    :raises ValueError: if the root of the XML tree is not a ``<properties>``
+        tag or an ``<entry>`` element is missing a ``key`` attribute
+    """
     tree = ET.parse(fp)
     return object_pairs_hook(_fromXML(tree.getroot()))
 
 def loads_xml(s, object_pairs_hook=dict):
-    """ TODO """
+    """
+    Parse the contents of the string ``s`` as an XML properties document and
+    return a `dict` of the key-value pairs.
+
+    Beyond basic XML well-formedness, `loads_xml` only checks that the root
+    element is named ``properties`` and that all of its ``entry`` children have
+    ``key`` attributes; no further validation is performed.
+
+    By default, the key-value pairs extracted from ``s`` are combined into a
+    `dict` with later occurrences of a key overriding previous occurrences of
+    the same key.  To change this behavior, pass a callable as the
+    ``object_pairs_hook`` argument; it will be called with one argument, a
+    generator of ``(key, value)`` pairs representing the key-value entries in
+    ``s`` (including duplicates) in order of occurrence.  `loads_xml` will then
+    return the value returned by ``object_pairs_hook``.
+
+    :param string s: the string from which to read the XML properties document
+    :param callable object_pairs_hook: class or function for combining the
+        key-value pairs
+    :rtype: `dict` or the return value of ``object_pairs_hook``
+    :raises ValueError: if the root of the XML tree is not a ``<properties>``
+        tag or an ``<entry>`` element is missing a ``key`` attribute
+    """
     elem = ET.fromstring(s)
     return object_pairs_hook(_fromXML(elem))
 
@@ -25,8 +70,26 @@ def _fromXML(root):
         yield (key, entry.text)
 
 def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
-    """ TODO """
-    # `fp` must be a binary filehandle
+    """
+    Write a series ``props`` of key-value pairs to a binary filehandle ``fp``
+    in the format of an XML properties file.  The file will include both an XML
+    declaration and a doctype declaration.
+
+    All keys and values in ``props`` must be text strings.
+
+    :param props: a mapping or iterable of ``(key, value)`` pairs to write to
+        ``fp``
+    :param fp: a file-like object to write the values of ``props`` to
+    :type fp: binary file-like object
+    :param comment: if non-`None`, ``comment`` will be output as a
+        ``<comment>`` element before the ``<entry>`` elements
+    :type comment: text string or `None`
+    :param string encoding: the name of the encoding to use for the XML
+        document (also included in the XML declaration)
+    :param bool sort_keys: if true, the elements of ``props`` are sorted
+        lexicographically by key in the output
+    :return: `None`
+    """
     fp = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
     print('<?xml version="1.0" encoding={0} standalone="no"?>'\
           .format(quoteattr(encoding)), file=fp)
@@ -34,7 +97,21 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
         print(s, file=fp)
 
 def dumps_xml(props, comment=None, sort_keys=False):
-    """ TODO """
+    """
+    Convert a series ``props`` of key-value pairs to a text string containing
+    an XML properties document.  The document will include a doctype
+    declaration but not an XML declaration.
+
+    All keys and values in ``props`` must be text strings.
+
+    :param props: a mapping or iterable of ``(key, value)`` pairs to serialize
+    :param comment: if non-`None`, ``comment`` will be output as a
+        ``<comment>`` element before the ``<entry>`` elements
+    :type comment: text string or `None`
+    :param bool sort_keys: if true, the elements of ``props`` are sorted
+        lexicographically by key in the output
+    :rtype: text string
+    """
     return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
 
 def _stream_xml(props, comment=None, sort_keys=False):

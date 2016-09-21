@@ -4,8 +4,9 @@ from   six        import binary_type, StringIO, BytesIO, unichr
 
 def load(fp, object_pairs_hook=dict):
     """
-    Parse the contents of the ``.readline``-supporting file-like object ``fp``
-    as a ``.properties`` file and return a `dict` of the key-value pairs.
+    Parse the contents of the `~io.IOBase.readline`-supporting file-like object
+    ``fp`` as a ``.properties`` file and return a `dict` of the key-value
+    pairs.
 
     ``fp`` may be either a text or binary filehandle, with or without universal
     newlines enabled.  If it is a binary filehandle, its contents are decoded
@@ -23,7 +24,7 @@ def load(fp, object_pairs_hook=dict):
     :type fp: file-like object
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
-    :rtype: `dict` or the return value of ``object_pairs_hook``
+    :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
     """
     return object_pairs_hook((k,v) for k,v,_ in parse(fp) if k is not None)
 
@@ -46,7 +47,7 @@ def loads(s, object_pairs_hook=dict):
     :param string s: the string from which to read the ``.properties`` document
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
-    :rtype: `dict` or the return value of ``object_pairs_hook``
+    :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
     """
     if isinstance(s, binary_type):
         fp = BytesIO(s)
@@ -56,8 +57,8 @@ def loads(s, object_pairs_hook=dict):
 
 def parse(fp):
     """
-    Parse the contents of the ``.readline``-supporting file-like object ``fp``
-    as a ``.properties`` file and return a generator of ``(key, value,
+    Parse the contents of the `~io.IOBase.readline`-supporting file-like object
+    ``fp`` as a ``.properties`` file and return a generator of ``(key, value,
     original_lines)`` triples, including duplicate keys and including comments
     & blank lines (which have their ``key`` and ``value`` fields set to
     `None`).  This is the only way to extract comments from a ``.properties``

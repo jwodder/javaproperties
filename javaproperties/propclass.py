@@ -84,7 +84,7 @@ class Properties(collections.MutableMapping):
         """
         Fetch the value associated with the key ``key`` in the `Properties`
         object.  If the key is not present, `defaults` is checked, and then
-        _its_ `defaults`, etc., until either a value for ``key`` is found or
+        *its* `defaults`, etc., until either a value for ``key`` is found or
         the next `defaults` is `None`, in which case `defaultValue` is
         returned.
 
@@ -103,20 +103,21 @@ class Properties(collections.MutableMapping):
             else:
                 return defaultValue
 
-    def load(self, fp):
+    def load(self, inStream):
         """
         Update the `Properties` object with the entries in a ``.properties``
         file or file-like object.
 
-        ``fp`` may be either a text or binary filehandle, with or without
+        ``inStream`` may be either a text or binary filehandle, with or without
         universal newlines enabled.  If it is a binary filehandle, its contents
         are decoded as Latin-1.
 
-        :param fp: the file from which to read the ``.properties`` document
-        :type fp: file-like object
-        :rtype: `None`
+        :param inStream: the file from which to read the ``.properties``
+            document
+        :type inStream: file-like object
+        :return: `None`
         """
-        self.data.update(load(fp))
+        self.data.update(load(inStream))
 
     def propertyNames(self):
         """
@@ -140,14 +141,14 @@ class Properties(collections.MutableMapping):
     def store(self, out, comments=None):
         """
         Write the `Properties` object's entries (in unspecified order) in
-        ``.properties`` format to ``fp``, including the current timestamp.
+        ``.properties`` format to ``out``, including the current timestamp.
 
-        :param fp: A file-like object to write the properties to.  It must have
-            been opened as a text file with a Latin-1-compatible encoding.
-        :param comments: If non-`None`, ``comments`` will be written to ``fp``
+        :param out: A file-like object to write the properties to.  It must
+            have been opened as a text file with a Latin-1-compatible encoding.
+        :param comments: If non-`None`, ``comments`` will be written to ``out``
             as a comment before any other content
         :type comments: text string or `None`
-        :rtype: `None`
+        :return: `None`
         """
         dump(self.data, out, comments=comments)
 
@@ -163,12 +164,38 @@ class Properties(collections.MutableMapping):
             names.update(self.defaults.stringPropertyNames())
         return names
 
-    def loadFromXML(self, fp):
-        """ TODO """
-        self.data.update(load_xml(fp))
+    def loadFromXML(self, inStream):
+        """
+        Update the `Properties` object with the entries in the XML properties
+        file ``inStream``.
+
+        Beyond basic XML well-formedness, `loadFromXML` only checks that the
+        root element is named ``properties`` and that all of its ``entry``
+        children have ``key`` attributes; no further validation is performed.
+
+        :param inStream: the file from which to read the XML properties document
+        :type inStream: file-like object
+        :return: `None`
+        :raises ValueError: if the root of the XML tree is not a
+            ``<properties>`` tag or an ``<entry>`` element is missing a ``key``
+            attribute
+        """
+        self.data.update(load_xml(inStream))
 
     def storeToXML(self, out, comment=None, encoding='UTF-8'):
-        """ TODO """
+        """
+        Write the `Properties` object's entries (in unspecified order) in XML
+        properties format to ``out``.
+
+        :param out: a file-like object to write the properties to
+        :type out: binary file-like object
+        :param comment: if non-`None`, ``comment`` will be output as a
+            ``<comment>`` element before the ``<entry>`` elements
+        :type comment: text string or `None`
+        :param string encoding: the name of the encoding to use for the XML
+            document (also included in the XML declaration)
+        :return: `None`
+        """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
 
     ###def list(self, out):
