@@ -35,9 +35,9 @@ class Properties(collections.MutableMapping):
         self.data = {}
         if data is not None:
             self.data.update(strify_dict(data))
-        #: A set of default properties used as fallback for `getProperty`.
-        #: Only `getProperty`, `propertyNames`, and `stringPropertyNames` use
-        #: this attribute; all other methods (including the standard mapping
+        #: A `Properties` subobject used as fallback for `getProperty`.  Only
+        #: `getProperty`, `propertyNames`, and `stringPropertyNames` use this
+        #: attribute; all other methods (including the standard mapping
         #: methods) ignore it.
         self.defaults = defaults
 
@@ -81,7 +81,20 @@ class Properties(collections.MutableMapping):
     __bool__ = __nonzero__
 
     def getProperty(self, key, defaultValue=None):
-        """ TODO """
+        """
+        Fetch the value associated with the key ``key`` in the `Properties`
+        object.  If the key is not present, `defaults` is checked, and then
+        _its_ `defaults`, etc., until either a value for ``key`` is found or
+        the next `defaults` is `None`, in which case `defaultValue` is
+        returned.
+
+        :param key: the key to look up the value of
+        :type key: text string
+        :param defaultValue: the value to return if ``key`` is not found in the
+            `Properties` object
+        :rtype: text string (if ``key`` was found)
+        :raises TypeError: if ``key`` is not a string
+        """
         try:
             return self[key]
         except KeyError:
@@ -91,11 +104,28 @@ class Properties(collections.MutableMapping):
                 return defaultValue
 
     def load(self, fp):
-        """ TODO """
+        """
+        Update the `Properties` object with the entries in a ``.properties``
+        file or file-like object.
+
+        ``fp`` may be either a text or binary filehandle, with or without
+        universal newlines enabled.  If it is a binary filehandle, its contents
+        are decoded as Latin-1.
+
+        :param fp: the file from which to read the ``.properties`` document
+        :type fp: file-like object
+        :rtype: `None`
+        """
         self.data.update(load(fp))
 
     def propertyNames(self):
-        """ TODO """
+        """
+        Returns a generator of all distinct keys in the `Properties` object and
+        its `defaults` (and its `defaults`\ 's `defaults`, etc.) in unspecified
+        order
+
+        :rtype: generator of text strings
+        """
         for k in self.data:
             yield k
         if self.defaults is not None:
@@ -104,15 +134,30 @@ class Properties(collections.MutableMapping):
                     yield k
 
     def setProperty(self, key, value):
-        """ TODO """
+        """ Equivalent to ``self[key] = value`` """
         self[key] = value
 
     def store(self, out, comments=None):
-        """ TODO """
+        """
+        Write the `Properties` object's entries (in unspecified order) in
+        ``.properties`` format to ``fp``, including the current timestamp.
+
+        :param fp: A file-like object to write the properties to.  It must have
+            been opened as a text file with a Latin-1-compatible encoding.
+        :param comments: If non-`None`, ``comments`` will be written to ``fp``
+            as a comment before any other content
+        :type comments: text string or `None`
+        :rtype: `None`
+        """
         dump(self.data, out, comments=comments)
 
     def stringPropertyNames(self):
-        """ TODO """
+        """
+        Returns a `set` of all keys in the `Properties` object and its
+        `defaults` (and its `defaults`\ 's `defaults`, etc.)
+
+        :rtype: `set` of text strings
+        """
         names = set(self.data)
         if self.defaults is not None:
             names.update(self.defaults.stringPropertyNames())

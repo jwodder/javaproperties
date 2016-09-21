@@ -55,13 +55,22 @@ def loads(s, object_pairs_hook=dict):
     return load(fp, object_pairs_hook=object_pairs_hook)
 
 def parse(fp):
-    """ TODO """
-    # `fp` may be either a text or binary filehandle, with or without universal
-    # newlines support, but it must support the `readline` method.  If `fp` is
-    # a binary filehandle, its contents are assumed to be in Latin-1.  If it is
-    # a text filehandle, it is assumed to have been opened as Latin-1.
-    # Returns an iterator of `(key, value, source_lines)` tuples; blank lines &
-    # comments have `key` & `value` values of `None`
+    """
+    Parse the contents of the ``.readline``-supporting file-like object ``fp``
+    as a ``.properties`` file and return a generator of ``(key, value,
+    original_lines)`` triples, including duplicate keys and including comments
+    & blank lines (which have their ``key`` and ``value`` fields set to
+    `None`).  This is the only way to extract comments from a ``.properties``
+    file.
+
+    ``fp`` may be either a text or binary filehandle, with or without universal
+    newlines enabled.  If it is a binary filehandle, its contents are decoded
+    as Latin-1.
+
+    :param fp: the file from which to read the ``.properties`` document
+    :type fp: file-like object
+    :rtype: generator of triples of text strings
+    """
     def readline():
         ln = fp.readline()
         if isinstance(ln, binary_type):

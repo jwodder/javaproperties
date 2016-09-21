@@ -10,6 +10,7 @@
 - Documentation:
     - Add docstrings
         - Add a module docstring to `__init__.py`
+    - Add docstrings for the private functions
     - Add a README
     - Set up a Readthedocs site
     - Fix the Sphinx HTML documentation sidebar
@@ -35,7 +36,6 @@ New Features
   given key
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `parse` for writing triples?
-- Should there be a variant of `dumps` that outputs bytes?
 - Add a string-reading equivalent of `parse`?
 - Add an equivalent of `parse` for XML that can extract the comment?
 

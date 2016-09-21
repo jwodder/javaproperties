@@ -76,6 +76,12 @@ def test_loads_continued_value():
 def test_loads_continued_value_spaced():
     assert loads('key = val\\\n    ue') == {"key": "value"}
 
+def test_loads_space_continued_value():
+    assert loads('key = val \\\nue') == {"key": "val ue"}
+
+def test_loads_space_continued_value_spaced():
+    assert loads('key = val \\\n  ue') == {"key": "val ue"}
+
 def test_loads_continued_key():
     assert loads('ke\\\ny = value') == {"key": "value"}
 
