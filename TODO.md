@@ -3,7 +3,6 @@
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
-    - Test reading & writing XML in various encodings
     - Test writing the current timestamp with & without python-dateutil
       installed?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>

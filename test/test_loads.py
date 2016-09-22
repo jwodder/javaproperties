@@ -211,3 +211,4 @@ def test_loads_triple_backslash():
 # escaped space in value
 # escaped non-special character
 # blank lines
+# object_pairs_hook=OrderedDict ?

@@ -1,8 +1,3 @@
-.. javaproperties documentation master file, created by
-   sphinx-quickstart on Mon Sep 19 00:47:10 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 .. module:: javaproperties
 
 ==============================================================
@@ -18,7 +13,6 @@ Contents:
 .. todo::
 
     Document the CLI commands
-
 
 Throughout the following, "text string" means a Unicode character string —
 `unicode` in Python 2, `str` in Python 3.
