@@ -130,6 +130,15 @@ def test_dumps_hash():
 def test_dumps_exclamation():
     assert dumps({"exclamation": "!"}, timestamp=False) == 'exclamation=\\!\n'
 
+def test_dumps_null():
+    assert dumps({"null": "\0"}, timestamp=False) == 'null=\\u0000\n'
+
+def test_dumps_backspace():
+    assert dumps({"backspace": "\b"}, timestamp=False) == 'backspace=\\u0008\n'
+
+def test_dumps_delete():
+    assert dumps({"delete": "\x7F"}, timestamp=False) == 'delete=\\u007f\n'
+
 
 # custom separator
 # OrderedDict
