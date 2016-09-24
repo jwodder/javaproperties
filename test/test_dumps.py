@@ -49,6 +49,26 @@ def test_dumps_astral_plane():
 def test_dumps_newline():
     assert dumps({"newline": "\n"}, timestamp=False) == 'newline=\\n\n'
 
+def test_dumps_carriage_return():
+    assert dumps({"carriage-return": "\r"}, timestamp=False) == \
+        'carriage-return=\\r\n'
+
+def test_dumps_tab():
+    assert dumps({"tab": "\t"}, timestamp=False) == 'tab=\\t\n'
+
+def test_dumps_form_feed():
+    assert dumps({"form-feed": "\f"}, timestamp=False) == 'form-feed=\\f\n'
+
+def test_dumps_bell():
+    assert dumps({"bell": "\a"}, timestamp=False) == 'bell=\\u0007\n'
+
+def test_dumps_escape():
+    assert dumps({"escape": "\x1B"}, timestamp=False) == 'escape=\\u001b\n'
+
+def test_dumps_vertical_tab():
+    assert dumps({"vertical-tab": "\v"}, timestamp=False) == \
+        'vertical-tab=\\u000b\n'
+
 def test_dumps_backslash():
     assert dumps({"backslash": "\\"}, timestamp=False) == 'backslash=\\\\\n'
 
@@ -111,7 +131,7 @@ def test_dumps_exclamation():
     assert dumps({"exclamation": "!"}, timestamp=False) == 'exclamation=\\!\n'
 
 
-# \n, \r, etc.
 # custom separator
 # OrderedDict
 # sorting keys
+# \r and \r\n in comments

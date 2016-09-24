@@ -5,6 +5,7 @@
     - Test `load` and `dump` on actual files???
     - Test writing the current timestamp with & without python-dateutil
       installed?
+    - Test utility functions in isolation?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add a module docstring to `__init__.py`
