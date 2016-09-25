@@ -1,7 +1,14 @@
-from __future__     import unicode_literals
-from datetime       import datetime
-from dateutil.tz    import tzoffset
-from javaproperties import dumps
+from   __future__     import unicode_literals
+from   datetime       import datetime
+import time
+from   dateutil.tz    import tzoffset
+import pytest
+from   javaproperties import dumps
+
+@pytest.fixture(autouse=True)
+def set_timezone(monkeypatch):
+    monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0/M11.1.0')
+    time.tzset()
 
 def test_dumps_nothing():
     assert dumps({}, timestamp=False) == ''
