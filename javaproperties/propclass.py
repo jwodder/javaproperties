@@ -13,9 +13,9 @@ class Properties(collections.MutableMapping):
     Pythonically possible.  `Properties` behaves like a normal
     `~collections.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that it may only be used to store strings
-    (`str` and `unicode` in Python 2; just `str` in Python 3).  Attempts to use
-    a non-string object as a key or value will produce a
-    `~exceptions.TypeError`.
+    (`str <python2:str>` and `unicode <python2:unicode>` in Python 2; just
+    `str` in Python 3).  Attempts to use a non-string object as a key or value
+    will produce a `~exceptions.TypeError`.
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
         initialize the `Properties` object.  Numeric, boolean, and `None` keys

@@ -15,7 +15,7 @@ Contents:
     Document the CLI commands
 
 Throughout the following, "text string" means a Unicode character string —
-`unicode` in Python 2, `str` in Python 3.
+`unicode <python2:unicode>` in Python 2, `str` in Python 3.
 
 Reading & Writing ``.properties`` Files
 =======================================
