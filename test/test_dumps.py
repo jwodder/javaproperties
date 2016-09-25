@@ -99,24 +99,28 @@ def test_dumps_astral_plane_comment():
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) == 'key\tvalue\n'
 
-def test_dumps_naive_timestamp():
-    assert dumps(
-        {"key": "value"},
-        timestamp=datetime.utcfromtimestamp(1473703254)
-    ) == '#Mon Sep 12 18:00:54 2016\nkey=value\n'
+def test_dumps_epoch_timestamp():
+    assert dumps({"key": "value"}, timestamp=1473703254) == \
+        '#Mon Sep 12 14:00:54 EDT 2016\nkey=value\n'
 
-def test_dumps_aware_timestamp():
+def test_dumps_naive_datetime():
     assert dumps(
         {"key": "value"},
-        timestamp=datetime.fromtimestamp(1473703254, tzoffset('EDT', -14400))
+        timestamp=datetime.fromtimestamp(1473703254)
     ) == '#Mon Sep 12 14:00:54 EDT 2016\nkey=value\n'
+
+def test_dumps_aware_datetime():
+    assert dumps(
+        {"key": "value"},
+        timestamp=datetime.fromtimestamp(1473703254, tzoffset('PDT', -25200))
+    ) == '#Mon Sep 12 11:00:54 PDT 2016\nkey=value\n'
 
 def test_dumps_timestamp_and_comment():
     assert dumps(
         {"key": "value"},
         comments='This is a comment.',
-        timestamp=datetime.utcfromtimestamp(1473703254)
-    ) == '#This is a comment.\n#Mon Sep 12 18:00:54 2016\nkey=value\n'
+        timestamp=1473703254
+    ) == '#This is a comment.\n#Mon Sep 12 14:00:54 EDT 2016\nkey=value\n'
 
 def test_dumps_equals():
     assert dumps({"equals": "="}, timestamp=False) == 'equals=\\=\n'

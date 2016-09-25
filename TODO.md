@@ -3,8 +3,6 @@
     - Test reading & writing surrogate pairs
     - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
-    - Test writing the current timestamp with & without python-dateutil
-      installed?
     - Test utility functions in isolation?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
@@ -26,7 +24,6 @@
     - cf. <http://stackoverflow.com/a/24070673/744178>
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
-- Look into minimum version requirements for python-dateutil
 - Rethink whether the `Properties` contructor should stringify the elements of
   `data`
 

@@ -30,10 +30,6 @@ setup(
     install_requires=['six>=1.4.0,<2'],
     tests_require=['pytest>=2.8,<3', 'python-dateutil'],
 
-    extras_require={
-        'dateutil': ['python-dateutil'],
-    },
-
     classifiers=[
         'Development Status :: 4 - Beta',
         #'Development Status :: 5 - Production/Stable',
