@@ -122,6 +122,12 @@ def test_loads_bad_surrogate():
 def test_loads_raw_surrogate_pair():
     assert loads('goat = \uD83D\uDC10') == {"goat": "\U0001F410"}
 
+def test_loads_half_raw_surrogate_pair():
+    assert loads('goat = \uD83D\\uDC10') == {"goat": "\U0001F410"}
+
+def test_loads_raw_half_surrogate_pair():
+    assert loads('goat = \\uD83D\uDC10') == {"goat": "\U0001F410"}
+
 def test_loads_bad_raw_surrogate():
     assert loads('taog = \uDC10\uD83D') == {"taog": "\uDC10\uD83D"}
 

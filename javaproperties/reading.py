@@ -122,9 +122,9 @@ def unescape(field):
     If a backslash is followed by any other character, the backslash is
     dropped.
 
-    In addition, surrogate pairs encoded as two consecutive ``\\uXXXX`` escape
-    sequences are decoded into a single character.  (Isolated surrogate code
-    points are left as-is.)
+    In addition, any valid UTF-16 surrogate pairs in the string after
+    escape-decoding are further decoded into the non-BMP characters they
+    represent.  (Invalid & isolated surrogate code points are left as-is.)
 
     :param field: the string to decode
     :type field: text string
