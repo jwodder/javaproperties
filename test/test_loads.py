@@ -1,5 +1,12 @@
-from __future__     import unicode_literals
-from javaproperties import loads
+from   __future__     import unicode_literals
+import sys
+import pytest
+from   javaproperties import loads
+
+need_ordereddict = pytest.mark.skipif(
+    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
+    reason='No OrderedDict before 2.7/3.1',
+)
 
 def test_loads_simple():
     assert loads('key=value') == {"key": "value"}
@@ -112,6 +119,12 @@ def test_loads_surrogate_pair():
 def test_loads_bad_surrogate():
     assert loads('taog = \\uDC10\\uD83D') == {"taog": "\uDC10\uD83D"}
 
+def test_loads_raw_surrogate_pair():
+    assert loads('goat = \uD83D\uDC10') == {"goat": "\U0001F410"}
+
+def test_loads_bad_raw_surrogate():
+    assert loads('taog = \uDC10\uD83D') == {"taog": "\uDC10\uD83D"}
+
 def test_loads_blank_continue_comment():
     assert loads('\\\n# comment') == {"#": "comment"}
 
@@ -145,6 +158,18 @@ def test_loads_space_continue_pair():
 def test_loads_multiple():
     assert loads('key = value\nfoo = bar') == {"key": "value", "foo": "bar"}
 
+@need_ordereddict
+def test_loads_multiple_ordereddict():
+    from collections import OrderedDict
+    assert loads('key = value\nfoo = bar', object_pairs_hook=OrderedDict) == \
+        OrderedDict([("key", "value"), ("foo", "bar")])
+
+@need_ordereddict
+def test_loads_multiple_ordereddict_rev():
+    from collections import OrderedDict
+    assert loads('foo = bar\nkey = value', object_pairs_hook=OrderedDict) == \
+        OrderedDict([("foo", "bar"), ("key", "value")])
+
 def test_loads_reassign():
     assert loads('key = value1\nkey = value2') == {"key": "value2"}
 
@@ -172,10 +197,10 @@ def test_loads_hash_in_key():
 def test_loads_hash_in_value():
     assert loads('fifth = #5') == {"fifth": "#5"}
 
-def test_dumps_latin_1():
+def test_loads_latin_1():
     assert loads('edh = \xF0') == {"edh": "\xF0"}
 
-def test_dumps_non_latin_1():
+def test_loads_non_latin_1():
     assert loads('snowman = \u2603') == {"snowman": "\u2603"}
 
 def test_loads_astral_plane():
@@ -208,7 +233,41 @@ def test_loads_double_backslash():
 def test_loads_triple_backslash():
     assert loads('two\\\\\\ words = one key') == {"two\\ words": "one key"}
 
-# escaped space in value
-# escaped non-special character
-# blank lines
-# object_pairs_hook=OrderedDict ?
+def test_loads_bad_esc_zero():
+    assert loads('invalid-escape = \\0') == {"invalid-escape": "0"}
+
+def test_loads_bad_esc_q():
+    assert loads('invalid-escape = \\q') == {"invalid-escape": "q"}
+
+def test_loads_bad_esc_question():
+    assert loads('invalid-escape = \\?') == {"invalid-escape": "?"}
+
+def test_loads_bad_esc_hex():
+    assert loads('invalid-escape = \\x40') == {"invalid-escape": "x40"}
+
+def test_loads_leading_space_in_key():
+    assert loads(' \\ key = value') == {" key": "value"}
+
+def test_loads_leading_space_before_key():
+    assert loads(' \\  key = value') == {" ": "key = value"}
+
+def test_loads_leading_space_in_value():
+    assert loads('key = \\  value') == {"key": "  value"}
+
+def test_loads_blank_simple():
+    assert loads('\nkey = value') == {"key": "value"}
+
+def test_loads_space_blank_simple():
+    assert loads(' \nkey = value') == {"key": "value"}
+
+def test_loads_simple_blank():
+    assert loads('key = value\n') == {"key": "value"}
+
+def test_loads_simple_blank_space():
+    assert loads('key = value\n ') == {"key": "value"}
+
+def test_loads_simple_blank_simple():
+    assert loads('key = value\n\nfoo = bar') == {"key": "value", "foo": "bar"}
+
+def test_loads_simple_blank_space_simple():
+    assert loads('key = value\n \nfoo = bar') == {"key": "value", "foo": "bar"}

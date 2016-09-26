@@ -21,4 +21,5 @@ def test_loads_xml_newline_value():
 # multiple <entry>s with the same key
 # <entry> tag nested inside another tag
 # entities?
-# object_pairs_hook=OrderedDict ?
+# object_pairs_hook=OrderedDict
+# non-ASCII/non-Latin-1 characters (not escaped) in source string
