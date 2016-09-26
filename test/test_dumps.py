@@ -1,6 +1,7 @@
 from   __future__     import unicode_literals
 from   datetime       import datetime
 import time
+import sys
 from   dateutil.tz    import tzoffset
 import pytest
 from   javaproperties import dumps
@@ -9,6 +10,11 @@ from   javaproperties import dumps
 def set_timezone(monkeypatch):
     monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0/M11.1.0')
     time.tzset()
+
+need_ordereddict = pytest.mark.skipif(
+    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
+    reason='No OrderedDict before 2.7/3.1',
+)
 
 def test_dumps_nothing():
     assert dumps({}, timestamp=False) == ''
@@ -23,6 +29,54 @@ def test_dumps_two_simple():
 def test_dumps_two_simple_rev():
     assert dumps([("zebra", "apple"), ("key", "value")], timestamp=False) == \
         'zebra=apple\nkey=value\n'
+
+def test_dumps_two_simple_sorted():
+    assert dumps(
+        [("key", "value"), ("zebra", "apple")],
+        timestamp=False,
+        sort_keys=True,
+    ) == 'key=value\nzebra=apple\n'
+
+def test_dumps_two_simple_rev_sorted():
+    assert dumps(
+        [("zebra", "apple"), ("key", "value")],
+        timestamp=False,
+        sort_keys=True,
+    ) == 'key=value\nzebra=apple\n'
+
+@need_ordereddict
+def test_dumps_ordereddict():
+    from collections import OrderedDict
+    assert dumps(
+        OrderedDict([("key", "value"), ("zebra", "apple")]),
+        timestamp=False,
+    ) == 'key=value\nzebra=apple\n'
+
+@need_ordereddict
+def test_dumps_ordereddict_rev():
+    from collections import OrderedDict
+    assert dumps(
+        OrderedDict([("zebra", "apple"), ("key", "value")]),
+        timestamp=False,
+    ) == 'zebra=apple\nkey=value\n'
+
+@need_ordereddict
+def test_dumps_ordereddict_sorted():
+    from collections import OrderedDict
+    assert dumps(
+        OrderedDict([("key", "value"), ("zebra", "apple")]),
+        timestamp=False,
+        sort_keys=True,
+    ) == 'key=value\nzebra=apple\n'
+
+@need_ordereddict
+def test_dumps_ordereddict_rev_sorted():
+    from collections import OrderedDict
+    assert dumps(
+        OrderedDict([("zebra", "apple"), ("key", "value")]),
+        timestamp=False,
+        sort_keys=True,
+    ) == 'key=value\nzebra=apple\n'
 
 def test_dumps_space_in_key():
     assert dumps({"two words": "value"}, timestamp=False) == \
@@ -52,6 +106,10 @@ def test_dumps_non_latin_1():
 def test_dumps_astral_plane():
     assert dumps({"goat": "\U0001F410"}, timestamp=False) == \
         'goat=\\ud83d\\udc10\n'
+
+def test_dumps_bad_surrogate():
+    assert dumps({"taog": "\uDC10\uD83D"}, timestamp=False) == \
+        'taog=\\udc10\\ud83d\n'
 
 def test_dumps_newline():
     assert dumps({"newline": "\n"}, timestamp=False) == 'newline=\\n\n'
@@ -147,11 +205,7 @@ def test_dumps_null():
 def test_dumps_backspace():
     assert dumps({"backspace": "\b"}, timestamp=False) == 'backspace=\\u0008\n'
 
-def test_dumps_delete():
-    assert dumps({"delete": "\x7F"}, timestamp=False) == 'delete=\\u007f\n'
-
 
 # custom separator
-# OrderedDict
-# sorting keys
 # \r and \r\n in comments
+# timestamp=None ?

@@ -1,7 +1,5 @@
 - Write tests
     - Test reading & writing bytes in both Python 2 and Python 3
-    - Test reading & writing surrogate pairs
-    - Test reading & writing unpaired surrogates
     - Test `load` and `dump` on actual files???
     - Test utility functions in isolation?
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
@@ -26,6 +24,7 @@
 - Use `lxml` for XML processing if it's installed?
 - Rethink whether the `Properties` contructor should stringify the elements of
   `data`
+- Run pyflakes as part of the tests?
 
 New Features
 ------------
