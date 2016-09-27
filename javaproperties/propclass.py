@@ -9,7 +9,7 @@ _type_err = 'Keys & values of Properties objects must be strings'
 
 class Properties(collections.MutableMapping):
     """
-    A port of |Properties|_ that tries to match its behavior as much as is
+    A port of |java8properties|_ that tries to match its behavior as much as is
     Pythonically possible.  `Properties` behaves like a normal
     `~collections.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that it may only be used to store strings
@@ -26,9 +26,6 @@ class Properties(collections.MutableMapping):
     :param defaults: a set of default properties that will be used as fallback
         for `getProperty`
     :type defaults: `Properties` or `None`
-
-    .. |Properties| replace:: Java 8's ``java.net.Properties`` class
-    .. _Properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
     """
 
     def __init__(self, data=None, defaults=None):
