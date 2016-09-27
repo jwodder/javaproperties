@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+``javaproperties`` provides support for reading & writing Java ``.properties``
+files (both the "plain" format and XML) with a simple API based on the ``json``
+module — though, for recovering Java addicts, it also includes a ``Properties``
+class intended to match the behavior of Java 8's ``java.net.Properties`` as
+much as is Pythonically possible.
+
+Visit <https://github.com/jwodder/javaproperties> for more information.
+"""
+
 from .propclass import Properties
 from .reading   import load, loads, parse, unescape
 from .writing   import dump, dumps, join_key_value, escape, to_comment
