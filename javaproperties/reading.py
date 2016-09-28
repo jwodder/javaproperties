@@ -33,8 +33,8 @@ def loads(s, object_pairs_hook=dict):
     Parse the contents of the string ``s`` as a ``.properties`` file and return
     a `dict` of the key-value pairs.
 
-    ``s`` may be either a text string or bytes string; if it is a bytes string,
-    its contents are decoded as Latin-1.
+    ``s`` may be either a text string or bytes string.  If it is a bytes
+    string, its contents are decoded as Latin-1.
 
     By default, the key-value pairs extracted from ``s`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of

@@ -11,11 +11,10 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
          sort_keys=False):
     """
     Write a series ``props`` of key-value pairs to ``fp`` in the format of a
-    ``.properties`` file.  All keys and values in ``props`` must be text
-    strings.
+    ``.properties`` file.
 
-    :param props: a mapping or iterable of ``(key, value)`` pairs to write to
-        ``fp``
+    :param props: A mapping or iterable of ``(key, value)`` pairs to write to
+        ``fp``.  All keys and values in ``props`` must be text strings.
     :param fp: A file-like object to write the values of ``props`` to.  It must
         have been opened as a text file with a Latin-1-compatible encoding.
     :param separator: the string to use for separating keys & values.  Only
@@ -47,10 +46,10 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
 def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     """
     Convert a series ``props`` of key-value pairs to a text string of
-    ``.properties`` entries.  All keys and values in ``props`` must be text
-    strings.
+    ``.properties`` entries.
 
-    :param props: a mapping or iterable of ``(key, value)`` pairs to serialize
+    :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
+        All keys and values in ``props`` must be text strings.
     :param separator: the string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.

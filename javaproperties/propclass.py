@@ -18,7 +18,8 @@ class Properties(collections.MutableMapping):
     will produce a `~exceptions.TypeError`.
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
-        initialize the `Properties` object
+        initialize the `Properties` object.  All keys and values in ``data``
+        must be text strings.
     :type data: mapping or `None`
     :param defaults: a set of default properties that will be used as fallback
         for `getProperty`
