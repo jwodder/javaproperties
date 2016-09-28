@@ -21,8 +21,6 @@
     - cf. <http://stackoverflow.com/a/24070673/744178>
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
-- Rethink whether the `Properties` contructor should stringify the elements of
-  `data`
 - Run pyflakes as part of the tests?
 
 New Features
@@ -40,6 +38,7 @@ New Features
 - Add an inverse of `parse` for writing triples?
 - Add a string-reading equivalent of `parse`?
 - Add an equivalent of `parse` for XML that can extract the comment?
+- Python 3.6: Take advantage of PEP 495 when handling naïve datetimes
 
 Commands
 --------

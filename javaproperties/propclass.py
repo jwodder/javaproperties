@@ -1,7 +1,7 @@
 import collections
 from   six      import string_types
 from   .reading import load
-from   .util    import strify_dict
+from   .util    import itemize
 from   .writing import dump
 from   .xml     import load_xml, dump_xml
 
@@ -18,10 +18,7 @@ class Properties(collections.MutableMapping):
     will produce a `~exceptions.TypeError`.
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
-        initialize the `Properties` object.  Numeric, boolean, and `None` keys
-        and non-`list`, non-`dict` values will be coverted to strings with
-        `json.dumps`.  Any other non-string keys or values will produce a
-        `~exceptions.TypeError`.
+        initialize the `Properties` object
     :type data: mapping or `None`
     :param defaults: a set of default properties that will be used as fallback
         for `getProperty`
@@ -31,7 +28,8 @@ class Properties(collections.MutableMapping):
     def __init__(self, data=None, defaults=None):
         self.data = {}
         if data is not None:
-            self.data.update(strify_dict(data))
+            for k,v in itemize(data):
+                self[k] = v
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
         #: `getProperty`, `propertyNames`, and `stringPropertyNames` use this
         #: attribute; all other methods (including the standard mapping
