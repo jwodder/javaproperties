@@ -277,3 +277,19 @@ def test_loads_simple_blank_simple():
 
 def test_loads_simple_blank_space_simple():
     assert loads('key = value\n \nfoo = bar') == {"key": "value", "foo": "bar"}
+
+def test_loads_latin1_bytes():
+    assert loads(b'key=value\nedh=\xF0') == {"key": "value", "edh": "\xF0"}
+
+def test_loads_utf8_bytes():
+    assert loads(
+        b'key=value\n'
+        b'edh=\xC3\xB0\n'
+        b'snowman=\xE2\x98\x83\n'
+        b'goat=\xF0\x9F\x90\x90'
+    ) == {
+        'key': 'value',
+        'edh': '\xC3\xB0',
+        'snowman': '\xE2\x98\x83',
+        'goat': '\xF0\x9F\x90\x90',
+    }
