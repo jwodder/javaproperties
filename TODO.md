@@ -15,6 +15,7 @@
       formats to the documentation sections for reading & writing the
       respective formats
     - Include examples in main docs?
+    - Add module docstrings to `fromjson.py` and `tojson.py`
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -64,3 +65,5 @@ Commands
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?
+- Add a command for converting between XML format and "plain" format?
+- Make `json2properties` use `Decimal` so that floats are preserved correctly

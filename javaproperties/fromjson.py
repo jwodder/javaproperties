@@ -3,7 +3,6 @@ import codecs
 import io
 import json
 import sys
-from   six      import iteritems
 from   .util    import strify_dict
 from   .writing import dump
 
@@ -21,8 +20,10 @@ def main():
         outfile = codecs.getwriter('iso-8859-1')(outfile)
     with infile:
         props = json.load(infile)
+    if not isinstance(props, dict):
+        raise TypeError('Can only convert dicts to .properties files')
     with outfile:
-        dump(sorted(iteritems(strify_dict(props))), outfile)
+        dump(sorted(strify_dict(props).items()), outfile)
 
 if __name__ == '__main__':
     main()
