@@ -14,6 +14,7 @@
     - Add simple descriptions of/introductions to the `.properties` and XML
       formats to the documentation sections for reading & writing the
       respective formats
+    - Include examples in main docs?
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -60,9 +61,6 @@ Commands
       used literally
 
 - Give all commands `--help` options
-- Move the command-line commands back to the top level of the package so that
-  they can be invoked with `python -m javaproperties.COMMAND` instead of
-  `python -m javaproperties.commands.COMMAND`?
-    - Rename the files `to_json` and `from_json`?
+- Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?

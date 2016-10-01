@@ -3,9 +3,9 @@ import codecs
 import io
 import json
 import sys
-from   six       import iteritems
-from   ..util    import strify_dict
-from   ..writing import dump
+from   six      import iteritems
+from   .util    import strify_dict
+from   .writing import dump
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] != "-":

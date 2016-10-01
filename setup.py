@@ -17,7 +17,7 @@ with open(join(dirname(__file__), 'javaproperties', '__init__.py')) as fp:
 setup(
     name='javaproperties',
     version=version,
-    packages=['javaproperties', 'javaproperties.commands'],
+    packages=['javaproperties'],
     license='MIT',
     author='John Thorvald Wodder II',
     author_email='javaproperties@varonathe.org',
@@ -52,8 +52,8 @@ setup(
 
     entry_points={
         "console_scripts": [
-            'properties2json = javaproperties.commands.properties2json:main',
-            'json2properties = javaproperties.commands.json2properties:main',
+            'properties2json = javaproperties.tojson:main',
+            'json2properties = javaproperties.fromjson:main',
         ]
     },
 )
