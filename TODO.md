@@ -6,7 +6,6 @@
 - Documentation:
     - Add docstrings for the private functions
     - Add a README
-    - Set up a Readthedocs site
     - Fix the Sphinx HTML documentation sidebar
     - Figure out exactly what types of filehandles & strings
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
@@ -24,6 +23,7 @@
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
 - Run pyflakes as part of the tests?
+- Delete meta/
 
 New Features
 ------------
