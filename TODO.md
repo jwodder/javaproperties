@@ -5,7 +5,6 @@
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
-    - Add a README
     - Fix the Sphinx HTML documentation sidebar
     - Figure out exactly what types of filehandles & strings
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
@@ -14,6 +13,7 @@
       formats to the documentation sections for reading & writing the
       respective formats
     - Include examples in main docs?
+        - Use doctest on examples?
     - Add module docstrings to `fromjson.py` and `tojson.py`
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
@@ -50,16 +50,16 @@ Commands
         get [--defaults <file>] [--no-newline] [--no-key] <file> <key> ...
 
         set [--in-place | --outfile <file>] [--backup <file>] <file> <key> <value>
-        # Include an option for controlling whether to update the timestamp
         # Include an option for setting the separator
 
         # Deleting entries; rename "del"? "delete"?:
         unset [--in-place | --outfile <file>] [--backup <file>] <file> <key> ...
-        # Include an option for controlling whether to update the timestamp
 
     - Give all of the subcommands options for controlling whether escape
       sequences in keys & values on the command line should be interpolated or
       used literally
+    - Give `set` and `unset` options for controlling whether to update the
+      timestamp (`-T`/`--preserve-timestamp`?)
 
 - Give all commands `--help` options
 - Support converting between JSON and XML properties
@@ -67,3 +67,4 @@ Commands
   extension (or other means?) ?
 - Add a command for converting between XML format and "plain" format?
 - Make `json2properties` use `Decimal` so that floats are preserved correctly
+- Give the commands options for setting the properties files' encodings?

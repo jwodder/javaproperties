@@ -10,8 +10,7 @@ from   .util      import itemize
 def dump(props, fp, separator='=', comments=None, timestamp=True,
          sort_keys=False):
     """
-    Write a series ``props`` of key-value pairs to ``fp`` in the format of a
-    ``.properties`` file.
+    Write a series of key-value pairs to a file in ``.properties`` format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be text strings.
@@ -26,7 +25,7 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     :type comments: text string or `None`
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 12 14:00:54 EDT 2016`` is written as a comment to ``fp``
-        after ``comments`` (if non-`None`) and before the key-value pairs.  If
+        after ``comments`` (if any) and before the key-value pairs.  If
         ``timestamp`` is `True`, the current date & time is used.  If it is a
         number, it is converted from seconds since the epoch to local time.  If
         it is a `datetime.datetime` object, its value is used directly, with
@@ -45,8 +44,8 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
 
 def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     """
-    Convert a series ``props`` of key-value pairs to a text string of
-    ``.properties`` entries.
+    Convert a series of key-value pairs to a text string in ``.properties``
+    format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
         All keys and values in ``props`` must be text strings.
@@ -59,11 +58,11 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     :type comments: text string or `None`
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 12 14:00:54 EDT 2016`` is output as a comment after
-        ``comments`` (if non-`None`) and before the key-value pairs.  If
-        ``timestamp`` is `True`, the current date & time is used.  If it is a
-        number, it is converted from seconds since the epoch to local time.  If
-        it is a `datetime.datetime` object, its value is used directly, with
-        naïve objects assumed to be in the local timezone.
+        ``comments`` (if any) and before the key-value pairs.  If ``timestamp``
+        is `True`, the current date & time is used.  If it is a number, it is
+        converted from seconds since the epoch to local time.  If it is a
+        `datetime.datetime` object, its value is used directly, with naïve
+        objects assumed to be in the local timezone.
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
