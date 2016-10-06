@@ -65,5 +65,4 @@ Commands
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?
 - Add a command for converting between XML format and "plain" format?
-- Make `json2properties` use `Decimal` so that floats are preserved correctly
 - Give the commands options for setting the properties files' encodings?

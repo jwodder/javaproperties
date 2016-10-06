@@ -1,19 +1,19 @@
 import collections
+from   decimal import Decimal
 import json
 import numbers
-from   six import string_types
+from   six     import string_types
 
 def strify_dict(d):
     strdict = {}
     for k,v in itemize(d):
-        if isinstance(k, (numbers.Number, bool, type(None))):
-            k = json.dumps(k)
-        elif not isinstance(k, string_types):
-            raise TypeError('.properties keys must be scalars')
+        assert isinstance(k, string_types)
         if isinstance(v, (list, dict)):
             raise TypeError('Cannot convert list/dict to .properties value')
         elif isinstance(v, string_types):
             strdict[k] = v
+        elif isinstance(v, Decimal):
+            strdict[k] = str(v)
         else:
             strdict[k] = json.dumps(v)
     return strdict

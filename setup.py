@@ -11,8 +11,8 @@ with open(join(dirname(__file__), 'javaproperties', '__init__.py')) as fp:
     else:
         raise RuntimeError('Unable to find own __version__ string')
 
-###with open(join(dirname(__file__), 'README.rst')) as fp:
-###    long_desc = fp.read()
+with open(join(dirname(__file__), 'README.rst')) as fp:
+    long_desc = fp.read()
 
 setup(
     name='javaproperties',
@@ -23,7 +23,7 @@ setup(
     author_email='javaproperties@varonathe.org',
     keywords='java properties javaproperties configfile config configuration',
     description='Read & write Java .properties files',
-    ###long_description=long_desc,
+    long_description=long_desc,
     url='https://github.com/jwodder/javaproperties',
 
     setup_requires=['pytest-runner>=2.0,<3'],

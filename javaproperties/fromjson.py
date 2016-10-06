@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import codecs
+from   decimal  import Decimal
 import io
 import json
 import sys
@@ -19,7 +20,7 @@ def main():
             outfile = outfile.buffer
         outfile = codecs.getwriter('iso-8859-1')(outfile)
     with infile:
-        props = json.load(infile)
+        props = json.load(infile, parse_float=Decimal)
     if not isinstance(props, dict):
         raise TypeError('Can only convert dicts to .properties files')
     with outfile:
