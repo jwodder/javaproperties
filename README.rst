@@ -30,6 +30,10 @@ Just use `pip <https://pip.pypa.io>`_ (You have pip, right?) to install
 
     pip install javaproperties
 
+If you happen to be still stuck using Python 2.6, you will also need to install
+the `argparse <https://pypi.python.org/pypi/argparse>`_ package in order to use
+the command-line interface.
+
 
 Examples
 ========

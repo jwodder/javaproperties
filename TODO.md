@@ -23,6 +23,8 @@
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
 - Run pyflakes as part of the tests?
+- Look into the minimum argparse version needed for `ArgumentTypeError` to be
+  available
 
 New Features
 ------------
