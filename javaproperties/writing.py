@@ -91,7 +91,7 @@ def to_comment(comment):
 def join_key_value(key, value, separator='='):
     """
     Join a key and value together into a single line suitable for adding to a
-    ``.properties`` file.
+    ``.properties`` file.  No trailing newline is added.
 
     :param key: the key
     :type key: text string

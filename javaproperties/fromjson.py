@@ -13,7 +13,7 @@ def main():
     else:
         infile = sys.stdin
     if len(sys.argv) > 2 and sys.argv[2] != "-":
-        outfile = io.open(sys.argv[2], 'wU', encoding='iso-8859-1')
+        outfile = io.open(sys.argv[2], 'wt', encoding='iso-8859-1')
     else:
         outfile = sys.stdout
         if sys.version_info[0] >= 3:

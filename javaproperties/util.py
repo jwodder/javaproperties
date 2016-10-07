@@ -1,7 +1,6 @@
 import collections
 from   decimal import Decimal
 import json
-import numbers
 from   six     import string_types
 
 def strify_dict(d):

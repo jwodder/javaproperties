@@ -46,7 +46,7 @@ Commands
 - Add a `javaproperties` command (as `javaproperties.__main__`?) with the
   following subcommands:
 
-        get [--defaults <file>] [--no-newline] [--no-key] <file> <key> ...
+        get [--defaults <file>] [--no-newline] [--no-key] [--outfile <file>] <file> <key> ...
 
         set [--in-place | --outfile <file>] [--backup <file>] <file> <key> <value>
         # Include an option for setting the separator

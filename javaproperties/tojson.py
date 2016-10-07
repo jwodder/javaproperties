@@ -9,7 +9,7 @@ from   .reading import load
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] != "-":
-        infile = io.open(sys.argv[1], 'rU', encoding='iso-8859-1')
+        infile = io.open(sys.argv[1], 'rt', encoding='iso-8859-1')
     else:
         infile = sys.stdin
         if sys.version_info[0] >= 3:
