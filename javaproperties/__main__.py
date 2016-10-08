@@ -1,4 +1,4 @@
-from   __future__ import print_function
+from   __future__ import print_function, unicode_literals
 import argparse
 import codecs
 import io
@@ -8,12 +8,15 @@ from   .reading   import load, parse
 from   .writing   import join_key_value
 
 def main():
+    stdout = sys.stdout if six.PY2 else sys.stdout.buffer
+    stdout = codecs.getwriter('iso-8859-1')(stdout)
     parser = argparse.ArgumentParser()
     cmds = parser.add_subparsers(title='command', dest='cmd')
     cmd_get = cmds.add_parser('get')
     cmd_get.add_argument('file', type=openR)
     cmd_get.add_argument('key', nargs='+')
     cmd_set = cmds.add_parser('set')
+    cmd_set.add_argument('-o', '--outfile', type=openW, default=stdout)
     cmd_set.add_argument('file', type=openR)
     cmd_set.add_argument('key')
     cmd_set.add_argument('value')
@@ -30,9 +33,7 @@ def main():
                 ok = False
         sys.exit(0 if ok else 1)
     elif args.cmd == 'set':
-        stdout = sys.stdout if six.PY2 else sys.stdout.buffer
-        stdout = codecs.getwriter('iso-8859-1')(stdout)
-        setproperty(args.file, stdout, args.key, args.value)
+        setproperty(args.file, args.outfile, args.key, args.value)
     else:
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
 
