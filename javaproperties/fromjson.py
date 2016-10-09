@@ -1,30 +1,24 @@
-#!/usr/bin/python
-import codecs
+import argparse
 from   decimal  import Decimal
-import io
 import json
 import sys
 from   .util    import strify_dict
 from   .writing import dump
+from   .util    import properties_writer, propout
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] != "-":
-        infile = open(sys.argv[1], 'r')
-    else:
-        infile = sys.stdin
-    if len(sys.argv) > 2 and sys.argv[2] != "-":
-        outfile = io.open(sys.argv[2], 'wt', encoding='iso-8859-1')
-    else:
-        outfile = sys.stdout
-        if sys.version_info[0] >= 3:
-            outfile = outfile.buffer
-        outfile = codecs.getwriter('iso-8859-1')(outfile)
-    with infile:
-        props = json.load(infile, parse_float=Decimal)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
+                        default=sys.stdin)
+    parser.add_argument('outfile', nargs='?', type=properties_writer,
+                        default=propout)
+    args = parser.parse_args()
+    with args.infile:
+        props = json.load(args.infile, parse_float=Decimal)
     if not isinstance(props, dict):
         raise TypeError('Can only convert dicts to .properties files')
-    with outfile:
-        dump(sorted(strify_dict(props).items()), outfile)
+    with args.outfile:
+        dump(sorted(strify_dict(props).items()), args.outfile)
 
 if __name__ == '__main__':
     main()

@@ -24,8 +24,8 @@
     - Use Babel <http://babel.pocoo.org> ?
 - Use `lxml` for XML processing if it's installed?
 - Run pyflakes as part of the tests?
-- Look into the minimum argparse version needed for `ArgumentTypeError` to be
-  available
+- Look into the minimum version of the argparse package needed for Python 2.6
+    - v1.1 or higher is required for `argparse.ArgumentTypeError`
 
 New Features
 ------------
