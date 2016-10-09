@@ -15,6 +15,7 @@
     - Include examples in main docs?
         - Use doctest on examples?
     - Add module docstrings to `fromjson.py` and `tojson.py`
+    - Document `javaproperties` command
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -48,17 +49,25 @@ Commands
 - Add a `javaproperties` command (as `javaproperties.__main__`?) with the
   following subcommands:
 
-        get [--defaults <file>] [--no-newline] [--no-key] [--outfile <file>] <file> <key> ...
+        get [-D|--defaults <file>]
+            [-d|--default <value>]
+            [-P|--properties]
+            [-o|--outfile <file>]  # ?
+            [-n|--no-newline]
+            <file> <key> ...
 
-        set [--in-place | --outfile <file>] [--backup <file>] <file> <key> <value>
-        # Include an option for setting the separator
+        set [--in-place | --outfile <file>]
+            [--backup <file>]
+            # Include an option for setting the separator
+            <file> <key> <value>
 
-        # Deleting entries; rename "del"? "delete"?:
-        unset [--in-place | --outfile <file>] [--backup <file>] <file> <key> ...
+        delete [--in-place | --outfile <file>]
+               [--backup <file>]
+               <file> <key> ...
 
-    - Give all of the subcommands options for controlling whether escape
-      sequences in keys & values on the command line should be interpolated or
-      used literally
+    - Give all of the subcommands options (`-e`?) for controlling whether
+      escape sequences in keys & values on the command line should be
+      interpolated or used literally
     - Give `set` and `unset` options for controlling whether to update the
       timestamp (`-T`/`--preserve-timestamp`?)
 

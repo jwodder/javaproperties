@@ -13,6 +13,7 @@ def main():
     parser = argparse.ArgumentParser()
     cmds = parser.add_subparsers(title='command', dest='cmd')
     cmd_get = cmds.add_parser('get')
+    cmd_get.add_argument('-P', '--properties', action='store_true')
     cmd_get.add_argument('file', type=openR)
     cmd_get.add_argument('key', nargs='+')
     cmd_set = cmds.add_parser('set')
@@ -26,7 +27,10 @@ def main():
         props = load(args.file)
         for k in args.key:
             if k in props:
-                print(join_key_value(k, props[k]))
+                if args.properties:
+                    print(join_key_value(k, props[k]))
+                else:
+                    print(props[k])
             else:
                 print('{0}: {1!r}: key not found'.format(sys.argv[0], k),
                       file=sys.stderr)
