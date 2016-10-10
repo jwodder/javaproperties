@@ -146,6 +146,12 @@ def test_dumps_hash_comment():
 def test_dumps_comment_linefeed():
     assert dumps({"key": "value"}, comments='This comment has a trailing newline.\n', timestamp=False) == '#This comment has a trailing newline.\n#\nkey=value\n'
 
+def test_dumps_comment_crlf():
+    assert dumps({"key": "value"}, comments='This comment has a trailing CRLF.\r\n', timestamp=False) == '#This comment has a trailing CRLF.\r\n#\nkey=value\n'
+
+def test_dumps_comment_carriage_return():
+    assert dumps({"key": "value"}, comments='This comment has a trailing carriage return.\r', timestamp=False) == '#This comment has a trailing carriage return.\r#\nkey=value\n'
+
 def test_dumps_multiline_comment():
     assert dumps({"key": "value"}, comments='This is a comment.\nThis is also a comment.', timestamp=False) == '#This is a comment.\n#This is also a comment.\nkey=value\n'
 
@@ -207,5 +213,4 @@ def test_dumps_backspace():
 
 
 # custom separator
-# \r and \r\n in comments
 # timestamp=None ?
