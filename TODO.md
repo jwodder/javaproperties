@@ -16,6 +16,7 @@
         - Use doctest on examples?
     - Add module docstrings to `fromjson.py` and `tojson.py`
     - Document `javaproperties` command
+    - Fill in the commands' `help` and `description` fields
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -70,7 +71,6 @@ Commands
     - Give `set` and `unset` options for controlling whether to update the
       timestamp (`-T`/`--preserve-timestamp`?)
 
-- Give all commands `--help` options
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?

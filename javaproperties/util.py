@@ -4,7 +4,7 @@ from   decimal import Decimal
 import io
 import json
 import sys
-from   six     import PY2, string_types
+from   six     import string_types
 
 def strify_dict(d):
     strdict = {}
@@ -29,12 +29,14 @@ def itemize(kvs, sort_keys=False):
         items = sorted(items)
     return items
 
-if PY2:
-    propin  = codecs.getreader('iso-8859-1')(sys.stdin)
-    propout = codecs.getwriter('iso-8859-1')(sys.stdout)
-else:
+if hasattr(sys.stdin, 'buffer'):
     propin  = codecs.getreader('iso-8859-1')(sys.stdin.buffer)
     propout = codecs.getwriter('iso-8859-1')(sys.stdout.buffer)
+else:
+    # We're running under either Python 2 or py.test (which sets stdin to a
+    # "null" object)
+    propin  = codecs.getreader('iso-8859-1')(sys.stdin)
+    propout = codecs.getwriter('iso-8859-1')(sys.stdout)
 
 def properties_reader(fname):
     # based on argparse.FileType
