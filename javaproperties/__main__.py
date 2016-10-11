@@ -1,6 +1,7 @@
 from   __future__ import print_function, unicode_literals
 import argparse
 import sys
+from   six        import iteritems
 from   .reading   import load, parse
 from   .writing   import join_key_value
 from   .util      import properties_reader, properties_writer, propout
@@ -18,6 +19,11 @@ def main():
     cmd_set.add_argument('file', type=properties_reader)
     cmd_set.add_argument('key')
     cmd_set.add_argument('value')
+    cmd_del = cmds.add_parser('delete')
+    cmd_del.add_argument('-o', '--outfile', type=properties_writer,
+                         default=propout)
+    cmd_del.add_argument('file', type=properties_reader)
+    cmd_del.add_argument('key', nargs='+')
     args = parser.parse_args()
     if args.cmd == 'get':
         ok = True
@@ -34,20 +40,23 @@ def main():
                 ok = False
         sys.exit(0 if ok else 1)
     elif args.cmd == 'set':
-        setproperty(args.file, args.outfile, args.key, args.value)
+        setproperty(args.file, args.outfile, {args.key: args.value})
+    elif args.cmd == 'delete':
+        setproperty(args.file, args.outfile, {k: None for k in args.key})
     else:
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
 
-def setproperty(fpin, fpout, key, value):
+def setproperty(fpin, fpout, newprops):
     for k, v, src in parse(fpin):
-        if k == key:
-            if value is not None:
-                print(join_key_value(key, value), file=fpout)
-                value = None
+        if k in newprops:
+            if newprops[k] is not None:
+                print(join_key_value(k, newprops[k]), file=fpout)
+                newprops[k] = None
         else:
             print(src, end='', file=fpout)
-    if value is not None:
-        print(join_key_value(key, value), file=fpout)
+    for key, value in iteritems(newprops):
+        if value is not None:
+            print(join_key_value(key, value), file=fpout)
 
 if __name__ == '__main__':
     main()
