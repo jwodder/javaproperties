@@ -46,7 +46,7 @@ def main():
         setproperty(args.file, args.outfile, {args.key: args.value},
                     args.preserve_timestamp)
     elif args.cmd == 'delete':
-        setproperty(args.file, args.outfile, {k: None for k in args.key},
+        setproperty(args.file, args.outfile, dict.fromkeys(args.key),
                     args.preserve_timestamp)
     else:
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
