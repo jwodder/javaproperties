@@ -2,6 +2,8 @@
     - Test reading & writing bytes in both Python 2 and Python 3
     - Test `load` and `dump` on actual files???
     - Test utility functions in isolation?
+    - Test the command-line programs (or at least their nontrivial components,
+      like `setproperty`)
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
@@ -16,7 +18,7 @@
         - Use doctest on examples?
     - Add module docstrings to `fromjson.py` and `tojson.py`
     - Document `javaproperties` command
-    - Fill in the commands' `help` and `description` fields
+    - Fill in the commands' arguments' `help` and `description` fields
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
 - Handle files with CR line endings not opened in universal newlines mode?
@@ -68,8 +70,10 @@ Commands
     - Give all of the subcommands options (`-e`?) for controlling whether
       escape sequences in keys & values on the command line should be
       interpolated or used literally
-    - Give `set` and `unset` options for controlling whether to update the
-      timestamp (`-T`/`--preserve-timestamp`?)
+    - Add a "format" subcommand for putting everything in "canonical" form,
+      sorting by keys, and (optionally?) removing comments?
+    - `get -P`: Include a timestamp
+    - Add options for completely suppressing the timestamp?
 
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
