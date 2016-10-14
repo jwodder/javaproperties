@@ -98,3 +98,26 @@ def test_loads_xml_ignore_escapes():
     <entry key="escapes">\\n\\r\\t\\u2603\\f\\\\</entry>
 </properties>
 ''') == {"escapes": "\\n\\r\\t\\u2603\\f\\\\"}
+
+def test_loads_xml_commented():
+    assert loads_xml('''
+<properties>
+    <comment>This is a comment.</comment>
+    <entry key="key">value</entry>
+</properties>
+''') == {"key": "value"}
+
+def test_loads_xml_unknown_tag():
+    assert loads_xml('''
+<properties>
+    <entry key="key">value</entry>
+    <something-else key="foo">bar</something-else>
+</properties>
+''') == {"key": "value"}
+
+def test_loads_xml_astral_plane():
+    assert loads_xml('''
+<properties>
+    <entry key="goat">&#x1F410;</entry>
+</properties>
+''') == {"goat": "\U0001F410"}

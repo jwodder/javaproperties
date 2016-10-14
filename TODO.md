@@ -1,6 +1,5 @@
 - Write tests
     - Test reading & writing bytes in both Python 2 and Python 3
-    - Test `load` and `dump` on actual files???
     - Test utility functions in isolation?
     - Test the command-line programs (or at least their nontrivial components,
       like `setproperty`)
@@ -29,6 +28,7 @@
 - Use `lxml` for XML processing if it's installed?
 - Look into the minimum version of the argparse package needed for Python 2.6
     - v1.1 or higher is required for `argparse.ArgumentTypeError`
+- `test/`: Move definition of `need_ordereddict` to `conftest.py`
 
 New Features
 ------------

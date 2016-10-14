@@ -5,8 +5,6 @@ from   javaproperties import load_xml
 # The only thing special about `load_xml` compared to `loads_xml` is encoding,
 # so that's the only thing we'll test here.
 
-### Test with `object_pairs_hook=OrderedDict`?
-
 def test_load_xml_ascii():
     assert load_xml(BytesIO(b'''\
 <?xml version="1.0" encoding="ASCII" standalone="no"?>
