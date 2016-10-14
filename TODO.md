@@ -21,6 +21,7 @@
     - Fill in the commands' arguments' `help` and `description` fields
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Support Python 3.2?
+    - Python 3.2 doesn't support `\u` escapes in regular expressions
 - Handle files with CR line endings not opened in universal newlines mode?
 - Force use of the C locale when generating timestamps
     - cf. <http://stackoverflow.com/a/24070673/744178>

@@ -170,6 +170,9 @@ def test_dumps_astral_plane_comment():
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) == 'key\tvalue\n'
 
+def test_dumps_none_timestamp():
+    assert dumps({"key": "value"}, timestamp=None) == 'key=value\n'
+
 def test_dumps_epoch_timestamp():
     assert dumps({"key": "value"}, timestamp=1473703254) == \
         '#Mon Sep 12 14:00:54 EDT 2016\nkey=value\n'
@@ -210,7 +213,3 @@ def test_dumps_null():
 
 def test_dumps_backspace():
     assert dumps({"backspace": "\b"}, timestamp=False) == 'backspace=\\u0008\n'
-
-
-# custom separator
-# timestamp=None ?

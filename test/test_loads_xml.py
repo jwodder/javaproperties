@@ -1,6 +1,12 @@
 from   __future__     import unicode_literals
+import sys
 import pytest
 from   javaproperties import loads_xml
+
+need_ordereddict = pytest.mark.skipif(
+    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
+    reason='No OrderedDict before 2.7/3.1',
+)
 
 def test_loads_xml_nothing():
     assert loads_xml('<properties></properties>') == {}
@@ -29,12 +35,66 @@ def test_loads_xml_no_key():
         loads_xml('<properties><entry>value</entry></properties>')
     assert '<entry> is missing "key" attribute' in str(excinfo.value)
 
+def test_loads_xml_extra_whitespace():
+    assert loads_xml('''
+<properties>
+    <entry key="key">value</entry>
+</properties>
+''') == {"key": "value"}
 
-# multiple <entry>s
-# multiple <entry>s with the same key
-# entities?
-# object_pairs_hook=OrderedDict
-# non-ASCII/non-Latin-1 characters (not escaped) in source string
-# <entry> (or other tag) nested inside another <entry>?
-# XML declarations?
-# DTD declarations?
+def test_loads_xml_multiple():
+    assert loads_xml('<properties><entry key="key">value</entry><entry key="foo">bar</entry></properties>') == {"key": "value", "foo": "bar"}
+
+@need_ordereddict
+def test_loads_xml_multiple_ordereddict():
+    from collections import OrderedDict
+    assert loads_xml('''
+<properties>
+    <entry key="key">value</entry>
+    <entry key="foo">bar</entry>
+</properties>
+''', object_pairs_hook=OrderedDict) == \
+        OrderedDict([("key", "value"), ("foo", "bar")])
+
+@need_ordereddict
+def test_loads_xml_multiple_ordereddict_rev():
+    from collections import OrderedDict
+    assert loads_xml('''
+<properties>
+    <entry key="foo">bar</entry>
+    <entry key="key">value</entry>
+</properties>
+''', object_pairs_hook=OrderedDict) == \
+        OrderedDict([("foo", "bar"), ("key", "value")])
+
+def test_loads_xml_reassign():
+    assert loads_xml('''
+<properties>
+    <entry key="key">value1</entry>
+    <entry key="key">value2</entry>
+</properties>
+''') == {"key": "value2"}
+
+def test_loads_xml_entities():
+    assert loads_xml('''
+<properties>
+    <entry key="ampersand">&amp;</entry>
+    <entry key="less than">&lt;</entry>
+    <entry key="greater than">&gt;</entry>
+    <entry key="&quot;">"</entry>
+    <entry key="snowman">&#x2603;</entry>
+</properties>
+''') == {
+    "ampersand": "&",
+    "less than": "<",
+    "greater than": ">",
+    '"': '"',
+    "snowman": "\u2603",
+}
+
+def test_loads_xml_ignore_escapes():
+    assert loads_xml('''
+<properties>
+    <entry key="escapes">\\n\\r\\t\\u2603\\f\\\\</entry>
+</properties>
+''') == {"escapes": "\\n\\r\\t\\u2603\\f\\\\"}
