@@ -3,6 +3,7 @@
     - Test utility functions in isolation?
     - Test the command-line programs (or at least their nontrivial components,
       like `setproperty`)
+    - Run doctest on the README examples
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
@@ -13,8 +14,9 @@
     - Add simple descriptions of/introductions to the `.properties` and XML
       formats to the documentation sections for reading & writing the
       respective formats
+        - Mention that all uses of "whitespace" in the documentation
+          specifically refer to CR, LF, FF, TAB, and space
     - Include examples in main docs?
-        - Use doctest on examples?
     - Add module docstrings to `fromjson.py` and `tojson.py`
     - Document `javaproperties` command
     - Fill in the commands' arguments' `help` and `description` fields

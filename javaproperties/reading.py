@@ -59,10 +59,14 @@ def parse(fp):
     """
     Parse the contents of the `~io.IOBase.readline`-supporting file-like object
     ``fp`` as a ``.properties`` file and return a generator of ``(key, value,
-    original_lines)`` triples, including duplicate keys and including comments
-    & blank lines (which have their ``key`` and ``value`` fields set to
-    `None`).  This is the only way to extract comments from a ``.properties``
-    file.
+    original_lines)`` triples for every entry in ``fp`` (including duplicate
+    keys) in order of occurrence.  The third element of each triple is the
+    concatenation of the unmodified lines in ``fp`` (including trailing
+    newlines) from which the key and value were extracted.  The generator also
+    includes comments and blank/all-whitespace lines found in ``fp``, one
+    triple per line, with the first two elements of the triples set to `None`.
+    This is the only way to extract comments from a ``.properties`` file with
+    this library.
 
     ``fp`` may be either a text or binary filehandle, with or without universal
     newlines enabled.  If it is a binary filehandle, its contents are decoded

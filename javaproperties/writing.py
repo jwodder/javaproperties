@@ -79,7 +79,7 @@ def to_comment(comment):
     characters in the string are escaped using ``\\uXXXX`` escapes (after
     converting non-BMP characters to surrogate pairs), a ``#`` is prepended to
     the string, and a ``#`` is inserted after any line breaks in the string not
-    already followed by a ``#`` or ``!``.
+    already followed by a ``#`` or ``!``.  No trailing newline is added.
 
     >>> to_comment('They say foo=bar, but does bar=foo?')
     '#They say foo=bar, but does bar=foo?'
