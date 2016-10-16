@@ -81,6 +81,9 @@ def to_comment(comment):
     the string, and a ``#`` is inserted after any line breaks in the string not
     already followed by a ``#`` or ``!``.
 
+    >>> to_comment('They say foo=bar, but does bar=foo?')
+    '#They say foo=bar, but does bar=foo?'
+
     :param comment: the string to convert to a comment
     :type comment: text string
     :rtype: text string
@@ -89,9 +92,12 @@ def to_comment(comment):
                         re.sub(r'(\r\n?|\n)(?![#!])', r'\1#', comment))
 
 def join_key_value(key, value, separator='='):
-    """
+    r"""
     Join a key and value together into a single line suitable for adding to a
     ``.properties`` file.  No trailing newline is added.
+
+    >>> join_key_value('possible separators', '= : space')
+    'possible\\ separators=\\= \\: space'
 
     :param key: the key
     :type key: text string
@@ -159,7 +165,7 @@ TIMESTAMP_FMT = '%a %b %d %H:%M:%S %Z %Y'
 
 def _show_timestamp(timestamp):
     ### TODO: Make strftime use the C locale
-    ### Make this public?
+    ### Make this public? (rename to `java_timestamp`?)
     # All uses of `time.strftime` assume that `time.tzname` is
     # meaningful/useful.
     if timestamp is True:

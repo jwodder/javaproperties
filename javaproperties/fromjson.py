@@ -2,9 +2,8 @@ import argparse
 from   decimal  import Decimal
 import json
 import sys
-from   .util    import strify_dict
+from   .util    import strify_dict, properties_writer, propout
 from   .writing import dump
-from   .util    import properties_writer, propout
 
 def main():
     parser = argparse.ArgumentParser()

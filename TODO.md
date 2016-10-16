@@ -19,8 +19,6 @@
     - Document `javaproperties` command
     - Fill in the commands' arguments' `help` and `description` fields
 - Handle "narrow" Python builds (only for Python versions < 3.3)
-- Support Python 3.2?
-    - Python 3.2 doesn't support `\u` escapes in regular expressions
 - Handle files with CR line endings not opened in universal newlines mode?
 - Force use of the C locale when generating timestamps
     - cf. <http://stackoverflow.com/a/24070673/744178>
@@ -28,7 +26,6 @@
 - Use `lxml` for XML processing if it's installed?
 - Look into the minimum version of the argparse package needed for Python 2.6
     - v1.1 or higher is required for `argparse.ArgumentTypeError`
-- `test/`: Move definition of `need_ordereddict` to `conftest.py`
 
 New Features
 ------------
@@ -75,6 +72,8 @@ Commands
       sorting by keys, and (optionally?) removing comments?
     - `get -P`: Include a timestamp
     - Add options for completely suppressing the timestamp?
+    - Give `set` and `delete` options for reformatting/not preserving
+      formatting?
 
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file

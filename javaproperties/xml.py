@@ -6,14 +6,14 @@ from   xml.sax.saxutils      import escape, quoteattr
 from   .util                 import itemize
 
 def load_xml(fp, object_pairs_hook=dict):
-    """
+    r"""
     Parse the contents of the file-like object ``fp`` as an XML properties file
     and return a `dict` of the key-value pairs.
 
     Beyond basic XML well-formedness, `load_xml` only checks that the root
     element is named ``properties`` and that all of its ``entry`` children have
-    ``key`` attributes.  No further validation is performed; if any ``entry``s
-    happen to contain nested tags, the behavior is undefined.
+    ``key`` attributes.  No further validation is performed; if any ``entry``\
+    s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``fp`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of
@@ -35,14 +35,14 @@ def load_xml(fp, object_pairs_hook=dict):
     return object_pairs_hook(_fromXML(tree.getroot()))
 
 def loads_xml(s, object_pairs_hook=dict):
-    """
+    r"""
     Parse the contents of the string ``s`` as an XML properties document and
     return a `dict` of the key-value pairs.
 
     Beyond basic XML well-formedness, `loads_xml` only checks that the root
     element is named ``properties`` and that all of its ``entry`` children have
-    ``key`` attributes.  No further validation is performed; if any ``entry``s
-    happen to contain nested tags, the behavior is undefined.
+    ``key`` attributes.  No further validation is performed; if any ``entry``\
+    s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``s`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of
