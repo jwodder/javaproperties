@@ -56,7 +56,7 @@ TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w+ \d{4,}\s*$'
 def setproperty(fpin, fpout, newprops, preserve_timestamp=False):
     in_header = True
     prevsrc = None
-    for k, v, src in parse(fpin):
+    for k, _, src in parse(fpin):
         if in_header:
             if k is None:
                 if prevsrc is not None:

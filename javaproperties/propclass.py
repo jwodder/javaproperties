@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import collections
 from   six      import string_types
 from   .reading import load
@@ -116,9 +117,9 @@ class Properties(collections.MutableMapping):
         self.data.update(load(inStream))
 
     def propertyNames(self):
-        """
+        r"""
         Returns a generator of all distinct keys in the `Properties` object and
-        its `defaults` (and its `defaults`\ 's `defaults`, etc.) in unspecified
+        its `defaults` (and its `defaults`\ ’s `defaults`, etc.) in unspecified
         order
 
         :rtype: generator of text strings
@@ -149,9 +150,9 @@ class Properties(collections.MutableMapping):
         dump(self.data, out, comments=comments)
 
     def stringPropertyNames(self):
-        """
+        r"""
         Returns a `set` of all keys in the `Properties` object and its
-        `defaults` (and its `defaults`\ 's `defaults`, etc.)
+        `defaults` (and its `defaults`\ ’s `defaults`, etc.)
 
         :rtype: `set` of text strings
         """
