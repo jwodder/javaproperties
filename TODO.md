@@ -48,33 +48,23 @@ New Features
 
 Commands
 --------
-- Add a `javaproperties` command (as `javaproperties.__main__`?) with the
-  following subcommands:
-
-        get [-D|--defaults <file>]
-            [-d|--default <value>]
-            [-P|--properties]
-            [-o|--outfile <file>]  # ?
-            [-n|--no-newline]
-            <file> <key> ...
-
-        set [--in-place | --outfile <file>]
-            [--backup <file>]
-            # Include an option for setting the separator
-            <file> <key> <value>
-
-        delete [--in-place | --outfile <file>]
-               [--backup <file>]
-               <file> <key> ...
-
+- Add a `javaproperties` command
     - Give all of the subcommands options (`-e`?) for controlling whether
       escape sequences in keys & values on the command line should be
       interpolated or used literally
-    - Give `format` a `--preserve-timestamp` option
+    - Give `get` a `-d|--default-value <value>` option
+    - Give `get` a `-D|--defaults <file>` option
+    - Give `get` an `-n|--no-newline` option?
+    - Give `get` an `-o|--outfile <file>` option?
     - `get -P`: Include a timestamp
-    - Add options for completely suppressing the timestamp?
+    - Give `set` and `delete` `--in-place | --outfile <file>` options (with a
+      `backup <file>` option for use with `--in-place`)
+    - Give `set` an option for setting the separator?
     - Give `set` and `delete` options for reformatting/not preserving
       formatting?
+    - Give `format` an option for setting the separator?
+    - Give `format` a `--preserve-timestamp` option
+    - Add options for completely suppressing the timestamp?
 
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
