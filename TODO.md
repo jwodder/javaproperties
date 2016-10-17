@@ -70,8 +70,7 @@ Commands
     - Give all of the subcommands options (`-e`?) for controlling whether
       escape sequences in keys & values on the command line should be
       interpolated or used literally
-    - Add a "format" subcommand for putting everything in "canonical" form,
-      sorting by keys, and (optionally?) removing comments?
+    - Give `format` a `--preserve-timestamp` option
     - `get -P`: Include a timestamp
     - Add options for completely suppressing the timestamp?
     - Give `set` and `delete` options for reformatting/not preserving
