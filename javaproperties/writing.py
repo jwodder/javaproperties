@@ -165,6 +165,8 @@ TIMESTAMP_FMT = '%a %b %d %H:%M:%S %Z %Y'
 
 def java_timestamp(timestamp=True):
     """
+    .. versionadded:: 0.2.0
+
     Returns a timestamp in the format produced by |date_tostring|_, e.g.::
 
         Mon Sep 02 14:00:54 EDT 2016
