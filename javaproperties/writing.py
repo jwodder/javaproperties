@@ -24,7 +24,7 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
         comment before any other content
     :type comments: text string or `None`
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
-        ``Mon Sep 12 14:00:54 EDT 2016`` is written as a comment to ``fp``
+        ``Mon Sep 02 14:00:54 EDT 2016`` is written as a comment to ``fp``
         after ``comments`` (if any) and before the key-value pairs.  If
         ``timestamp`` is `True`, the current date & time is used.  If it is a
         number, it is converted from seconds since the epoch to local time.  If
@@ -38,7 +38,7 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     if comments is not None:
         print(to_comment(comments), file=fp)
     if timestamp is not None and timestamp is not False:
-        print(to_comment(_show_timestamp(timestamp)), file=fp)
+        print(to_comment(java_timestamp(timestamp)), file=fp)
     for k,v in itemize(props, sort_keys=sort_keys):
         print(join_key_value(k, v, separator), file=fp)
 
@@ -57,7 +57,7 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
         before any other content
     :type comments: text string or `None`
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
-        ``Mon Sep 12 14:00:54 EDT 2016`` is output as a comment after
+        ``Mon Sep 02 14:00:54 EDT 2016`` is output as a comment after
         ``comments`` (if any) and before the key-value pairs.  If ``timestamp``
         is `True`, the current date & time is used.  If it is a number, it is
         converted from seconds since the epoch to local time.  If it is a
@@ -163,12 +163,35 @@ def escape(field):
 
 TIMESTAMP_FMT = '%a %b %d %H:%M:%S %Z %Y'
 
-def _show_timestamp(timestamp):
+def java_timestamp(timestamp=True):
+    """
+    Returns a timestamp in the format produced by |date_tostring|_, e.g.::
+
+        Mon Sep 02 14:00:54 EDT 2016
+
+    If ``timestamp`` is `True`, the current date & time is returned.
+
+    If ``timestamp`` is `None` or `False`, an empty string is returned.
+
+    If ``timestamp`` is a number, it is converted from seconds since the epoch
+    to local time.
+
+    If ``timestamp`` is a `datetime.datetime` object, its value is used
+    directly, with naïve objects assumed to be in the local timezone.
+
+    :param timestamp: the date & time to display
+    :type timestamp: `None`, `bool`, number, or `datetime.datetime`
+    :rtype: string
+
+    .. |date_tostring| replace:: Java 8's ``Date.toString()``
+    .. _date_tostring: https://docs.oracle.com/javase/8/docs/api/java/util/Date.html#toString--
+    """
     ### TODO: Make strftime use the C locale
-    ### Make this public? (rename to `java_timestamp`?)
     # All uses of `time.strftime` assume that `time.tzname` is
     # meaningful/useful.
-    if timestamp is True:
+    if timestamp is None or timestamp is False:
+        return ''
+    elif timestamp is True:
         return time.strftime(TIMESTAMP_FMT)
     elif isinstance(timestamp, numbers.Number):
         return time.strftime(TIMESTAMP_FMT, time.localtime(timestamp))

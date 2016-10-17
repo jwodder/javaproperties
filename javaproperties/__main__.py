@@ -4,7 +4,7 @@ import re
 import sys
 from   six        import iteritems
 from   .reading   import load, parse
-from   .writing   import join_key_value, _show_timestamp, to_comment
+from   .writing   import join_key_value, java_timestamp, to_comment
 from   .util      import properties_reader, properties_writer, propout
 
 def main():
@@ -70,9 +70,9 @@ def setproperty(fpin, fpout, newprops, preserve_timestamp=False):
                     else:
                         if not re.match(TIMESTAMP_RGX, prevsrc, flags=re.U):
                             print(prevsrc, end='', file=fpout)
-                        print(to_comment(_show_timestamp(True)), file=fpout)
+                        print(to_comment(java_timestamp()), file=fpout)
                 elif not preserve_timestamp:
-                    print(to_comment(_show_timestamp(True)), file=fpout)
+                    print(to_comment(java_timestamp()), file=fpout)
                 in_header = False
         if k in newprops:
             if newprops[k] is not None:
