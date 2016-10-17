@@ -161,7 +161,12 @@ def escape(field):
     """
     return _base_escape(field).replace(' ', r'\ ')
 
-TIMESTAMP_FMT = '%a %b %d %H:%M:%S %Z %Y'
+DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+MONTHS = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+]
 
 def java_timestamp(timestamp=True):
     """
@@ -183,22 +188,21 @@ def java_timestamp(timestamp=True):
 
     :param timestamp: the date & time to display
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
-    :rtype: string
+    :rtype: text string
 
     .. |date_tostring| replace:: Java 8's ``Date.toString()``
     .. _date_tostring: https://docs.oracle.com/javase/8/docs/api/java/util/Date.html#toString--
     """
-    ### TODO: Make strftime use the C locale
-    # All uses of `time.strftime` assume that `time.tzname` is
-    # meaningful/useful.
     if timestamp is None or timestamp is False:
         return ''
-    elif timestamp is True:
-        return time.strftime(TIMESTAMP_FMT)
-    elif isinstance(timestamp, numbers.Number):
-        return time.strftime(TIMESTAMP_FMT, time.localtime(timestamp))
-    elif isinstance(timestamp, datetime):
-        if timestamp.tzinfo is None:
+    if isinstance(timestamp, datetime) and timestamp.tzinfo is not None:
+        timebits = timestamp.timetuple()
+        # Assumes `timestamp.tzinfo.tzname()` is meaningful/useful
+        tzname = timestamp.tzname()
+    else:
+        if timestamp is True:
+            timestamp = None
+        elif isinstance(timestamp, datetime):
             # Mapping `timetuple` through `mktime` and `localtime` is necessary
             # for determining whether DST is in effect (which, in turn, is
             # necessary for determining which timezone name to use).  The only
@@ -206,12 +210,19 @@ def java_timestamp(timestamp=True):
             # is that `mktime`, apparently, handles times duplicated by DST
             # non-deterministically (cf. <https://git.io/vixsE>), but there's
             # no right way to deal with those anyway, so...
-            return time.strftime(
-                TIMESTAMP_FMT,
-                time.localtime(time.mktime(timestamp.timetuple())),
+            timestamp = time.mktime(timestamp.timetuple())
+        elif not isinstance(timestamp, numbers.Number):
+            raise TypeError('Timestamp must be number or datetime.datetime')
+        timebits = time.localtime(timestamp)
+        # This assumes that `time.tzname` is meaningful/useful.
+        tzname = time.tzname[timebits.tm_isdst]
+    assert 1 <= timebits.tm_mon <= 12
+    assert 0 <= timebits.tm_wday <= 6
+    return '{wday} {mon} {t.tm_mday:02d}' \
+           ' {t.tm_hour:02d}:{t.tm_min:02d}:{t.tm_sec:02d}' \
+           ' {tz} {t.tm_year:04d}'.format(
+                t=timebits,
+                tz=tzname,
+                mon=MONTHS[timebits.tm_mon-1],
+                wday=DAYS_OF_WEEK[timebits.tm_wday]
             )
-        else:
-            # Assumes `timestamp.tzinfo.tzname()` is meaningful/useful
-            return timestamp.strftime(TIMESTAMP_FMT)
-    else:
-        raise TypeError('Timestamp must be number or datetime.datetime object')

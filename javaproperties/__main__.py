@@ -68,7 +68,7 @@ def main():
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
 
 
-TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w+ \d{4,}\s*$'
+TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w* \d{4,}\s*$'
 
 def setproperty(fpin, fpout, newprops, preserve_timestamp=False):
     in_header = True
