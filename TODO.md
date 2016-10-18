@@ -25,6 +25,7 @@
 - Use `lxml` for XML processing if it's installed?
 - Look into the minimum version of the argparse package needed for Python 2.6
     - v1.1 or higher is required for `argparse.ArgumentTypeError`
+- Python 2: Handle `sys.argv` encoding
 
 New Features
 ------------

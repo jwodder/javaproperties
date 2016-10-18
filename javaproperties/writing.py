@@ -216,8 +216,8 @@ def java_timestamp(timestamp=True):
         timebits = time.localtime(timestamp)
         # This assumes that `time.tzname` is meaningful/useful.
         tzname = time.tzname[timebits.tm_isdst]
-    assert 1 <= timebits.tm_mon <= 12
-    assert 0 <= timebits.tm_wday <= 6
+    assert 1 <= timebits.tm_mon <= 12, 'invalid month'
+    assert 0 <= timebits.tm_wday <= 6, 'invalid day of week'
     return '{wday} {mon} {t.tm_mday:02d}' \
            ' {t.tm_hour:02d}:{t.tm_min:02d}:{t.tm_sec:02d}' \
            ' {tz} {t.tm_year:04d}'.format(
