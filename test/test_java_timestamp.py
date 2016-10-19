@@ -24,9 +24,6 @@ def test_java_timestamp_aware_before_spring_ahead():
         'Sun Apr 02 01:59:59 PST 2006'
 
 def test_java_timestamp_aware_skipped():
-    # I believe the difference in behavior from the naïve version is due to the
-    # implementation details of python-dateutil's timezone objects.  Look into
-    # this.
     assert java_timestamp(datetime(2006, 4, 2, 2, 30, 0, 0, old_pacific)) == \
         'Sun Apr 02 02:30:00 PDT 2006'
 

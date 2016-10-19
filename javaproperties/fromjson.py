@@ -1,3 +1,41 @@
+"""
+:program:`json2properties`
+--------------------------
+
+.. code-block:: shell
+
+    python -m javaproperties.fromjson [infile [outfile]]
+    # or, if the javaproperties package was properly installed:
+    json2properties [infile [outfile]]
+
+Convert a JSON file :option:`infile` to a Latin-1 ``.properties`` file and
+write the results to :option:`outfile`.  If not specified, :option:`infile` and
+:option:`outfile` default to `sys.stdin` and `sys.stdout`, respectively.
+
+The JSON document must be an object with scalar (i.e., string, numeric,
+boolean, and/or null) values; anything else will result in an error.
+
+Output is sorted by key, and numeric, boolean, & null values are output using
+their JSON representations; e.g., the input:
+
+.. code-block:: json
+
+    {
+        "yes": true,
+        "no": "false",
+        "nothing": null
+    }
+
+becomes:
+
+.. code-block:: properties
+
+    #Mon Sep 26 18:57:44 UTC 2016
+    no=false
+    nothing=null
+    yes=true
+"""
+
 import argparse
 from   decimal  import Decimal
 import json

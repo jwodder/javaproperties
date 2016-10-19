@@ -1,3 +1,18 @@
+"""
+:program:`properties2json`
+--------------------------
+
+.. code-block:: shell
+
+    python -m javaproperties.tojson [infile [outfile]]
+    # or, if the javaproperties package was properly installed:
+    properties2json [infile [outfile]]
+
+Convert a Latin-1 ``.properties`` file :option:`infile` to a JSON object and
+write the results to :option:`outfile`.  If not specified, :option:`infile` and
+:option:`outfile` default to `sys.stdin` and `sys.stdout`, respectively.
+"""
+
 import argparse
 import json
 import sys

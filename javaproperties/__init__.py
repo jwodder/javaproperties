@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+Read & write Java .properties files
+
 ``javaproperties`` provides support for reading & writing Java ``.properties``
 files (both the "plain" format and XML) with a simple API based on the ``json``
 module — though, for recovering Java addicts, it also includes a ``Properties``
