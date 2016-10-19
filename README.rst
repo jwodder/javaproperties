@@ -6,6 +6,8 @@
 .. image:: https://travis-ci.org/jwodder/javaproperties.svg?branch=master
     :target: https://travis-ci.org/jwodder/javaproperties
 
+.. image:: https://img.shields.io/pypi/pyversions/javaproperties.svg
+
 .. image:: https://img.shields.io/github/license/jwodder/javaproperties.svg?maxAge=2592000
     :target: https://opensource.org/licenses/MIT
     :alt: MIT License
