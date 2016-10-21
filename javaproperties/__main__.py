@@ -40,7 +40,7 @@ def main():
 
     if args.cmd == 'get':
         ok = True
-        props = load(args.file)
+        props = getproperties(args.file, args.key)
         for k in args.key:
             if k in props:
                 if args.properties:
@@ -54,12 +54,12 @@ def main():
         sys.exit(0 if ok else 1)
 
     elif args.cmd == 'set':
-        setproperty(args.file, args.outfile, {args.key: args.value},
-                    args.preserve_timestamp)
+        setproperties(args.file, args.outfile, {args.key: args.value},
+                      args.preserve_timestamp)
 
     elif args.cmd == 'delete':
-        setproperty(args.file, args.outfile, dict.fromkeys(args.key),
-                    args.preserve_timestamp)
+        setproperties(args.file, args.outfile, dict.fromkeys(args.key),
+                      args.preserve_timestamp)
 
     elif args.cmd == 'format':
         dump(load(args.file), args.outfile, sort_keys=True)
@@ -68,9 +68,19 @@ def main():
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
 
 
+def getproperties(fp, keys):
+    keys = set(keys)
+    def getprops(seq):
+        props = {}
+        for k,v in seq:
+            if k in keys:
+                props[k] = v
+        return props
+    return load(fp, object_pairs_hook=getprops)
+
 TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w* \d{4,}\s*$'
 
-def setproperty(fpin, fpout, newprops, preserve_timestamp=False):
+def setproperties(fpin, fpout, newprops, preserve_timestamp=False):
     in_header = True
     prevsrc = None
     for k, _, src in parse(fpin):
