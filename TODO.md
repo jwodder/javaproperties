@@ -48,7 +48,6 @@ Commands
     - Give all of the subcommands options (`-e`?) for controlling whether
       escape sequences in keys & values on the command line should be
       interpolated or used literally
-    - Give `get` a `-d|--default-value <value>` option
     - Give `get` an `-n|--no-newline` option?
     - Give `get` an `-o|--outfile <file>` option?
     - `get -P`: Include a timestamp

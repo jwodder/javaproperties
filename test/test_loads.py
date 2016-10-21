@@ -254,6 +254,9 @@ def test_loads_bad_esc_hex():
 def test_loads_leading_space_in_key():
     assert loads(' \\ key = value') == {" key": "value"}
 
+def test_loads_leading_unicode_space_in_key():
+    assert loads(' \\u0020key = value') == {" key": "value"}
+
 def test_loads_leading_space_before_key():
     assert loads(' \\  key = value') == {" ": "key = value"}
 
