@@ -12,6 +12,8 @@ def main():
     cmds = parser.add_subparsers(title='command', dest='cmd')
 
     cmd_get = cmds.add_parser('get')
+    cmd_get.add_argument('-D', '--defaults', metavar='FILE',
+                         type=properties_reader)
     cmd_get.add_argument('-P', '--properties', action='store_true')
     cmd_get.add_argument('file', type=properties_reader)
     cmd_get.add_argument('key', nargs='+')
@@ -41,12 +43,21 @@ def main():
     if args.cmd == 'get':
         ok = True
         props = getproperties(args.file, args.key)
+        if args.defaults is not None:
+            defaults = getproperties(args.defaults, args.key)
+        else:
+            defaults = {}
         for k in args.key:
             if k in props:
                 if args.properties:
                     print(join_key_value(k, props[k]))
                 else:
                     print(props[k])
+            elif k in defaults:
+                if args.properties:
+                    print(join_key_value(k, defaults[k]))
+                else:
+                    print(defaults[k])
             else:
                 print('javaproperties: {0!r}: key not found'.format(k),
                       file=sys.stderr)
