@@ -3,7 +3,7 @@ import argparse
 import re
 import sys
 from   six        import PY2, iteritems
-from   .reading   import load, parse
+from   .reading   import load, parse, unescape
 from   .writing   import dump, join_key_value, java_timestamp, to_comment
 from   .util      import properties_reader, properties_writer, propout, propin
 
@@ -16,11 +16,13 @@ def main():
     cmd_get.add_argument('-d', '--default-value', metavar='VALUE')
     cmd_get.add_argument('-D', '--defaults', metavar='FILE',
                          type=properties_reader)
+    cmd_get.add_argument('-e', '--escaped', action='store_true')
     cmd_get.add_argument('-P', '--properties', action='store_true')
     cmd_get.add_argument('file', type=properties_reader)
     cmd_get.add_argument('key', nargs='+', type=argstr)
 
     cmd_set = cmds.add_parser('set')
+    cmd_set.add_argument('-e', '--escaped', action='store_true')
     cmd_set.add_argument('-o', '--outfile', type=properties_writer,
                          default=propout)
     cmd_set.add_argument('-T', '--preserve-timestamp', action='store_true')
@@ -29,6 +31,7 @@ def main():
     cmd_set.add_argument('value', type=argstr)
 
     cmd_del = cmds.add_parser('delete')
+    cmd_del.add_argument('-e', '--escaped', action='store_true')
     cmd_del.add_argument('-o', '--outfile', type=properties_writer,
                          default=propout)
     cmd_del.add_argument('-T', '--preserve-timestamp', action='store_true')
@@ -44,6 +47,8 @@ def main():
 
     if args.cmd == 'get':
         ok = True
+        if args.escaped:
+            args.key = list(map(unescape, args.key))
         props = getproperties(args.file, args.key)
         if args.defaults is not None:
             defaults = getproperties(args.defaults, args.key)
@@ -66,10 +71,15 @@ def main():
         sys.exit(0 if ok else 1)
 
     elif args.cmd == 'set':
+        if args.escaped:
+            args.key = unescape(args.key)
+            args.value = unescape(args.value)
         setproperties(args.file, args.outfile, {args.key: args.value},
                       args.preserve_timestamp)
 
     elif args.cmd == 'delete':
+        if args.escaped:
+            args.key = list(map(unescape, args.key))
         setproperties(args.file, args.outfile, dict.fromkeys(args.key),
                       args.preserve_timestamp)
 
