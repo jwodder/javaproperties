@@ -2,7 +2,7 @@
     - Test reading & writing bytes in both Python 2 and Python 3
     - Test utility functions in isolation?
     - Test the command-line programs (or at least their nontrivial components,
-      like `setproperty`)
+      like `setproperties`)
     - Run doctest on the README examples
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
@@ -24,6 +24,11 @@
 - Use `lxml` for XML processing if it's installed?
 - Look into the minimum version of the argparse package needed for Python 2.6
     - v1.1 or higher is required for `argparse.ArgumentTypeError`
+- Look into the correctness of using `sys.getfilesystemencoding()` for decoding
+  command-line arguments in Python 2
+    - cf. <http://stackoverflow.com/q/4012571/744178>
+- `javaproperties set` does the wrong thing when appending a line to a file
+  that ends with a backslash.  Fix this.
 
 New Features
 ------------
@@ -50,7 +55,7 @@ Commands
       interpolated or used literally
     - Give `get` an `-n|--no-newline` option?
     - Give `get` an `-o|--outfile <file>` option?
-    - `get -P`: Include a timestamp
+    - `get -P`: Include a timestamp (and support `--preserve-timestamp`)
     - Give `set` and `delete` `--in-place | --outfile <file>` options (with a
       `backup <file>` option for use with `--in-place`)
     - Give `set` an option for setting the separator?
@@ -59,10 +64,9 @@ Commands
     - Give `format` an option for setting the separator?
     - Give `format` a `--preserve-timestamp` option
     - Add options for completely suppressing the timestamp?
-    - Python 2: Handle `sys.argv` encoding
 
 - Support converting between JSON and XML properties
 - Support autodetecting whether a properties file is in XML based on file
   extension (or other means?) ?
 - Add a command for converting between XML format and "plain" format?
-- Give the commands options for setting the properties files' encodings?
+- Give the commands options for setting the properties files' encodings

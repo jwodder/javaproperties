@@ -2,12 +2,13 @@ from   __future__ import print_function, unicode_literals
 import argparse
 import re
 import sys
-from   six        import iteritems
+from   six        import PY2, iteritems
 from   .reading   import load, parse
 from   .writing   import dump, join_key_value, java_timestamp, to_comment
 from   .util      import properties_reader, properties_writer, propout, propin
 
 def main():
+    argstr = (lambda s: s.decode(sys.getfilesystemencoding())) if PY2 else str
     parser = argparse.ArgumentParser()
     cmds = parser.add_subparsers(title='command', dest='cmd')
 
@@ -17,22 +18,22 @@ def main():
                          type=properties_reader)
     cmd_get.add_argument('-P', '--properties', action='store_true')
     cmd_get.add_argument('file', type=properties_reader)
-    cmd_get.add_argument('key', nargs='+')
+    cmd_get.add_argument('key', nargs='+', type=argstr)
 
     cmd_set = cmds.add_parser('set')
     cmd_set.add_argument('-o', '--outfile', type=properties_writer,
                          default=propout)
     cmd_set.add_argument('-T', '--preserve-timestamp', action='store_true')
     cmd_set.add_argument('file', type=properties_reader)
-    cmd_set.add_argument('key')
-    cmd_set.add_argument('value')
+    cmd_set.add_argument('key', type=argstr)
+    cmd_set.add_argument('value', type=argstr)
 
     cmd_del = cmds.add_parser('delete')
     cmd_del.add_argument('-o', '--outfile', type=properties_writer,
                          default=propout)
     cmd_del.add_argument('-T', '--preserve-timestamp', action='store_true')
     cmd_del.add_argument('file', type=properties_reader)
-    cmd_del.add_argument('key', nargs='+')
+    cmd_del.add_argument('key', nargs='+', type=argstr)
 
     cmd_format = cmds.add_parser('format')
     cmd_format.add_argument('-o', '--outfile', type=properties_writer,
