@@ -25,5 +25,7 @@
     - Writing a comment containing a backslash followed by a non-Latin-1
       character
         - The comment will contain `\\uXXXX` (i.e., two literal backslashes)
+    - Writing a comment containing a character in the 0x80-0x9F range
+        - The character is written as-is, not escaped
 
 - Terminating newlines are discarded, but not other trailing whitespace.

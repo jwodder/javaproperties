@@ -40,6 +40,8 @@ def test_java_timestamp_aware_duplicated():
     # this call.
     assert java_timestamp(datetime(2006, 10,29, 1, 30, 0, 0, old_pacific)) in \
         ('Sun Oct 29 01:30:00 PDT 2006', 'Sun Oct 29 01:30:00 PST 2006')
+    ### Shouldn't this actually be well-defined (albeit dependent upon
+    ### dateutil's implementation behavior)?
 
 def test_java_timestamp_aware_after_fall_back():
     assert java_timestamp(datetime(2006, 10,29, 2, 0, 1, 0, old_pacific)) == \

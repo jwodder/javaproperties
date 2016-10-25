@@ -11,14 +11,14 @@
     - Figure out exactly what types of filehandles & strings
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
       `loadFromXML` documentation
-    - Add simple descriptions of/introductions to the `.properties` and XML
-      formats to the documentation sections for reading & writing the
-      respective formats
-        - Mention that all uses of "whitespace" in the documentation
-          specifically refer to CR, LF, FF, TAB, and space
+    - Add a simple description of/introduction to the XML format to the
+      documentation
     - Include examples in main docs?
     - Document `javaproperties` command
     - Fill in the commands' arguments' `help` and `description` fields
+    - Mention that dicts (when not sorted) are output in the order they're
+      iterated over, so OrderedDicts are respected
+    - Look for an official term for the "plain" format
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Handle files with CR line endings not opened in universal newlines mode?
 - Use `lxml` for XML processing if it's installed?
