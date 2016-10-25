@@ -296,3 +296,15 @@ def test_loads_utf8_bytes():
         'snowman': '\xE2\x98\x83',
         'goat': '\xF0\x9F\x90\x90',
     }
+
+def test_loads_tab_separator():
+    assert loads('key\tvalue=pair') == {"key": "value=pair"}
+
+def test_loads_escaped_tab():
+    assert loads('key\\\tvalue=pair') == {"key\tvalue": "pair"}
+
+def test_loads_form_feed_separator():
+    assert loads('key\fvalue=pair') == {"key": "value=pair"}
+
+def test_loads_escaped_form_feed():
+    assert loads('key\\\fvalue=pair') == {"key\fvalue": "pair"}
