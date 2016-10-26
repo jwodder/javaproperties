@@ -11,8 +11,6 @@
     - Figure out exactly what types of filehandles & strings
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
       `loadFromXML` documentation
-    - Add a simple description of/introduction to the XML format to the
-      documentation
     - Include examples in main docs?
     - Document `javaproperties` command
     - Fill in the commands' arguments' `help` and `description` fields

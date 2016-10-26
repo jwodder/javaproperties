@@ -31,7 +31,9 @@ The "plain" ``.properties`` file format consists of a series of key-value
 string pairs, one (or fewer) per line, with the key & value separated by the
 first occurrence of an equals sign (``=``, optionally with surrounding
 whitespace), a colon (``:``, optionally with surrounding whitespace), or
-non-leading whitespace.
+non-leading whitespace.  A line without a separator is treated as a key whose
+value is the empty string.  If the same key occurs more than once in a single
+file, only its last value is used.
 
 .. note::
 
@@ -39,15 +41,15 @@ non-leading whitespace.
     tab character (ASCII 0x09), and the form feed character (ASCII 0x0C) count
     as whitespace.
 
-Leading whitespace on a line is ignored, but trailing whitespace is not.  Lines
-whose first non-whitespace character is ``#`` or ``!`` (not escaped) are
-comments and are ignored.
+Leading whitespace on a line is ignored, but trailing whitespace (after
+stripping trailing newlines) is not.  Lines whose first non-whitespace
+character is ``#`` or ``!`` (not escaped) are comments and are ignored.
 
 Entries can be extended across multiple lines by ending all but the last line
 with a backslash; the backslash, the line ending after it, and any leading
 whitespace on the next line will all be discarded.  A backslash at the end of a
-comment line has no effect.  A comment line after a line ending in a backslash
-is treated as part of a normal key-value entry, not as a comment.
+comment line has no effect.  A comment line after a line that ends with a
+backslash is treated as part of a normal key-value entry, not as a comment.
 
 Occurrences of ``=``, ``:``, ``#``, ``!``, and whitespace inside a key or value
 are escaped with a backslash.  In addition, the following escape sequences are
@@ -65,7 +67,6 @@ UTF-16 surrogate pairs before escaping with ``\uXXXX`` escapes.
 
 Functions
 ---------
-
 .. autofunction:: dump
 .. autofunction:: dumps
 .. autofunction:: load
@@ -73,6 +74,25 @@ Functions
 
 Reading & Writing ``.properties`` Files as XML
 ==============================================
+
+Format Overview
+---------------
+
+The XML ``.properties`` file format encodes a series of key-value string pairs
+(and optionally also a comment) as an XML document conforming to the following
+Document Type Definition (published at
+<http://java.sun.com/dtd/properties.dtd>):
+
+.. code-block:: dtd
+
+    <!ELEMENT properties (comment?, entry*)>
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA)>
+    <!ELEMENT entry (#PCDATA)>
+    <!ATTLIST entry key CDATA #REQUIRED>
+
+Functions
+---------
 .. autofunction:: dump_xml
 .. autofunction:: dumps_xml
 .. autofunction:: load_xml
