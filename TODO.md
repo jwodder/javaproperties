@@ -53,10 +53,8 @@ Commands
     - `get -P`: Include a timestamp (and support `--preserve-timestamp`)
     - Give `set` and `delete` `--in-place | --outfile <file>` options (with a
       `backup <file>` option for use with `--in-place`)
-    - Give `set` an option for setting the separator?
     - Give `set` and `delete` options for reformatting/not preserving
       formatting?
-    - Give `format` an option for setting the separator?
     - Give `format` a `--preserve-timestamp` option
     - Add options for completely suppressing the timestamp?
 

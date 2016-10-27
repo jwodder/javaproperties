@@ -18,6 +18,7 @@ def main():
                          type=properties_reader)
     cmd_get.add_argument('-e', '--escaped', action='store_true')
     cmd_get.add_argument('-P', '--properties', action='store_true')
+    cmd_get.add_argument('-s', '--separator', default='=')
     cmd_get.add_argument('file', type=properties_reader)
     cmd_get.add_argument('key', nargs='+', type=argstr)
 
@@ -25,6 +26,7 @@ def main():
     cmd_set.add_argument('-e', '--escaped', action='store_true')
     cmd_set.add_argument('-o', '--outfile', type=properties_writer,
                          default=propout)
+    cmd_set.add_argument('-s', '--separator', default='=')
     cmd_set.add_argument('-T', '--preserve-timestamp', action='store_true')
     cmd_set.add_argument('file', type=properties_reader)
     cmd_set.add_argument('key', type=argstr)
@@ -41,6 +43,7 @@ def main():
     cmd_format = cmds.add_parser('format')
     cmd_format.add_argument('-o', '--outfile', type=properties_writer,
                             default=propout)
+    cmd_format.add_argument('-s', '--separator', default='=')
     cmd_format.add_argument('file', type=properties_reader, default=propin)
 
     args = parser.parse_args()
@@ -65,7 +68,7 @@ def main():
                       file=sys.stderr)
                 ok = False
             elif args.properties:
-                print(join_key_value(k, v))
+                print(join_key_value(k, v, separator=args.separator))
             else:
                 print(v)
         sys.exit(0 if ok else 1)
@@ -75,16 +78,17 @@ def main():
             args.key = unescape(args.key)
             args.value = unescape(args.value)
         setproperties(args.file, args.outfile, {args.key: args.value},
-                      args.preserve_timestamp)
+                      args.preserve_timestamp, args.separator)
 
     elif args.cmd == 'delete':
         if args.escaped:
             args.key = list(map(unescape, args.key))
         setproperties(args.file, args.outfile, dict.fromkeys(args.key),
-                      args.preserve_timestamp)
+                      args.preserve_timestamp, args.separator)
 
     elif args.cmd == 'format':
-        dump(load(args.file), args.outfile, sort_keys=True)
+        dump(load(args.file), args.outfile, sort_keys=True,
+             separator=args.separator)
 
     else:
         assert False, 'No path defined for command {0!r}'.format(args.cmd)
@@ -102,7 +106,8 @@ def getproperties(fp, keys):
 
 TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w* \d{4,}\s*$'
 
-def setproperties(fpin, fpout, newprops, preserve_timestamp=False):
+def setproperties(fpin, fpout, newprops, preserve_timestamp=False,
+                  separator='='):
     in_header = True
     prevsrc = None
     for k, _, src in parse(fpin):
@@ -125,13 +130,14 @@ def setproperties(fpin, fpout, newprops, preserve_timestamp=False):
                 in_header = False
         if k in newprops:
             if newprops[k] is not None:
-                print(join_key_value(k, newprops[k]), file=fpout)
+                print(join_key_value(k, newprops[k], separator=separator),
+                      file=fpout)
                 newprops[k] = None
         else:
             print(src, end='', file=fpout)
     for key, value in iteritems(newprops):
         if value is not None:
-            print(join_key_value(key, value), file=fpout)
+            print(join_key_value(key, value, separator=separator), file=fpout)
 
 if __name__ == '__main__':
     main()
