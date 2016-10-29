@@ -134,7 +134,10 @@ def setproperties(fpin, fpout, newprops, preserve_timestamp=False,
                       file=fpout)
                 newprops[k] = None
         else:
-            print(src, end='', file=fpout)
+            # In case the last line of the file ends with a trailing line
+            # continuation:
+            src = re.sub(r'(?<!\\)((?:\\\\)*)\\$', r'\1', src)
+            print(src.rstrip('\r\n'), file=fpout)
     for key, value in iteritems(newprops):
         if value is not None:
             print(join_key_value(key, value, separator=separator), file=fpout)

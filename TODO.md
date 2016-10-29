@@ -25,8 +25,6 @@
 - Look into the correctness of using `sys.getfilesystemencoding()` for decoding
   command-line arguments in Python 2
     - cf. <http://stackoverflow.com/q/4012571/744178>
-- `javaproperties set` does the wrong thing when appending a line to a file
-  that ends with a backslash.  Fix this.
 
 New Features
 ------------
@@ -63,3 +61,4 @@ Commands
   extension (or other means?) ?
 - Add a command for converting between XML format and "plain" format?
 - Give the commands options for setting the properties files' encodings
+- Give `json2properties` a `--separator` option
