@@ -4,9 +4,9 @@
 
 .. code-block:: shell
 
-    python -m javaproperties.fromjson [infile [outfile]]
+    python -m javaproperties.fromjson [-s|--separator <sep>] [infile [outfile]]
     # or, if the javaproperties package was properly installed:
-    json2properties [infile [outfile]]
+    json2properties [-s|--separator <sep>] [infile [outfile]]
 
 Convert a JSON file :option:`infile` to a Latin-1 ``.properties`` file and
 write the results to :option:`outfile`.  If not specified, :option:`infile` and
@@ -34,6 +34,21 @@ becomes:
     no=false
     nothing=null
     yes=true
+
+The key-value separator used in the output defaults to ``=`` and can be
+overridden with the :option:`-s` or :option:`--separator` option; e.g.,
+supplying ``--separator ': '`` on the command line with the above JSON file as
+input produces:
+
+.. code-block:: properties
+
+    #Mon Sep 26 18:57:44 UTC 2016
+    no: false
+    nothing: null
+    yes: true
+
+.. versionchanged:: 0.2.0
+    Added the :option:`--separator` option
 """
 
 import argparse
@@ -45,6 +60,7 @@ from   .writing import dump
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--separator', default='=')
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
                         default=sys.stdin)
     parser.add_argument('outfile', nargs='?', type=properties_writer,
@@ -53,9 +69,10 @@ def main():
     with args.infile:
         props = json.load(args.infile, parse_float=Decimal)
     if not isinstance(props, dict):
-        raise TypeError('Can only convert dicts to .properties files')
+        sys.exit('json2properties: Only dicts can be converted to .properties')
     with args.outfile:
-        dump(sorted(strify_dict(props).items()), args.outfile)
+        dump(sorted(strify_dict(props).items()), args.outfile,
+             separator=args.separator)
 
 if __name__ == '__main__':
     main()

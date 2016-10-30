@@ -4,6 +4,7 @@
     - Test the command-line programs (or at least their nontrivial components,
       like `setproperties`)
     - Run doctest on the README examples
+    - Test the `Properties` class
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
@@ -25,6 +26,9 @@
 - Look into the correctness of using `sys.getfilesystemencoding()` for decoding
   command-line arguments in Python 2
     - cf. <http://stackoverflow.com/q/4012571/744178>
+- Use click for handling command-line arguments?
+- Raise an error if an invalid separator is passed to a function and/or
+  command-line program?
 
 New Features
 ------------
@@ -56,9 +60,10 @@ Commands
     - Give `format` a `--preserve-timestamp` option
     - Add options for completely suppressing the timestamp?
 
-- Support converting between JSON and XML properties
-- Support autodetecting whether a properties file is in XML based on file
-  extension (or other means?) ?
-- Add a command for converting between XML format and "plain" format?
+- Support XML properties files:
+    - Support converting between JSON and XML properties
+    - Add a command for converting between XML format and "plain" format?
+    - Support autodetecting whether a properties file is in XML based on file
+      extension (or other means?) ?
+
 - Give the commands options for setting the properties files' encodings
-- Give `json2properties` a `--separator` option
