@@ -16,15 +16,20 @@ write the results to :option:`outfile`.  If not specified, :option:`infile` and
 import argparse
 import json
 import sys
+from   .        import __version__
 from   .reading import load
 from   .util    import properties_reader, propin
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description='Convert a Java .properties file to JSON'
+    )
+    parser.add_argument('-V', '--version', action='version',
+                        version='javaproperties ' + __version__)
     parser.add_argument('infile', nargs='?', type=properties_reader,
-                        default=propin)
+                        default=propin, help='Properties file')
     parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
-                        default=sys.stdout)
+                        default=sys.stdout, help='JSON file')
     args = parser.parse_args()
     with args.infile:
         props = load(args.infile)

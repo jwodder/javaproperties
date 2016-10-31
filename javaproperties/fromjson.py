@@ -55,16 +55,22 @@ import argparse
 from   decimal  import Decimal
 import json
 import sys
+from   .        import __version__
 from   .util    import strify_dict, properties_writer, propout
 from   .writing import dump
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--separator', default='=')
+    parser = argparse.ArgumentParser(
+        description='Convert a JSON object to a Java .properties file'
+    )
+    parser.add_argument('-s', '--separator', default='=',
+                        help='Key-value separator in output; default: "="')
+    parser.add_argument('-V', '--version', action='version',
+                        version='javaproperties ' + __version__)
     parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
-                        default=sys.stdin)
+                        default=sys.stdin, help='JSON file')
     parser.add_argument('outfile', nargs='?', type=properties_writer,
-                        default=propout)
+                        default=propout, help='Properties file')
     args = parser.parse_args()
     with args.infile:
         props = json.load(args.infile, parse_float=Decimal)
