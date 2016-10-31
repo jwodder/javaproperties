@@ -3,6 +3,7 @@
     - Test utility functions in isolation?
     - Test the command-line programs (or at least their nontrivial components,
       like `setproperties`)
+        - See <http://click.pocoo.org/6/testing/>
     - Run doctest on the README examples
     - Test the `Properties` class
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
@@ -26,7 +27,6 @@
 - Look into the correctness of using `sys.getfilesystemencoding()` for decoding
   command-line arguments in Python 2
     - cf. <http://stackoverflow.com/q/4012571/744178>
-- Use click for handling command-line arguments?
 - Raise an error if an invalid separator is passed to a function and/or
   command-line program?
 

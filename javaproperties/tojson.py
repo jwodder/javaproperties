@@ -13,30 +13,25 @@ write the results to :option:`outfile`.  If not specified, :option:`infile` and
 :option:`outfile` default to `sys.stdin` and `sys.stdout`, respectively.
 """
 
-import argparse
 import json
-import sys
+import click
 from   .        import __version__
 from   .reading import load
-from   .util    import properties_reader, propin
 
-def main():
-    parser = argparse.ArgumentParser(
-        description='Convert a Java .properties file to JSON'
-    )
-    parser.add_argument('-V', '--version', action='version',
-                        version='javaproperties ' + __version__)
-    parser.add_argument('infile', nargs='?', type=properties_reader,
-                        default=propin, help='Properties file')
-    parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
-                        default=sys.stdout, help='JSON file')
-    args = parser.parse_args()
-    with args.infile:
-        props = load(args.infile)
-    with args.outfile:
-        json.dump(props, args.outfile, sort_keys=True, indent=4,
-                                       separators=(',', ': '))
-        args.outfile.write('\n')
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.version_option(__version__, '-V', '--version',
+                      message='%(prog)s %(version)s')
+@click.argument('infile', type=click.File('r', encoding='iso-8859-1'),
+                default='-')
+@click.argument('outfile', type=click.File('w'), default='-')
+def tojson(infile, outfile):
+    """Convert a Java .properties file to JSON"""
+    with infile:
+        props = load(infile)
+    with outfile:
+        json.dump(props, outfile, sort_keys=True, indent=4,
+                  separators=(',', ': '))
+        outfile.write('\n')
 
 if __name__ == '__main__':
-    main()
+    tojson()

@@ -51,34 +51,30 @@ input produces:
     Added the :option:`--separator` option
 """
 
-import argparse
 from   decimal  import Decimal
 import json
-import sys
+import click
 from   .        import __version__
-from   .util    import strify_dict, properties_writer, propout
+from   .util    import strify_dict
 from   .writing import dump
 
-def main():
-    parser = argparse.ArgumentParser(
-        description='Convert a JSON object to a Java .properties file'
-    )
-    parser.add_argument('-s', '--separator', default='=',
-                        help='Key-value separator in output; default: "="')
-    parser.add_argument('-V', '--version', action='version',
-                        version='javaproperties ' + __version__)
-    parser.add_argument('infile', nargs='?', type=argparse.FileType('r'),
-                        default=sys.stdin, help='JSON file')
-    parser.add_argument('outfile', nargs='?', type=properties_writer,
-                        default=propout, help='Properties file')
-    args = parser.parse_args()
-    with args.infile:
-        props = json.load(args.infile, parse_float=Decimal)
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.version_option(__version__, '-V', '--version',
+                      message='%(prog)s %(version)s')
+@click.option('-s', '--separator', default='=',
+              help='Key-value separator in output; default: "="')
+@click.argument('infile', type=click.File('r'), default='-')
+@click.argument('outfile', type=click.File('w', encoding='iso-8859-1'),
+                default='-')
+@click.pass_context
+def fromjson(ctx, infile, outfile, separator):
+    """Convert a JSON object to a Java .properties file"""
+    with infile:
+        props = json.load(infile, parse_float=Decimal)
     if not isinstance(props, dict):
-        sys.exit('json2properties: Only dicts can be converted to .properties')
-    with args.outfile:
-        dump(sorted(strify_dict(props).items()), args.outfile,
-             separator=args.separator)
+        ctx.fail('Only dicts can be converted to .properties')
+    with outfile:
+        dump(sorted(strify_dict(props).items()), outfile, separator=separator)
 
 if __name__ == '__main__':
-    main()
+    fromjson()

@@ -1,98 +1,86 @@
-from   __future__ import print_function, unicode_literals
-import argparse
+from   __future__ import print_function
 import re
-import sys
-from   six        import PY2, iteritems
+import click
+from   six        import iteritems
+from   .          import __version__
 from   .reading   import load, parse, unescape
 from   .writing   import dump, join_key_value, java_timestamp, to_comment
-from   .util      import properties_reader, properties_writer, propout, propin
 
-def main():
-    argstr = (lambda s: s.decode(sys.getfilesystemencoding())) if PY2 else str
-    parser = argparse.ArgumentParser()
-    cmds = parser.add_subparsers(title='command', dest='cmd')
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+@click.version_option(__version__, '-V', '--version',
+                      message='%(prog)s %(version)s')
+def javaproperties():
+    pass
 
-    cmd_get = cmds.add_parser('get')
-    cmd_get.add_argument('-d', '--default-value', metavar='VALUE')
-    cmd_get.add_argument('-D', '--defaults', metavar='FILE',
-                         type=properties_reader)
-    cmd_get.add_argument('-e', '--escaped', action='store_true')
-    cmd_get.add_argument('-P', '--properties', action='store_true')
-    cmd_get.add_argument('-s', '--separator', default='=')
-    cmd_get.add_argument('file', type=properties_reader)
-    cmd_get.add_argument('key', nargs='+', type=argstr)
-
-    cmd_set = cmds.add_parser('set')
-    cmd_set.add_argument('-e', '--escaped', action='store_true')
-    cmd_set.add_argument('-o', '--outfile', type=properties_writer,
-                         default=propout)
-    cmd_set.add_argument('-s', '--separator', default='=')
-    cmd_set.add_argument('-T', '--preserve-timestamp', action='store_true')
-    cmd_set.add_argument('file', type=properties_reader)
-    cmd_set.add_argument('key', type=argstr)
-    cmd_set.add_argument('value', type=argstr)
-
-    cmd_del = cmds.add_parser('delete')
-    cmd_del.add_argument('-e', '--escaped', action='store_true')
-    cmd_del.add_argument('-o', '--outfile', type=properties_writer,
-                         default=propout)
-    cmd_del.add_argument('-T', '--preserve-timestamp', action='store_true')
-    cmd_del.add_argument('file', type=properties_reader)
-    cmd_del.add_argument('key', nargs='+', type=argstr)
-
-    cmd_format = cmds.add_parser('format')
-    cmd_format.add_argument('-o', '--outfile', type=properties_writer,
-                            default=propout)
-    cmd_format.add_argument('-s', '--separator', default='=')
-    cmd_format.add_argument('file', type=properties_reader, default=propin)
-
-    args = parser.parse_args()
-
-    if args.cmd == 'get':
-        ok = True
-        if args.escaped:
-            args.key = list(map(unescape, args.key))
-        props = getproperties(args.file, args.key)
-        if args.defaults is not None:
-            defaults = getproperties(args.defaults, args.key)
-        else:
-            defaults = {}
-        for k in args.key:
-            v = args.default_value
-            if k in props:
-                v = props[k]
-            elif k in defaults:
-                v = defaults[k]
-            if v is None:
-                print('javaproperties: {0!r}: key not found'.format(k),
-                      file=sys.stderr)
-                ok = False
-            elif args.properties:
-                print(join_key_value(k, v, separator=args.separator))
-            else:
-                print(v)
-        sys.exit(0 if ok else 1)
-
-    elif args.cmd == 'set':
-        if args.escaped:
-            args.key = unescape(args.key)
-            args.value = unescape(args.value)
-        setproperties(args.file, args.outfile, {args.key: args.value},
-                      args.preserve_timestamp, args.separator)
-
-    elif args.cmd == 'delete':
-        if args.escaped:
-            args.key = list(map(unescape, args.key))
-        setproperties(args.file, args.outfile, dict.fromkeys(args.key),
-                      args.preserve_timestamp, args.separator)
-
-    elif args.cmd == 'format':
-        dump(load(args.file), args.outfile, sort_keys=True,
-             separator=args.separator)
-
+@javaproperties.command()
+@click.option('-d', '--default-value', metavar='VALUE')
+@click.option('-D', '--defaults', metavar='FILE',
+              type=click.File('r', encoding='iso-8859-1'))
+@click.option('-e', '--escaped', is_flag=True)
+@click.option('-P', '--properties', 'as_prop', is_flag=True)
+@click.option('-s', '--separator', default='=')
+@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.argument('key', nargs=-1, required=True)
+@click.pass_context
+def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key):
+    ok = True
+    if escaped:
+        key = list(map(unescape, key))
+    props = getproperties(file, key)
+    if defaults is not None:
+        defaults = getproperties(defaults, key)
     else:
-        assert False, 'No path defined for command {0!r}'.format(args.cmd)
+        defaults = {}
+    for k in key:
+        v = default_value
+        if k in props:
+            v = props[k]
+        elif k in defaults:
+            v = defaults[k]
+        if v is None:
+            click.echo('javaproperties: {0}: key not found'.format(k), err=True)
+            ok = False
+        elif as_prop:
+            click.echo(join_key_value(k, v, separator=separator))
+        else:
+            click.echo(v)
+    ctx.exit(0 if ok else 1)
 
+@javaproperties.command('set')
+@click.option('-e', '--escaped', is_flag=True)
+@click.option('-s', '--separator', default='=')
+@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
+              default='-')
+@click.option('-T', '--preserve-timestamp', is_flag=True)
+@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.argument('key')
+@click.argument('value')
+def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value):
+    if escaped:
+        key = unescape(key)
+        value = unescape(value)
+    setproperties(file, outfile, {key: value}, preserve_timestamp, separator)
+
+@javaproperties.command()
+@click.option('-e', '--escaped', is_flag=True)
+@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
+              default='-')
+@click.option('-T', '--preserve-timestamp', is_flag=True)
+@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.argument('key', nargs=-1, required=True)
+def delete(escaped, outfile, preserve_timestamp, file, key):
+    if escaped:
+        key = list(map(unescape, key))
+    setproperties(file, outfile, dict.fromkeys(key), preserve_timestamp)
+
+@javaproperties.command()
+@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
+              default='-')
+@click.option('-s', '--separator', default='=')
+@click.argument('file', type=click.File('r', encoding='iso-8859-1'),
+                default='-')
+def format(outfile, separator, file):
+    dump(load(file), outfile, sort_keys=True, separator=separator)
 
 def getproperties(fp, keys):
     keys = set(keys)
@@ -143,4 +131,4 @@ def setproperties(fpin, fpout, newprops, preserve_timestamp=False,
             print(join_key_value(key, value, separator=separator), file=fpout)
 
 if __name__ == '__main__':
-    main()
+    javaproperties()

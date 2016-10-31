@@ -27,12 +27,8 @@ setup(
     url='https://github.com/jwodder/javaproperties',
 
     setup_requires=['pytest-runner>=2.0,<3'],
-    install_requires=['six>=1.4.0,<2'],
+    install_requires=['click>=6.0,<7', 'six>=1.4.0,<2'],
     tests_require=['pytest>=2.8,<3', 'python-dateutil'],
-
-    extras_require={
-        ':python_version=="2.6"': ['argparse'],
-    },
 
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -58,9 +54,9 @@ setup(
 
     entry_points={
         "console_scripts": [
-            'javapropeties = javaproperties.__main__:main',
-            'properties2json = javaproperties.tojson:main',
-            'json2properties = javaproperties.fromjson:main',
+            'javapropeties = javaproperties.__main__:javaproperties',
+            'properties2json = javaproperties.tojson:tojson',
+            'json2properties = javaproperties.fromjson:fromjson',
         ]
     },
 )
