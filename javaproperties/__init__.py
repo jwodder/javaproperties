@@ -8,14 +8,15 @@ module — though, for recovering Java addicts, it also includes a ``Properties`
 class intended to match the behavior of Java 8's ``java.net.Properties`` as
 much as is Pythonically possible.
 
-Visit <https://github.com/jwodder/javaproperties> for more information.
+Visit <https://github.com/jwodder/javaproperties> or
+<http://javaproperties.rtfd.io> for more information.
 """
 
 from .propclass import Properties
 from .reading   import load, loads, parse, unescape
 from .writing   import dump, dumps, java_timestamp, join_key_value, escape, \
                         to_comment
-from .xml       import load_xml, loads_xml, dump_xml, dumps_xml
+from .xmlprops  import load_xml, loads_xml, dump_xml, dumps_xml
 
 __version__      = '0.2.0.dev1'
 __author__       = 'John Thorvald Wodder II'

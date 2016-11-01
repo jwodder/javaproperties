@@ -1,5 +1,4 @@
-from   __future__            import absolute_import, print_function, \
-                                    unicode_literals
+from   __future__            import print_function, unicode_literals
 import codecs
 import xml.etree.ElementTree as ET
 from   xml.sax.saxutils      import escape, quoteattr

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import collections
-from   six      import string_types
-from   .reading import load
-from   .util    import itemize
-from   .writing import dump
-from   .xml     import load_xml, dump_xml
+from   six       import string_types
+from   .reading  import load
+from   .util     import itemize
+from   .writing  import dump
+from   .xmlprops import load_xml, dump_xml
 
 _type_err = 'Keys & values of Properties objects must be strings'
 
