@@ -11,24 +11,33 @@ from   .util      import infile_type, outfile_type
 @click.version_option(__version__, '-V', '--version',
                       message='%(prog)s %(version)s')
 def javaproperties():
+    """ Basic manipulation of Java .properties files """
     pass
 
 @javaproperties.command()
-@click.option('-d', '--default-value', metavar='VALUE')
-@click.option('-D', '--defaults', metavar='FILE', type=infile_type)
-@click.option('-e', '--escaped', is_flag=True)
+@click.option('-d', '--default-value', metavar='VALUE',
+              help='Default value for undefined keys')
+@click.option('-D', '--defaults', metavar='FILE', type=infile_type,
+              help='.properties file of default values')
+@click.option('-e', '--escaped', is_flag=True,
+              help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
               help='Encoding of the .properties files')
-@click.option('-P', '--properties', 'as_prop', is_flag=True)
-@click.option('-s', '--separator', default='=', show_default=True)
+@click.option('-P', '--properties', 'as_prop', is_flag=True,
+              help='Output a full .properties file instead of just values')
+@click.option('-s', '--separator', default='=', show_default=True,
+              help='Key-value separator to use in output')
 @click.argument('file', type=infile_type)
 @click.argument('key', nargs=-1, required=True)
 @click.pass_context
 def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key,
         encoding):
+    """ Query values from a Java .properties file """
     ok = True
     if escaped:
         key = list(map(unescape, key))
+        if default_value is not None:
+            default_value = unescape(default_value)
     with click.open_file(file, encoding=encoding) as fp:
         props = getproperties(fp, key)
     if defaults is not None:
@@ -52,17 +61,22 @@ def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key,
     ctx.exit(0 if ok else 1)
 
 @javaproperties.command('set')
-@click.option('-e', '--escaped', is_flag=True)
+@click.option('-e', '--escaped', is_flag=True,
+              help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
               help='Encoding of the .properties files')
-@click.option('-s', '--separator', default='=', show_default=True)
-@click.option('-o', '--outfile', type=outfile_type, default='-')
-@click.option('-T', '--preserve-timestamp', is_flag=True)
+@click.option('-s', '--separator', default='=', show_default=True,
+              help='Key-value separator to use in output')
+@click.option('-o', '--outfile', type=outfile_type, default='-',
+              help='Write output to this file')
+@click.option('-T', '--preserve-timestamp', is_flag=True,
+              help='Keep the timestamp from the input file')
 @click.argument('file', type=infile_type)
 @click.argument('key')
 @click.argument('value')
 def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value,
             encoding):
+    """ Set values in a Java .properties file """
     if escaped:
         key = unescape(key)
         value = unescape(value)
@@ -72,14 +86,18 @@ def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value,
                           separator)
 
 @javaproperties.command()
-@click.option('-e', '--escaped', is_flag=True)
+@click.option('-e', '--escaped', is_flag=True,
+              help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
               help='Encoding of the .properties files')
-@click.option('-o', '--outfile', type=outfile_type, default='-')
-@click.option('-T', '--preserve-timestamp', is_flag=True)
+@click.option('-o', '--outfile', type=outfile_type, default='-',
+              help='Write output to this file')
+@click.option('-T', '--preserve-timestamp', is_flag=True,
+              help='Keep the timestamp from the input file')
 @click.argument('file', type=infile_type)
 @click.argument('key', nargs=-1, required=True)
 def delete(escaped, outfile, preserve_timestamp, file, key, encoding):
+    """ Remove values from a Java .properties file """
     if escaped:
         key = list(map(unescape, key))
     with click.open_file(file, encoding=encoding) as fpin:
@@ -89,10 +107,13 @@ def delete(escaped, outfile, preserve_timestamp, file, key, encoding):
 @javaproperties.command()
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
               help='Encoding of the .properties files')
-@click.option('-o', '--outfile', type=outfile_type, default='-')
-@click.option('-s', '--separator', default='=', show_default=True)
+@click.option('-o', '--outfile', type=outfile_type, default='-',
+              help='Write output to this file')
+@click.option('-s', '--separator', default='=', show_default=True,
+              help='Key-value separator to use in output')
 @click.argument('file', type=infile_type, default='-')
 def format(outfile, separator, file, encoding):
+    """ Format/"canonicalize" a Java .properties file """
     with click.open_file(file, encoding=encoding) as fpin:
         with click.open_file(outfile, 'w', encoding=encoding) as fpout:
             dump(load(fpin), fpout, sort_keys=True, separator=separator)

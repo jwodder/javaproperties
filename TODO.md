@@ -15,7 +15,6 @@
       `loadFromXML` documentation
     - Include examples in main docs?
     - Document `javaproperties` command
-    - Fill in the commands' arguments' `help` and `description` fields
     - Mention that dicts (when not sorted) are output in the order they're
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
