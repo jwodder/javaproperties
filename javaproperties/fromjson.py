@@ -55,26 +55,27 @@ from   decimal  import Decimal
 import json
 import click
 from   .        import __version__
-from   .util    import strify_dict
+from   .util    import strify_dict, outfile_type
 from   .writing import dump
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties file')
+@click.option('-s', '--separator', default='=', show_default=True,
+              help='Key-value separator to use in output')
+@click.argument('infile', type=click.File('r'), default='-')
+@click.argument('outfile', type=outfile_type, default='-')
 @click.version_option(__version__, '-V', '--version',
                       message='%(prog)s %(version)s')
-@click.option('-s', '--separator', default='=',
-              help='Key-value separator in output; default: "="')
-@click.argument('infile', type=click.File('r'), default='-')
-@click.argument('outfile', type=click.File('w', encoding='iso-8859-1'),
-                default='-')
 @click.pass_context
-def fromjson(ctx, infile, outfile, separator):
+def fromjson(ctx, infile, outfile, separator, encoding):
     """Convert a JSON object to a Java .properties file"""
     with infile:
         props = json.load(infile, parse_float=Decimal)
     if not isinstance(props, dict):
         ctx.fail('Only dicts can be converted to .properties')
-    with outfile:
-        dump(sorted(strify_dict(props).items()), outfile, separator=separator)
+    with click.open_file(outfile, 'w', encoding=encoding) as fp:
+        dump(sorted(strify_dict(props).items()), fp, separator=separator)
 
 if __name__ == '__main__':
     fromjson()

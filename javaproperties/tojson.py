@@ -17,17 +17,19 @@ import json
 import click
 from   .        import __version__
 from   .reading import load
+from   .util    import infile_type
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties file')
+@click.argument('infile', type=infile_type, default='-')
+@click.argument('outfile', type=click.File('w'), default='-')
 @click.version_option(__version__, '-V', '--version',
                       message='%(prog)s %(version)s')
-@click.argument('infile', type=click.File('r', encoding='iso-8859-1'),
-                default='-')
-@click.argument('outfile', type=click.File('w'), default='-')
-def tojson(infile, outfile):
+def tojson(infile, outfile, encoding):
     """Convert a Java .properties file to JSON"""
-    with infile:
-        props = load(infile)
+    with click.open_file(infile, encoding=encoding) as fp:
+        props = load(fp)
     with outfile:
         json.dump(props, outfile, sort_keys=True, indent=4,
                   separators=(',', ': '))

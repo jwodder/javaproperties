@@ -1,6 +1,7 @@
 import collections
 from   decimal import Decimal
 import json
+import click
 from   six     import string_types
 
 def strify_dict(d):
@@ -25,3 +26,7 @@ def itemize(kvs, sort_keys=False):
     if sort_keys:
         items = sorted(items)
     return items
+
+infile_type = click.Path(exists=True, dir_okay=False, readable=True,
+                         allow_dash=True)
+outfile_type = click.Path(dir_okay=False, writable=True, allow_dash=True)

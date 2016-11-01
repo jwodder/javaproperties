@@ -5,6 +5,7 @@ from   six        import iteritems
 from   .          import __version__
 from   .reading   import load, parse, unescape
 from   .writing   import dump, join_key_value, java_timestamp, to_comment
+from   .util      import infile_type, outfile_type
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(__version__, '-V', '--version',
@@ -14,21 +15,25 @@ def javaproperties():
 
 @javaproperties.command()
 @click.option('-d', '--default-value', metavar='VALUE')
-@click.option('-D', '--defaults', metavar='FILE',
-              type=click.File('r', encoding='iso-8859-1'))
+@click.option('-D', '--defaults', metavar='FILE', type=infile_type)
 @click.option('-e', '--escaped', is_flag=True)
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties files')
 @click.option('-P', '--properties', 'as_prop', is_flag=True)
-@click.option('-s', '--separator', default='=')
-@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.option('-s', '--separator', default='=', show_default=True)
+@click.argument('file', type=infile_type)
 @click.argument('key', nargs=-1, required=True)
 @click.pass_context
-def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key):
+def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key,
+        encoding):
     ok = True
     if escaped:
         key = list(map(unescape, key))
-    props = getproperties(file, key)
+    with click.open_file(file, encoding=encoding) as fp:
+        props = getproperties(fp, key)
     if defaults is not None:
-        defaults = getproperties(defaults, key)
+        with click.open_file(defaults, encoding=encoding) as fp:
+            defaults = getproperties(fp, key)
     else:
         defaults = {}
     for k in key:
@@ -48,39 +53,49 @@ def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key):
 
 @javaproperties.command('set')
 @click.option('-e', '--escaped', is_flag=True)
-@click.option('-s', '--separator', default='=')
-@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
-              default='-')
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties files')
+@click.option('-s', '--separator', default='=', show_default=True)
+@click.option('-o', '--outfile', type=outfile_type, default='-')
 @click.option('-T', '--preserve-timestamp', is_flag=True)
-@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.argument('file', type=infile_type)
 @click.argument('key')
 @click.argument('value')
-def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value):
+def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value,
+            encoding):
     if escaped:
         key = unescape(key)
         value = unescape(value)
-    setproperties(file, outfile, {key: value}, preserve_timestamp, separator)
+    with click.open_file(file, encoding=encoding) as fpin:
+        with click.open_file(outfile, 'w', encoding=encoding) as fpout:
+            setproperties(fpin, fpout, {key: value}, preserve_timestamp,
+                          separator)
 
 @javaproperties.command()
 @click.option('-e', '--escaped', is_flag=True)
-@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
-              default='-')
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties files')
+@click.option('-o', '--outfile', type=outfile_type, default='-')
 @click.option('-T', '--preserve-timestamp', is_flag=True)
-@click.argument('file', type=click.File('r', encoding='iso-8859-1'))
+@click.argument('file', type=infile_type)
 @click.argument('key', nargs=-1, required=True)
-def delete(escaped, outfile, preserve_timestamp, file, key):
+def delete(escaped, outfile, preserve_timestamp, file, key, encoding):
     if escaped:
         key = list(map(unescape, key))
-    setproperties(file, outfile, dict.fromkeys(key), preserve_timestamp)
+    with click.open_file(file, encoding=encoding) as fpin:
+        with click.open_file(outfile, 'w', encoding=encoding) as fpout:
+            setproperties(fpin, fpout, dict.fromkeys(key), preserve_timestamp)
 
 @javaproperties.command()
-@click.option('-o', '--outfile', type=click.File('w', encoding='iso-8859-1'),
-              default='-')
-@click.option('-s', '--separator', default='=')
-@click.argument('file', type=click.File('r', encoding='iso-8859-1'),
-                default='-')
-def format(outfile, separator, file):
-    dump(load(file), outfile, sort_keys=True, separator=separator)
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties files')
+@click.option('-o', '--outfile', type=outfile_type, default='-')
+@click.option('-s', '--separator', default='=', show_default=True)
+@click.argument('file', type=infile_type, default='-')
+def format(outfile, separator, file, encoding):
+    with click.open_file(file, encoding=encoding) as fpin:
+        with click.open_file(outfile, 'w', encoding=encoding) as fpout:
+            dump(load(fpin), fpout, sort_keys=True, separator=separator)
 
 def getproperties(fp, keys):
     keys = set(keys)
