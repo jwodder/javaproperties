@@ -18,12 +18,10 @@
     - Mention that dicts (when not sorted) are output in the order they're
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
-    - Document the `-E`/`--encoding` option
+    - Mention the command-line programs in the README
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Handle files with CR line endings not opened in universal newlines mode?
 - Use `lxml` for XML processing if it's installed?
-- Look into the minimum version of the argparse package needed for Python 2.6
-    - v1.1 or higher is required for `argparse.ArgumentTypeError`
 - Raise an error if an invalid separator is passed to a function and/or
   command-line program?
 - Test against & add support for pypy?
@@ -66,3 +64,4 @@ Commands
     - Add a command for converting between XML format and "plain" format?
     - Support autodetecting whether a properties file is in XML based on file
       extension (or other means?) ?
+    - Support by just adding `properties2xml` and `xml2properties` commands?

@@ -1,16 +1,45 @@
+# -*- coding: utf-8 -*-
 """
 :program:`properties2json`
 --------------------------
 
+NAME
+^^^^
+
+:program:`properties2json` — Convert a Java .properties file to JSON
+
+SYNOPSIS
+^^^^^^^^
+
 .. code-block:: shell
 
-    python -m javaproperties.tojson [infile [outfile]]
-    # or, if the javaproperties package was properly installed:
-    properties2json [infile [outfile]]
+    properties2json [<OPTIONS>] [<infile> [<outfile>]]
 
-Convert a Latin-1 ``.properties`` file :option:`infile` to a JSON object and
+.. note::
+
+    If the `javaproperties` package was installed but the
+    :program:`properties2json` script is not present, this command can still be
+    run by replacing ``properties2json`` with ``python -m
+    javaproperties.tojson`` on the command line.
+
+DESCRIPTION
+^^^^^^^^^^^
+
+Convert a ``.properties`` file :option:`infile` to a JSON object and
 write the results to :option:`outfile`.  If not specified, :option:`infile` and
 :option:`outfile` default to `sys.stdin` and `sys.stdout`, respectively.
+
+OPTIONS
+^^^^^^^
+
+.. program:: properties2json
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    .. versionadded:: 0.2.0
+
+    Specifies the encoding of the input file; default value: ``iso-8859-1``
+    (a.k.a. Latin-1)
 """
 
 import json
