@@ -25,6 +25,9 @@ class Properties(collections.MutableMapping):
     :param defaults: a set of default properties that will be used as fallback
         for `getProperty`
     :type defaults: `Properties` or `None`
+
+    .. |java8properties| replace:: Java 8's ``java.net.Properties``
+    .. _java8properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
     """
 
     def __init__(self, data=None, defaults=None):
