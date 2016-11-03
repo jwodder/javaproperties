@@ -1,3 +1,207 @@
+# -*- coding: utf-8 -*-
+"""
+:program:`javaproperties`
+-------------------------
+
+.. versionadded:: 0.2.0
+
+NAME
+^^^^
+
+:program:`javaproperties` — Basic manipulation of Java ``.properties`` files
+
+SYNOPSIS
+^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties get [<OPTIONS>] <file> <key> ...
+
+    javaproperties select [<OPTIONS>] <file> <key> ...
+
+    javaproperties set [<OPTIONS>] <file> <key> <value>
+
+    javaproperties delete [<OPTIONS>] <file> <key> ...
+
+    javaproperties format [<OPTIONS>] [<file>]
+
+.. note::
+
+    If the `javaproperties` package was installed but the
+    :program:`javaproperties` script is not present, this command can still be
+    run by replacing ``javaproperties`` with ``python -m javaproperties`` on
+    the command line.
+
+DESCRIPTION
+^^^^^^^^^^^
+
+
+:command:`get`
+^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties get [<OPTIONS>] <file> <key> ...
+
+Query values from a Java ``.properties`` file
+
+Options
+'''''''
+
+.. program:: javaproperties get
+
+.. option:: -d <value>, --default-value <value>
+
+    Default value for undefined keys
+
+.. option:: -D <file>, --defaults <file>
+
+    ``.properties`` file of default values
+
+.. option:: -e, --escaped
+
+    Parse command-line keys & values for escapes
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    Encoding of the ``.properties`` files
+
+
+:command:`select`
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties select [<OPTIONS>] <file> <key> ...
+
+Extract key-value pairs from a Java ``.properties`` file
+
+Options
+'''''''
+
+.. program:: javaproperties select
+
+.. option:: -d <value>, --default-value <value>
+
+    Default value for undefined keys
+
+.. option:: -D <file>, --defaults <file>
+
+    ``.properties`` file of default values
+
+.. option:: -e, --escaped
+
+    Parse command-line keys & values for escapes
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    Encoding of the ``.properties`` files
+
+.. option:: -o <file>, --outfile <file>
+
+    Write output to this file
+
+.. option:: -s <sep>, --separator <sep>
+
+    Use ``<sep>`` as the key-value separator in the output; default value:
+    ``=``
+
+
+:command:`set`
+^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties set [<OPTIONS>] <file> <key> <value>
+
+Set values in a Java ``.properties`` file
+
+Options
+'''''''
+
+.. program:: javaproperties set
+
+.. option:: -e, --escaped
+
+    Parse command-line keys & values for escapes
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    Encoding of the ``.properties`` file
+
+.. option:: -o <file>, --outfile <file>
+
+    Write output to this file
+
+.. option:: -s <sep>, --separator <sep>
+
+    Use ``<sep>`` as the key-value separator in the output; default value:
+    ``=``
+
+.. option:: -T, --preserve-timestamp
+
+    Keep the timestamp from the input file
+
+
+:command:`delete`
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties delete [<OPTIONS>] <file> <key> ...
+
+Remove values from a Java ``.properties`` file
+
+Options
+'''''''
+
+.. program:: javaproperties delete
+
+.. option:: -e, --escaped
+
+    Parse command-line keys & values for escapes
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    Encoding of the ``.properties`` file
+
+.. option:: -o <file>, --outfile <file>
+
+    Write output to this file
+
+.. option:: -T, --preserve-timestamp
+
+    Keep the timestamp from the input file
+
+
+:command:`format`
+^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+    javaproperties format [<OPTIONS>] [<file>]
+
+Format/"canonicalize" a Java ``.properties`` file
+
+Options
+'''''''
+
+.. program:: javaproperties format
+
+.. option:: -E <encoding>, --encoding <encoding>
+
+    Encoding of the ``.properties`` file
+
+.. option:: -o <file>, --outfile <file>
+
+    Write output to this file
+
+.. option:: -s <sep>, --separator <sep>
+
+    Use ``<sep>`` as the key-value separator in the output; default value:
+    ``=``
+"""
+
 from   __future__ import print_function
 import re
 import click
@@ -58,7 +262,7 @@ def select(ctx, default_value, defaults, escaped, separator, file, key,
     """ Extract key-value pairs from a Java .properties file """
     ok = True
     with click.open_file(outfile, 'w', encoding=encoding) as fpout:
-        click.echo(to_comment(java_timestamp()), file=fpout)
+        print(to_comment(java_timestamp()), file=fpout)
         for k,v in getselect(file, key, defaults, default_value, encoding,
                              escaped):
             if v is None:
@@ -66,8 +270,7 @@ def select(ctx, default_value, defaults, escaped, separator, file, key,
                            err=True)
                 ok = False
             else:
-                click.echo(join_key_value(k, v, separator=separator),
-                           file=fpout)
+                print(join_key_value(k, v, separator=separator), file=fpout)
     ctx.exit(0 if ok else 1)
 
 @javaproperties.command('set')

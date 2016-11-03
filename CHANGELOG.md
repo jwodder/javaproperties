@@ -1,11 +1,11 @@
-dev
----
-- Added a `javaproperties` command for reading & writing values in
-  `.properties` files from the command line
-- Some minor documentation improvements
-- Exported the `java_timestamp()` function
+v0.2.0 (in development)
+-----------------------
+- Added a `javaproperties` command for basic command-line manipulating of
+  `.properties` files
 - Gave `json2properties` a `--separator` option
 - Gave `json2properties` and `properties2json` `--encoding` options
+- Exported the `java_timestamp()` function
+- Some minor documentation improvements
 
 v0.1.0 (2016-10-02)
 -------------------
