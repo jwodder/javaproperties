@@ -176,7 +176,8 @@ def java_timestamp(timestamp=True):
 
         Mon Sep 02 14:00:54 EDT 2016
 
-    If ``timestamp`` is `True`, the current date & time is returned.
+    If ``timestamp`` is `True` (the default), the current date & time is
+    returned.
 
     If ``timestamp`` is `None` or `False`, an empty string is returned.
 

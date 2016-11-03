@@ -23,48 +23,58 @@ def javaproperties():
               help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
               help='Encoding of the .properties files')
-@click.option('-P', '--properties', 'as_prop', is_flag=True,
-              help='Output a full .properties file instead of just values')
+@click.argument('file', type=infile_type)
+@click.argument('key', nargs=-1, required=True)
+@click.pass_context
+def get(ctx, default_value, defaults, escaped, file, key, encoding):
+    """ Query values from a Java .properties file """
+    ok = True
+    for k,v in getselect(file, key, defaults, default_value, encoding, escaped):
+        if v is None:
+            click.echo('javaproperties: {0}: key not found'.format(k), err=True)
+            ok = False
+        else:
+            click.echo(v)
+    ctx.exit(0 if ok else 1)
+
+@javaproperties.command()
+@click.option('-d', '--default-value', metavar='VALUE',
+              help='Default value for undefined keys')
+@click.option('-D', '--defaults', metavar='FILE', type=infile_type,
+              help='.properties file of default values')
+@click.option('-e', '--escaped', is_flag=True,
+              help='Parse command-line keys & values for escapes')
+@click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
+              help='Encoding of the .properties files')
+@click.option('-o', '--outfile', type=outfile_type, default='-',
+              help='Write output to this file')
 @click.option('-s', '--separator', default='=', show_default=True,
               help='Key-value separator to use in output')
 @click.argument('file', type=infile_type)
 @click.argument('key', nargs=-1, required=True)
 @click.pass_context
-def get(ctx, default_value, defaults, escaped, as_prop, separator, file, key,
-        encoding):
-    """ Query values from a Java .properties file """
+def select(ctx, default_value, defaults, escaped, separator, file, key,
+           encoding, outfile):
+    """ Extract key-value pairs from a Java .properties file """
     ok = True
-    if escaped:
-        key = list(map(unescape, key))
-        if default_value is not None:
-            default_value = unescape(default_value)
-    with click.open_file(file, encoding=encoding) as fp:
-        props = getproperties(fp, key)
-    if defaults is not None:
-        with click.open_file(defaults, encoding=encoding) as fp:
-            defaults = getproperties(fp, key)
-    else:
-        defaults = {}
-    for k in key:
-        v = default_value
-        if k in props:
-            v = props[k]
-        elif k in defaults:
-            v = defaults[k]
-        if v is None:
-            click.echo('javaproperties: {0}: key not found'.format(k), err=True)
-            ok = False
-        elif as_prop:
-            click.echo(join_key_value(k, v, separator=separator))
-        else:
-            click.echo(v)
+    with click.open_file(outfile, 'w', encoding=encoding) as fpout:
+        click.echo(to_comment(java_timestamp()), file=fpout)
+        for k,v in getselect(file, key, defaults, default_value, encoding,
+                             escaped):
+            if v is None:
+                click.echo('javaproperties: {0}: key not found'.format(k),
+                           err=True)
+                ok = False
+            else:
+                click.echo(join_key_value(k, v, separator=separator),
+                           file=fpout)
     ctx.exit(0 if ok else 1)
 
 @javaproperties.command('set')
 @click.option('-e', '--escaped', is_flag=True,
               help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
-              help='Encoding of the .properties files')
+              help='Encoding of the .properties file')
 @click.option('-s', '--separator', default='=', show_default=True,
               help='Key-value separator to use in output')
 @click.option('-o', '--outfile', type=outfile_type, default='-',
@@ -89,7 +99,7 @@ def setprop(escaped, separator, outfile, preserve_timestamp, file, key, value,
 @click.option('-e', '--escaped', is_flag=True,
               help='Parse command-line keys & values for escapes')
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
-              help='Encoding of the .properties files')
+              help='Encoding of the .properties file')
 @click.option('-o', '--outfile', type=outfile_type, default='-',
               help='Write output to this file')
 @click.option('-T', '--preserve-timestamp', is_flag=True,
@@ -106,7 +116,7 @@ def delete(escaped, outfile, preserve_timestamp, file, key, encoding):
 
 @javaproperties.command()
 @click.option('-E', '--encoding', default='iso-8859-1', show_default=True,
-              help='Encoding of the .properties files')
+              help='Encoding of the .properties file')
 @click.option('-o', '--outfile', type=outfile_type, default='-',
               help='Write output to this file')
 @click.option('-s', '--separator', default='=', show_default=True,
@@ -127,6 +137,26 @@ def getproperties(fp, keys):
                 props[k] = v
         return props
     return load(fp, object_pairs_hook=getprops)
+
+def getselect(file, key, defaults, default_value, encoding, escaped):
+    if escaped:
+        key = list(map(unescape, key))
+        if default_value is not None:
+            default_value = unescape(default_value)
+    with click.open_file(file, encoding=encoding) as fp:
+        props = getproperties(fp, key)
+    if defaults is not None:
+        with click.open_file(defaults, encoding=encoding) as fp:
+            defaults = getproperties(fp, key)
+    else:
+        defaults = {}
+    for k in key:
+        v = default_value
+        if k in props:
+            v = props[k]
+        elif k in defaults:
+            v = defaults[k]
+        yield (k,v)
 
 TIMESTAMP_RGX = r'^\s*[#!]\s*\w+ \w+ [ \d]?\d \d\d:\d\d:\d\d \w* \d{4,}\s*$'
 

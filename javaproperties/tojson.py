@@ -6,7 +6,7 @@
 NAME
 ^^^^
 
-:program:`properties2json` — Convert a Java .properties file to JSON
+:program:`properties2json` — Convert a Java ``.properties`` file to JSON
 
 SYNOPSIS
 ^^^^^^^^

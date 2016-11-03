@@ -18,6 +18,7 @@
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
     - Mention the command-line programs in the README
+    - Correct the target of `javaproperties` links in the docs
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Handle files with CR line endings not opened in universal newlines mode?
 - Use `lxml` for XML processing if it's installed?
@@ -46,17 +47,13 @@ Commands
 --------
 - Add a `javaproperties` command
     - Give `get` an `-n|--no-newline` option?
-    - Give `get` an `-o|--outfile <file>` option?
-    - `get -P`: Include a timestamp (and support `--preserve-timestamp`)
     - Give `set` and `delete` `--in-place | --outfile <file>` options (with a
       `backup <file>` option for use with `--in-place`)
     - Give `set` and `delete` options for reformatting/not preserving
       formatting?
-    - Give `format` a `--preserve-timestamp` option
+    - Give `format` and `select` `--preserve-timestamp` options
     - Add options for completely suppressing the timestamp?
-    - `get`: What effect should `-E` have on the output encoding when `-P` is
-      given?
-    - Split `get`'s `-P` functionality into a `select` command?
+    - Give `select` an option for preserving formatting? (Preserve by default?)
 
 - Support XML properties files:
     - Support converting between JSON and XML properties
