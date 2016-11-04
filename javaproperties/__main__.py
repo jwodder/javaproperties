@@ -15,14 +15,10 @@ SYNOPSIS
 
 .. code-block:: shell
 
-    javaproperties get [<OPTIONS>] <file> <key> ...
-
+    javaproperties get    [<OPTIONS>] <file> <key> ...
     javaproperties select [<OPTIONS>] <file> <key> ...
-
-    javaproperties set [<OPTIONS>] <file> <key> <value>
-
+    javaproperties set    [<OPTIONS>] <file> <key> <value>
     javaproperties delete [<OPTIONS>] <file> <key> ...
-
     javaproperties format [<OPTIONS>] [<file>]
 
 .. note::
@@ -32,9 +28,6 @@ SYNOPSIS
     run by replacing ``javaproperties`` with ``python -m javaproperties`` on
     the command line.
 
-DESCRIPTION
-^^^^^^^^^^^
-
 
 :command:`get`
 ^^^^^^^^^^^^^^
@@ -43,7 +36,10 @@ DESCRIPTION
 
     javaproperties get [<OPTIONS>] <file> <key> ...
 
-Query values from a Java ``.properties`` file
+Print out the values of the given keys in the given ``.properties`` file.  Each
+value is printed out on a separate line with escape sequences interpolated.
+
+If you want the output to also be in ``.properties`` format, see :ref:`select`.
 
 Options
 '''''''
@@ -52,20 +48,29 @@ Options
 
 .. option:: -d <value>, --default-value <value>
 
-    Default value for undefined keys
+    Default value for undefined keys.  If this option is not specified, keys
+    requested on the command line that are not defined in either the main
+    ``.properties`` file or the :option:`--defaults` file will cause a warning
+    to be printed to stderr and the command to exit with a failure status.
 
 .. option:: -D <file>, --defaults <file>
 
-    ``.properties`` file of default values
+    ``.properties`` file of default values.  If this option is specified, keys
+    requested on the command line that are not defined in the main
+    ``.properties`` file will be looked up in this file.
 
 .. option:: -e, --escaped
 
-    Parse command-line keys & values for escapes
+    Parse the keys specified on the command line for ``.properties``-style
+    escape sequences (specifically, those supported by `unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
-    Encoding of the ``.properties`` files
+    Specifies the encoding of the input file(s); default value: ``iso-8859-1``
+    (a.k.a. Latin-1)
 
+
+.. _select:
 
 :command:`select`
 ^^^^^^^^^^^^^^^^^
@@ -74,7 +79,10 @@ Options
 
     javaproperties select [<OPTIONS>] <file> <key> ...
 
-Extract key-value pairs from a Java ``.properties`` file
+Print out the key-value entries in the given ``.properties`` file for the given
+keys.  The output is in ``.properties`` format, reformatted as though by
+:ref:`format`.
+
 
 Options
 '''''''
@@ -83,23 +91,30 @@ Options
 
 .. option:: -d <value>, --default-value <value>
 
-    Default value for undefined keys
+    Default value for undefined keys.  If this option is not specified, keys
+    requested on the command line that are not defined in either the main
+    ``.properties`` file or the :option:`--defaults` file will cause a warning
+    to be printed to stderr and the command to exit with a failure status.
 
 .. option:: -D <file>, --defaults <file>
 
-    ``.properties`` file of default values
+    ``.properties`` file of default values.  If this option is specified, keys
+    requested on the command line that are not defined in the main
+    ``.properties`` file will be looked up in this file.
 
 .. option:: -e, --escaped
 
-    Parse command-line keys & values for escapes
+    Parse the keys specified on the command line for ``.properties``-style
+    escape sequences (specifically, those supported by `unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
-    Encoding of the ``.properties`` files
+    Specifies the encoding of the input and output files; default value:
+    ``iso-8859-1`` (a.k.a. Latin-1)
 
 .. option:: -o <file>, --outfile <file>
 
-    Write output to this file
+    Write output to this file instead of standard output
 
 .. option:: -s <sep>, --separator <sep>
 
@@ -114,7 +129,9 @@ Options
 
     javaproperties set [<OPTIONS>] <file> <key> <value>
 
-Set values in a Java ``.properties`` file
+Set the value of ``<key>`` in the ``.properties`` file ``<file>`` to
+``<value>`` and output the results.  The other entries in the file (including
+comments, possibly not including the timestamp; see below) will be left as-is.
 
 Options
 '''''''
@@ -123,24 +140,28 @@ Options
 
 .. option:: -e, --escaped
 
-    Parse command-line keys & values for escapes
+    Parse ``<key>`` and ``<value>`` for ``.properties``-style escape sequences
+    (specifically, those supported by `unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
-    Encoding of the ``.properties`` file
+    Specifies the encoding of the input and output files; default value:
+    ``iso-8859-1`` (a.k.a. Latin-1)
 
 .. option:: -o <file>, --outfile <file>
 
-    Write output to this file
+    Write output to this file instead of standard output
 
 .. option:: -s <sep>, --separator <sep>
 
-    Use ``<sep>`` as the key-value separator in the output; default value:
-    ``=``
+    Separate ``<key>`` and ``<value>`` in the output with ``<sep>``; default
+    value: ``=``
 
 .. option:: -T, --preserve-timestamp
 
-    Keep the timestamp from the input file
+    Do not modify the timestamp in the ``.properties`` file.  By default, if a
+    timestamp is found, it is updated to the current time, even if the rest of
+    the file is unchanged.
 
 
 :command:`delete`
@@ -150,7 +171,9 @@ Options
 
     javaproperties delete [<OPTIONS>] <file> <key> ...
 
-Remove values from a Java ``.properties`` file
+Remove all entries for the given keys from the given ``.properties`` file and
+output the results.  The other entries in the file (including comments,
+possibly not including the timestamp; see below) will be left as-is.
 
 Options
 '''''''
@@ -159,20 +182,26 @@ Options
 
 .. option:: -e, --escaped
 
-    Parse command-line keys & values for escapes
+    Parse the keys specified on the command line for ``.properties``-style
+    escape sequences (specifically, those supported by `unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
-    Encoding of the ``.properties`` file
+    Specifies the encoding of the input and output files; default value:
+    ``iso-8859-1`` (a.k.a. Latin-1)
 
 .. option:: -o <file>, --outfile <file>
 
-    Write output to this file
+    Write output to this file instead of standard output
 
 .. option:: -T, --preserve-timestamp
 
-    Keep the timestamp from the input file
+    Do not modify the timestamp in the ``.properties`` file.  By default, if a
+    timestamp is found, it is updated to the current time, even if the rest of
+    the file is unchanged.
 
+
+.. _format:
 
 :command:`format`
 ^^^^^^^^^^^^^^^^^
@@ -181,7 +210,10 @@ Options
 
     javaproperties format [<OPTIONS>] [<file>]
 
-Format/"canonicalize" a Java ``.properties`` file
+Normalize the formatting of the given ``.properties`` file (or standard input
+if no file is given) and output the results.  All comments, excess whitespace,
+invalid escapes, and duplicate keys are removed, and the entries are sorted and
+converted to ASCII with `escape`.
 
 Options
 '''''''
@@ -190,11 +222,12 @@ Options
 
 .. option:: -E <encoding>, --encoding <encoding>
 
-    Encoding of the ``.properties`` file
+    Specifies the encoding of the input and output files; default value:
+    ``iso-8859-1`` (a.k.a. Latin-1)
 
 .. option:: -o <file>, --outfile <file>
 
-    Write output to this file
+    Write output to this file instead of standard output
 
 .. option:: -s <sep>, --separator <sep>
 

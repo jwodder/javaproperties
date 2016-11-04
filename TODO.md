@@ -13,16 +13,17 @@
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
       `loadFromXML` documentation
     - Include examples in main docs?
-    - Document `javaproperties` command
     - Mention that dicts (when not sorted) are output in the order they're
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
     - Mention the command-line programs in the README
     - Correct the target of `javaproperties` links in the docs
+    - Fix the `escape` and `unescape` links in the documentation for the
+      `javaproperties` command
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Handle files with CR line endings not opened in universal newlines mode?
 - Use `lxml` for XML processing if it's installed?
-- Raise an error if an invalid separator is passed to a function and/or
+- Raise an error/warning if an invalid separator is passed to a function and/or
   command-line program?
 - Test against & add support for pypy?
 
@@ -47,8 +48,9 @@ Commands
 --------
 - Add a `javaproperties` command
     - Give `get` an `-n|--no-newline` option?
-    - Give `set` and `delete` `--in-place | --outfile <file>` options (with a
-      `backup <file>` option for use with `--in-place`)
+    - Give `set`, `delete`, and `format` (and `select`?) `--in-place |
+      --outfile <file>` options (with a `backup <file>` option for use with
+      `--in-place`)
     - Give `set` and `delete` options for reformatting/not preserving
       formatting?
     - Give `format` and `select` `--preserve-timestamp` options
