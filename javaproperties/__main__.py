@@ -62,7 +62,8 @@ Options
 .. option:: -e, --escaped
 
     Parse the keys specified on the command line for ``.properties``-style
-    escape sequences (specifically, those supported by `unescape`)
+    escape sequences (specifically, those supported by
+    `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
@@ -105,7 +106,8 @@ Options
 .. option:: -e, --escaped
 
     Parse the keys specified on the command line for ``.properties``-style
-    escape sequences (specifically, those supported by `unescape`)
+    escape sequences (specifically, those supported by
+    `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
@@ -141,7 +143,7 @@ Options
 .. option:: -e, --escaped
 
     Parse ``<key>`` and ``<value>`` for ``.properties``-style escape sequences
-    (specifically, those supported by `unescape`)
+    (specifically, those supported by `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
@@ -183,7 +185,8 @@ Options
 .. option:: -e, --escaped
 
     Parse the keys specified on the command line for ``.properties``-style
-    escape sequences (specifically, those supported by `unescape`)
+    escape sequences (specifically, those supported by
+    `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
@@ -213,7 +216,7 @@ Options
 Normalize the formatting of the given ``.properties`` file (or standard input
 if no file is given) and output the results.  All comments, excess whitespace,
 invalid escapes, and duplicate keys are removed, and the entries are sorted and
-converted to ASCII with `escape`.
+converted to ASCII with `~javaproperties.escape`.
 
 Options
 '''''''

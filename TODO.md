@@ -17,14 +17,13 @@
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
     - Mention the command-line programs in the README
-    - Fix the `escape` and `unescape` links in the documentation for the
-      `javaproperties` command
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Handle files with CR line endings not opened in universal newlines mode?
 - Use `lxml` for XML processing if it's installed?
 - Raise an error/warning if an invalid separator is passed to a function and/or
   command-line program?
 - Test against & add support for pypy?
+- Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 
 New Features
 ------------
