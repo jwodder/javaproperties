@@ -187,6 +187,8 @@ def java_timestamp(timestamp=True):
     If ``timestamp`` is a `datetime.datetime` object, its value is used
     directly, with naïve objects assumed to be in the local timezone.
 
+    The timestamp is always constructed using the C locale.
+
     :param timestamp: the date & time to display
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
     :rtype: text string

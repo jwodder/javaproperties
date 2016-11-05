@@ -17,7 +17,6 @@
       iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
     - Mention the command-line programs in the README
-    - Correct the target of `javaproperties` links in the docs
     - Fix the `escape` and `unescape` links in the documentation for the
       `javaproperties` command
 - Handle "narrow" Python builds (only for Python versions < 3.3)

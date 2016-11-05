@@ -1,4 +1,4 @@
-.. module:: javaproperties
+.. currentmodule:: javaproperties
 
 XML ``.properties`` Format
 ==========================
