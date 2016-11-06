@@ -77,7 +77,8 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     declaration and a doctype declaration.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
-        ``fp``.  All keys and values in ``props`` must be text strings.
+        ``fp``.  All keys and values in ``props`` must be text strings.  If
+        ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: a file-like object to write the values of ``props`` to
     :type fp: binary file-like object
     :param comment: if non-`None`, ``comment`` will be output as a
@@ -102,7 +103,8 @@ def dumps_xml(props, comment=None, sort_keys=False):
     declaration but not an XML declaration.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
-        All keys and values in ``props`` must be text strings.
+        All keys and values in ``props`` must be text strings.  If
+        ``sort_keys`` is `False`, the entries are output in iteration order.
     :param comment: if non-`None`, ``comment`` will be output as a
         ``<comment>`` element before the ``<entry>`` elements
     :type comment: text string or `None`

@@ -13,7 +13,8 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     Write a series of key-value pairs to a file in ``.properties`` format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
-        ``fp``.  All keys and values in ``props`` must be text strings.
+        ``fp``.  All keys and values in ``props`` must be text strings.  If
+        ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: A file-like object to write the values of ``props`` to.  It must
         have been opened as a text file with a Latin-1-compatible encoding.
     :param separator: the string to use for separating keys & values.  Only
@@ -48,7 +49,8 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
-        All keys and values in ``props`` must be text strings.
+        All keys and values in ``props`` must be text strings.  If
+        ``sort_keys`` is `False`, the entries are output in iteration order.
     :param separator: the string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.

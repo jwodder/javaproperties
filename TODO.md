@@ -13,8 +13,6 @@
       `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
       `loadFromXML` documentation
     - Include examples in main docs?
-    - Mention that dicts (when not sorted) are output in the order they're
-      iterated over, so OrderedDicts are respected
     - Look for an official term for the "plain" format
     - Mention the command-line programs in the README
 - Handle "narrow" Python builds (only for Python versions < 3.3)
