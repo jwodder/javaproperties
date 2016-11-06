@@ -10,6 +10,10 @@ module — though, for recovering Java addicts, it also includes a `Properties`
 class intended to match the behavior of |java8properties|_ as much as is
 Pythonically possible.
 
+Also included are three command-line programs for basic manipulation of
+``.properties`` files (getting & setting values, etc.) as well as converting to
+& from the much more widely-supported JSON format.
+
 .. note::
 
     Throughout the following, "text string" means a Unicode character string —

@@ -1,7 +1,7 @@
-.. image:: http://www.repostatus.org/badges/latest/wip.svg
-    :target: http://www.repostatus.org/#wip
-    :alt: Project Status: WIP - Initial development is in progress, but there
-          has not yet been a stable, usable release suitable for the public.
+.. image:: http://www.repostatus.org/badges/latest/active.svg
+    :target: http://www.repostatus.org/#active
+    :alt: Project Status: Active - The project has reached a stable, usable
+          state and is being actively developed.
 
 .. image:: https://travis-ci.org/jwodder/javaproperties.svg?branch=master
     :target: https://travis-ci.org/jwodder/javaproperties
@@ -22,6 +22,10 @@ files (both the "plain" format and XML) with a simple API based on the ``json``
 module — though, for recovering Java addicts, it also includes a ``Properties``
 class intended to match the behavior of |propclass|_ as much as is Pythonically
 possible.
+
+Also included are three command-line programs for basic manipulation of
+``.properties`` files (getting & setting values, etc.) as well as converting to
+& from the much more widely-supported JSON format.
 
 
 Installation
