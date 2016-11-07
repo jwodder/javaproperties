@@ -22,6 +22,7 @@
 - Raise an error/warning if an invalid separator is passed to a function and/or
   command-line program?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
+- Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
 
 New Features
 ------------
@@ -31,9 +32,10 @@ New Features
 - Give the dump functions `keep_unicode`(?) arguments (mutually exclusive with
   `ensure_ascii`) for outputting Unicode and leaving non-Latin-1 characters
   as-is  (cf. the different `store` methods of the Java class)
-- Give `load` and `loads` a `timestamp_key` (and/or `timestamp_hook`?) argument
-  that, if supplied, causes the timestamp in a .properties file to be extracted
-  and saved in the given key
+- Give `load` and `loads` a `timestamp_hook` argument for specifying a callable
+  to pass the file's timestamp (if any) to
+    - The timestamp is passed as an unparsed string with leading `#` and
+      trailing newline (and other whitespace?) removed
 - Add a variant of `join_key_value` that escapes as few characters as possible?
 - Add an inverse of `parse` for writing triples?
 - Add a string-reading equivalent of `parse`?
@@ -42,11 +44,11 @@ New Features
 
 Commands
 --------
-- Add a `javaproperties` command
+- `javaproperties`:
     - Give `get` an `-n|--no-newline` option?
-    - Give `set`, `delete`, and `format` (and `select`?) `--in-place |
-      --outfile <file>` options (with a `backup <file>` option for use with
-      `--in-place`)
+    - Give `get` a `-0|--null` option?
+    - Give `set`, `delete`, and `format` (and `select`?) `--in-place` options
+      (with optional `--backup <file>`) as an alternative to `--outfile`
     - Give `set` and `delete` options for reformatting/not preserving
       formatting?
     - Give `format` and `select` `--preserve-timestamp` options
@@ -55,7 +57,7 @@ Commands
 
 - Support XML properties files:
     - Support converting between JSON and XML properties
-    - Add a command for converting between XML format and "plain" format?
+    - Add a command for converting between XML format and "plain" format
     - Support autodetecting whether a properties file is in XML based on file
       extension (or other means?) ?
     - Support by just adding `properties2xml` and `xml2properties` commands?

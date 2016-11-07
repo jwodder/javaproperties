@@ -123,3 +123,12 @@ def test_dumps_xml_comment():
 <entry key="key">value</entry>
 </properties>
 '''
+
+def test_dumps_xml_entities():
+    assert dumps_xml({'&<>"\'': '&<>"\''}, comment='&<>"\'') == '''\
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>&amp;&lt;&gt;"'</comment>
+<entry key="&amp;&lt;&gt;&quot;'">&amp;&lt;&gt;"'</entry>
+</properties>
+'''
