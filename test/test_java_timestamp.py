@@ -1,8 +1,9 @@
 from   __future__     import unicode_literals
 from   datetime       import datetime
 import time
-import pytest
 from   dateutil.tz    import tzstr
+from   freezegun      import freeze_time
+import pytest
 from   javaproperties import java_timestamp
 
 # Unix timestamps and datetime objects don't support leap seconds or month 13,
@@ -14,6 +15,16 @@ old_pacific = tzstr('PST8PDT,M4.1.0/M10.5.0')
 def set_timezone(monkeypatch):
     monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0/M11.1.0')
     time.tzset()
+
+def test_java_timestamp_none():
+    assert java_timestamp(None) == ''
+
+def test_java_timestamp_false():
+    assert java_timestamp(False) == ''
+
+@freeze_time('2016-11-07 20:29:40')
+def test_java_timestamp_now():
+    assert java_timestamp() == 'Mon Nov 07 15:29:40 EST 2016'
 
 def test_java_timestamp_zero():
     assert java_timestamp(0) == 'Wed Dec 31 19:00:00 EST 1969'

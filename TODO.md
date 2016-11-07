@@ -23,6 +23,7 @@
   command-line program?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
+- Export (and test) `getproperties` and `setproperties`?
 
 New Features
 ------------
