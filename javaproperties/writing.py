@@ -220,7 +220,7 @@ def java_timestamp(timestamp=True):
             raise TypeError('Timestamp must be number or datetime.datetime')
         timebits = time.localtime(timestamp)
         # This assumes that `time.tzname` is meaningful/useful.
-        tzname = time.tzname[timebits.tm_isdst]
+        tzname = time.tzname[timebits.tm_isdst > 0]
     assert 1 <= timebits.tm_mon <= 12, 'invalid month'
     assert 0 <= timebits.tm_wday <= 6, 'invalid day of week'
     return '{wday} {mon} {t.tm_mday:02d}' \
