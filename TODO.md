@@ -4,6 +4,8 @@
     - Test the command-line programs (or at least their nontrivial components,
       like `setproperties`)
         - See <http://click.pocoo.org/6/testing/>
+        - Handle the fact that `output_bytes` will contain CR LF line endings
+          (I think) on Windows
     - Run doctest on the README examples
     - Test the `Properties` class
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
@@ -55,6 +57,7 @@ Commands
     - Give `format` and `select` `--preserve-timestamp` options
     - Add options for completely suppressing the timestamp?
     - Give `select` an option for preserving formatting? (Preserve by default?)
+    - `select`: Don't output a timestamp if none of the given keys are defined?
 
 - Support XML properties files:
     - Support converting between JSON and XML properties
@@ -62,3 +65,5 @@ Commands
     - Support autodetecting whether a properties file is in XML based on file
       extension (or other means?) ?
     - Support by just adding `properties2xml` and `xml2properties` commands?
+
+- Add a command for merging two (or more?) properties files?
