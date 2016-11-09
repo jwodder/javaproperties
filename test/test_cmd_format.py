@@ -33,6 +33,15 @@ xyzzy = \xC3\xA9
 #: after hash
 # = bar
 
+horizontal\\ttab = eight spaces
+line\\nfeed = go down one
+carriage\\rreturn = go to start of line
+goat = \\uD83D\\uDC10
+taog = \\uDC10\\uD83D
+space = \\ \\ \\ 
+newline = \\n
+latin1 = \\u00e9
+
 a=b\\
 '''
 
@@ -41,10 +50,18 @@ OUTPUT = b'''\
 \\#=after hash
 a=b
 baz=glarch quux \\# comment
+carriage\\rreturn=go to start of line
 dwarf=
 foo=bar 
+goat=\\ud83d\\udc10
+horizontal\\ttab=eight spaces
+latin1=\u00e9
+line\\nfeed=go down one
+newline=\\n
 plugh=plover stuff 
 quux=
+space=\\ \\ \\ 
+taog=\\udc10\\ud83d
 test=
 xyzzy=\\u00c3\\u00a9
 '''
