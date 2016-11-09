@@ -1,31 +1,27 @@
 - Write tests
     - Test reading & writing bytes in both Python 2 and Python 3
     - Test utility functions in isolation?
-    - Test the command-line programs (or at least their nontrivial components,
-      like `setproperties`)
-        - See <http://click.pocoo.org/6/testing/>
+    - Test the command-line programs
         - Handle the fact that `output_bytes` will contain CR LF line endings
           (I think) on Windows
-    - Run doctest on the README examples
+    - Test the command-line programs' nontrivial components (e.g.,
+      `setproperties`) in isolation?
+    - Run doctest on the README examples somehow?
     - Test the `Properties` class
     - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
-    - Figure out exactly what types of filehandles & strings
-      `xml.etree.ElementTree` can parse and add them to the `load*_xml` and
-      `loadFromXML` documentation
     - Include examples in main docs?
     - Look for an official term for the "plain" format ("simple line-oriented
       format"?)
 - Handle "narrow" Python builds (only for Python versions < 3.3)
-- Handle files with CR line endings not opened in universal newlines mode?
+- Handle files with CR line endings not opened in universal newlines mode
 - Test against & add support for pypy?
 - Use `lxml` for XML processing if it's installed?
 - Raise an error/warning if an invalid separator is passed to a function and/or
   command-line program?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
-- Export (and test) `getproperties` and `setproperties`?
 
 New Features
 ------------
@@ -44,6 +40,7 @@ New Features
 - Add a string-reading equivalent of `parse`?
 - Add an equivalent of `parse` for XML that can extract the comment?
 - Python 3.6: Take advantage of PEP 495 when handling naïve datetimes
+- Export `getproperties` and `setproperties`?
 
 Commands
 --------

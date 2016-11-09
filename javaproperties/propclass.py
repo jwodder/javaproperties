@@ -173,6 +173,14 @@ class Properties(collections.MutableMapping):
         root element is named ``properties`` and that all of its ``entry``
         children have ``key`` attributes; no further validation is performed.
 
+        .. note::
+
+            This uses `xml.etree.ElementTree` for parsing, which does not have
+            decent support for `unicode <python2:unicode>` input in Python 2.
+            Files containing non-ASCII characters need to be opened in binary
+            mode in Python 2, while Python 3 accepts both binary and text
+            input.
+
         :param inStream: the file from which to read the XML properties document
         :type inStream: file-like object
         :return: `None`
