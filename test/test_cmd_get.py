@@ -5,6 +5,8 @@ INPUT = b'''\
 foo: bar
 key = value
 zebra apple
+e\\u00f0=escaped
+e\\\\u00f0=not escaped
 '''
 
 def test_cmd_get_exists():
@@ -26,9 +28,22 @@ def test_cmd_get_some_exist():
     assert r.exit_code == 1
     assert r.output_bytes == b'value\njavaproperties: nonexistent: key not found\n'
 
+def test_cmd_get_escaped():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '--escaped', '-', 'e\\u00F0'
+    ], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'escaped\n'
+
+def test_cmd_get_not_escaped():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', 'e\\u00f0'
+    ], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'not escaped\n'
+
 
 # --encoding
-# --escaped
 # -d
 # -D
 # universal newlines?

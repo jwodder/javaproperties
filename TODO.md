@@ -8,7 +8,6 @@
       `setproperties`) in isolation?
     - Run doctest on the README examples somehow?
     - Test the `Properties` class
-    - cf. the tests used in OpenJDK: <http://hg.openjdk.java.net/jdk8/jdk8/jdk/file/tip/test/java/util/Properties>
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
@@ -45,8 +44,6 @@ New Features
 Commands
 --------
 - `javaproperties`:
-    - Give `get` an `-n|--no-newline` option?
-    - Give `get` a `-0|--null` option?
     - Give `set`, `delete`, and `format` (and `select`?) `--in-place` options
       (with optional `--backup <file>`) as an alternative to `--outfile`
     - Give `set` and `delete` options for reformatting/not preserving
