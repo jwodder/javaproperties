@@ -17,8 +17,6 @@
 - Handle files with CR line endings not opened in universal newlines mode
 - Test against & add support for pypy?
 - Use `lxml` for XML processing if it's installed?
-- Raise an error/warning if an invalid separator is passed to a function and/or
-  command-line program?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
 
@@ -35,7 +33,6 @@ New Features
     - The timestamp is passed as an unparsed string with leading `#` and
       trailing newline (and other whitespace?) removed
 - Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add an inverse of `parse` for writing triples?
 - Add a string-reading equivalent of `parse`?
 - Add an equivalent of `parse` for XML that can extract the comment?
 - Python 3.6: Take advantage of PEP 495 when handling naïve datetimes
@@ -46,10 +43,9 @@ Commands
 - `javaproperties`:
     - Give `set`, `delete`, and `format` (and `select`?) `--in-place` options
       (with optional `--backup <file>`) as an alternative to `--outfile`
-    - Give `set` and `delete` options for reformatting/not preserving
-      formatting?
+    - Give `set` and `delete` a `--format` option for also reformatting
     - Give `format` and `select` `--preserve-timestamp` options
-    - Add options for completely suppressing the timestamp?
+    - Add options for completely suppressing the timestamp
     - Give `select` an option for preserving formatting? (Preserve by default?)
     - `select`: Don't output a timestamp if none of the given keys are defined?
 

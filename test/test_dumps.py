@@ -140,33 +140,6 @@ def test_dumps_backslash():
 def test_dumps_comment():
     assert dumps({"key": "value"}, comments='This is a comment.', timestamp=False) == '#This is a comment.\nkey=value\n'
 
-def test_dumps_hash_comment():
-    assert dumps({"key": "value"}, comments='#This is a double comment.', timestamp=False) == '##This is a double comment.\nkey=value\n'
-
-def test_dumps_comment_linefeed():
-    assert dumps({"key": "value"}, comments='This comment has a trailing newline.\n', timestamp=False) == '#This comment has a trailing newline.\n#\nkey=value\n'
-
-def test_dumps_comment_crlf():
-    assert dumps({"key": "value"}, comments='This comment has a trailing CRLF.\r\n', timestamp=False) == '#This comment has a trailing CRLF.\r\n#\nkey=value\n'
-
-def test_dumps_comment_carriage_return():
-    assert dumps({"key": "value"}, comments='This comment has a trailing carriage return.\r', timestamp=False) == '#This comment has a trailing carriage return.\r#\nkey=value\n'
-
-def test_dumps_multiline_comment():
-    assert dumps({"key": "value"}, comments='This is a comment.\nThis is also a comment.', timestamp=False) == '#This is a comment.\n#This is also a comment.\nkey=value\n'
-
-def test_dumps_commented_comment():
-    assert dumps({"key": "value"}, comments='This is a comment.\n#This is also a comment.', timestamp=False) == '#This is a comment.\n#This is also a comment.\nkey=value\n'
-
-def test_dumps_latin_1_comment():
-    assert dumps({"key": "value"}, comments='edh=\xF0', timestamp=False) == '#edh=\xF0\nkey=value\n'
-
-def test_dumps_non_latin_1_comment():
-    assert dumps({"key": "value"}, comments='snowman=\u2603', timestamp=False) == '#snowman=\\u2603\nkey=value\n'
-
-def test_dumps_astral_plane_comment():
-    assert dumps({"key": "value"}, comments='goat=\U0001F410', timestamp=False) == '#goat=\\ud83d\\udc10\nkey=value\n'
-
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) == 'key\tvalue\n'
 

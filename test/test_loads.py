@@ -164,6 +164,12 @@ def test_loads_space_continue_pair():
 def test_loads_multiple():
     assert loads('key = value\nfoo = bar') == {"key": "value", "foo": "bar"}
 
+def test_loads_multiple_crlf():
+    assert loads('key = value\r\nfoo = bar') == {"key": "value", "foo": "bar"}
+
+def test_loads_multiple_cr():
+    assert loads('key = value\rfoo = bar') == {"key": "value", "foo": "bar"}
+
 @need_ordereddict
 def test_loads_multiple_ordereddict():
     from collections import OrderedDict

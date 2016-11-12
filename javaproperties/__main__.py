@@ -61,14 +61,14 @@ Options
 
 .. option:: -e, --escaped
 
-    Parse the keys specified on the command line for ``.properties``-style
-    escape sequences (specifically, those supported by
+    Parse the keys and default value specified on the command line for
+    ``.properties``-style escape sequences (specifically, those supported by
     `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>
 
     Specifies the encoding of the input file(s); default value: ``iso-8859-1``
-    (a.k.a. Latin-1)
+    (a.k.a. Latin-1).  Output always uses the locale's encoding.
 
 
 .. _select:
@@ -105,8 +105,8 @@ Options
 
 .. option:: -e, --escaped
 
-    Parse the keys specified on the command line for ``.properties``-style
-    escape sequences (specifically, those supported by
+    Parse the keys and default value specified on the command line for
+    ``.properties``-style escape sequences (specifically, those supported by
     `~javaproperties.unescape`)
 
 .. option:: -E <encoding>, --encoding <encoding>

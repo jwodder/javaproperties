@@ -1,7 +1,6 @@
 from   click.testing           import CliRunner
 from   javaproperties.__main__ import javaproperties
 
-
 INPUT = b'''\
 foo: bar
 key = value
