@@ -14,7 +14,6 @@
     - Look for an official term for the "plain" format ("simple line-oriented
       format"?)
 - Handle "narrow" Python builds (only for Python versions < 3.3)
-- Handle files with CR line endings not opened in universal newlines mode
 - Test against & add support for pypy?
 - Use `lxml` for XML processing if it's installed?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?

@@ -1,6 +1,7 @@
 from   __future__ import unicode_literals
 import re
 from   six        import binary_type, StringIO, BytesIO, unichr
+from   .util      import ascii_splitlines
 
 def load(fp, object_pairs_hook=dict):
     """
@@ -49,10 +50,7 @@ def loads(s, object_pairs_hook=dict):
         key-value pairs
     :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
     """
-    if isinstance(s, binary_type):
-        fp = BytesIO(s)
-    else:
-        fp = StringIO(s)
+    fp = BytesIO(s) if isinstance(s, binary_type) else StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
 
 def parse(fp):
@@ -76,22 +74,25 @@ def parse(fp):
     :type fp: file-like object
     :rtype: generator of triples of text strings
     """
-    def readline():
-        ln = fp.readline()
-        if isinstance(ln, binary_type):
-            ln = ln.decode('iso-8859-1')
-        return ln
-    while True:
-        line = source = readline()
-        if line == '':
-            return
+    def lineiter():
+        while True:
+            ln = fp.readline()
+            if isinstance(ln, binary_type):
+                ln = ln.decode('iso-8859-1')
+            if ln == '':
+                return
+            for l in ascii_splitlines(ln, True):
+                yield l
+    liter = lineiter()
+    for source in liter:
+        line = source
         if re.match(r'^[ \t\f]*(?:[#!]|\r?\n?$)', line):
             yield (None, None, source)
             continue
         line = line.lstrip(' \t\f').rstrip('\r\n')
         while re.search(r'(?<!\\)(?:\\\\)*\\$', line):
             line = line[:-1]
-            nextline = readline()  # '' at EOF
+            nextline = next(liter, '')
             source += nextline
             line += nextline.lstrip(' \t\f').rstrip('\r\n')
         if line == '':  # series of otherwise-blank lines with continuations
