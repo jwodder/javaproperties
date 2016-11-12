@@ -14,11 +14,11 @@ def test_to_comment_trailing_linefeed():
 
 def test_to_comment_trailing_crlf():
     assert to_comment('This comment has a trailing CRLF.\r\n') == \
-        '#This comment has a trailing CRLF.\r\n#'
+        '#This comment has a trailing CRLF.\n#'
 
 def test_to_comment_trailing_cr():
     assert to_comment('This comment has a trailing carriage return.\r') == \
-        '#This comment has a trailing carriage return.\r#'
+        '#This comment has a trailing carriage return.\n#'
 
 def test_to_comment_multiline():
     assert to_comment('This is a comment.\nThis is also a comment.') == \

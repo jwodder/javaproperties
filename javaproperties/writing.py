@@ -80,18 +80,20 @@ def to_comment(comment):
     Convert a string to a ``.properties`` file comment.  All non-Latin-1
     characters in the string are escaped using ``\\uXXXX`` escapes (after
     converting non-BMP characters to surrogate pairs), a ``#`` is prepended to
-    the string, and a ``#`` is inserted after any line breaks in the string not
-    already followed by a ``#`` or ``!``.  No trailing newline is added.
+    the string, any CR LF or CR line breaks in the string are converted to LF,
+    and a ``#`` is inserted after any line break not already followed by a
+    ``#`` or ``!``.  No trailing newline is added.
 
-    >>> to_comment('They say foo=bar, but does bar=foo?')
-    '#They say foo=bar, but does bar=foo?'
+    >>> to_comment('They say foo=bar,\\r\\nbut does bar=foo?')
+    '#They say foo=bar,\\n#but does bar=foo?'
 
     :param comment: the string to convert to a comment
     :type comment: text string
     :rtype: text string
     """
     return '#' + re.sub(r'[^\x00-\xFF]', _esc,
-                        re.sub(r'(\r\n?|\n)(?![#!])', r'\1#', comment))
+                        re.sub(r'\n(?![#!])', '\n#',
+                               re.sub(r'\r\n?', '\n', comment)))
 
 def join_key_value(key, value, separator='='):
     r"""

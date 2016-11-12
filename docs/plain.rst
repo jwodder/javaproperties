@@ -16,6 +16,10 @@ file, only its last value is used.
 
 .. note::
 
+    Lines are terminated by ``\n`` (LF), ``\r\n`` (CR LF), or ``\r`` (CR).
+
+.. note::
+
     For the purposes of this format, only the space character (ASCII 0x20), the
     tab character (ASCII 0x09), and the form feed character (ASCII 0x0C) count
     as whitespace.
