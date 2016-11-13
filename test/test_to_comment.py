@@ -35,6 +35,14 @@ def test_to_comment_inner_bang():
 def test_to_comment_latin_1():
     assert to_comment('edh=\xF0') == '#edh=\xF0'
 
+def test_to_comment_xFF():
+    assert to_comment('\xFF is the highest Latin-1 character.') == \
+        '#\xFF is the highest Latin-1 character.'
+
+def test_to_comment_x100():
+    assert to_comment('\u0100 is the lowest non-Latin-1 character.') == \
+        '#\\u0100 is the lowest non-Latin-1 character.'
+
 def test_to_comment_non_latin_1():
     assert to_comment('snowman=\u2603') == '#snowman=\\u2603'
 

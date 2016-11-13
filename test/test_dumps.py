@@ -94,6 +94,12 @@ def test_dumps_trailing_space_in_value():
 def test_dumps_three_space_value():
     assert dumps({"key": "   "}, timestamp=False) == 'key=\\ \\ \\ \n'
 
+def test_dumps_x1F():
+    assert dumps({"US": "\x1F"}, timestamp=False) == 'US=\\u001f\n'
+
+def test_dumps_tilde():
+    assert dumps({"tilde": "~"}, timestamp=False) == 'tilde=~\n'
+
 def test_dumps_delete():
     assert dumps({"delete": "\x7F"}, timestamp=False) == 'delete=\\u007f\n'
 
