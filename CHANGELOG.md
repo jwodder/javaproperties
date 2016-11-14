@@ -1,5 +1,5 @@
-v0.2.0 (in development)
------------------------
+v0.2.0 (2016-11-14)
+-------------------
 - Added a `javaproperties` command for basic command-line manipulating of
   `.properties` files
 - Gave `json2properties` a `--separator` option
