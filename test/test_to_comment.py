@@ -1,4 +1,5 @@
 from   __future__     import unicode_literals
+from   six            import unichr
 from   javaproperties import to_comment
 
 def test_to_comment_single_line():
@@ -48,3 +49,9 @@ def test_to_comment_non_latin_1():
 
 def test_to_comment_astral_plane():
     assert to_comment('goat=\U0001F410') == '#goat=\\ud83d\\udc10'
+
+def test_to_comment_controls():
+    # All C0 and C1 control characters other than \n and \r
+    s = ''.join(unichr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
+                          if i not in (10, 13))
+    assert to_comment(s) == '#' + s
