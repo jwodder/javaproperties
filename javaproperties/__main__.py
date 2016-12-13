@@ -271,7 +271,8 @@ def get(ctx, default_value, defaults, escaped, file, key, encoding):
     ok = True
     for k,v in getselect(file, key, defaults, default_value, encoding, escaped):
         if v is None:
-            click.echo('javaproperties: {0}: key not found'.format(k), err=True)
+            click.echo(u'javaproperties: {0}: key not found'.format(k),
+                       err=True)
             ok = False
         else:
             click.echo(v)
@@ -302,7 +303,7 @@ def select(ctx, default_value, defaults, escaped, separator, file, key,
         for k,v in getselect(file, key, defaults, default_value, encoding,
                              escaped):
             if v is None:
-                click.echo('javaproperties: {0}: key not found'.format(k),
+                click.echo(u'javaproperties: {0}: key not found'.format(k),
                            err=True)
                 ok = False
             else:

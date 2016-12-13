@@ -35,12 +35,40 @@ def test_cmd_get_escaped():
     assert r.exit_code == 0
     assert r.output_bytes == b'escaped\n'
 
+def test_cmd_get_escaped_not_exists():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '--escaped', '-', 'x\\u00F0'
+    ], input=INPUT)
+    assert r.exit_code == 1
+    assert r.output_bytes == b'javaproperties: x\xC3\xB0: key not found\n'
+
 def test_cmd_get_not_escaped():
     r = CliRunner().invoke(javaproperties, [
         'get', '-', 'e\\u00f0'
     ], input=INPUT)
     assert r.exit_code == 0
     assert r.output_bytes == b'not escaped\n'
+
+def test_cmd_get_not_escaped_not_exists():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', 'x\\u00f0'
+    ], input=INPUT)
+    assert r.exit_code == 1
+    assert r.output_bytes == b'javaproperties: x\\u00f0: key not found\n'
+
+def test_cmd_get_utf8():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', b'e\xC3\xB0'  # 'e\u00f0'
+    ], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'escaped\n'
+
+def test_cmd_get_utf8_not_exists():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', b'x\xC3\xB0'
+    ], input=INPUT)
+    assert r.exit_code == 1
+    assert r.output_bytes == b'javaproperties: x\xC3\xB0: key not found\n'
 
 
 # --encoding
@@ -50,3 +78,4 @@ def test_cmd_get_not_escaped():
 # getting a key that appears multiple times in the file
 # getting keys out of order
 # reading from -
+# non-ASCII output

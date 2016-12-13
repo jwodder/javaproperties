@@ -55,3 +55,5 @@ javaproperties: nonexistent: key not found
 # getting a key that appears multiple times in the file
 # getting keys out of order
 # reading from -
+# non-ASCII characters on command line
+# non-ASCII output
