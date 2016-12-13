@@ -6,8 +6,11 @@
           (I think) on Windows
     - Test the command-line programs' nontrivial components (e.g.,
       `setproperties`) in isolation?
+    - Test `properties2json` and `json2properties`
     - Run doctest on the README examples somehow?
     - Test the `Properties` class
+    - Make sure that the CLI tests that assume UTF-8 encoding will work on
+      non-sane platforms
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
@@ -15,9 +18,9 @@
       format"?)
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Test against & add support for pypy?
-- Use `lxml` for XML processing if it's installed?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
+- Split the CLI into a separate package???
 
 New Features
 ------------

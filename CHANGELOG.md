@@ -1,3 +1,8 @@
+v0.2.1 (in development)
+-----------------------
+- **Bugfix** to `javaproperties` command: Don't die horribly on missing
+  non-ASCII keys
+
 v0.2.0 (2016-11-14)
 -------------------
 - Added a `javaproperties` command for basic command-line manipulating of

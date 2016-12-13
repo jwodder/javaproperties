@@ -205,6 +205,3 @@ class Properties(collections.MutableMapping):
         :return: `None`
         """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
-
-    ###def list(self, out):
-    ###    ???
