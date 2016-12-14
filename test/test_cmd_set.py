@@ -38,4 +38,4 @@ nonexistent=mu
 # stripping extra trailing line continuations
 # universal newlines?
 # setting a key that appears multiple times in the file
-# reading from -
+# reading from a file

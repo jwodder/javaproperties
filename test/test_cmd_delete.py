@@ -37,4 +37,4 @@ def test_cmd_delete_some_exist():
 # universal newlines?
 # deleting a key that appears multiple times in the file
 # deleting keys out of order
-# reading from -
+# reading from a file

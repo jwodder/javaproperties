@@ -9,8 +9,8 @@
     - Test `properties2json` and `json2properties`
     - Run doctest on the README examples somehow?
     - Test the `Properties` class
-    - Make sure that the CLI tests that assume UTF-8 encoding will work on
-      non-sane platforms
+    - Make sure that the CLI tests that assume UTF-8 encoding for I/O will work
+      on non-sane platforms
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
@@ -21,6 +21,7 @@
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
 - Split the CLI into a separate package???
+- Generate manpages for the CLI commands?
 
 New Features
 ------------
@@ -50,6 +51,7 @@ Commands
     - Add options for completely suppressing the timestamp
     - Give `select` an option for preserving formatting? (Preserve by default?)
     - `select`: Don't output a timestamp if none of the given keys are defined?
+    - Give `get` an option for escaping output values?
 
 - Support XML properties files:
     - Support converting between JSON and XML properties

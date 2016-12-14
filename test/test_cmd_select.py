@@ -54,6 +54,6 @@ javaproperties: nonexistent: key not found
 # universal newlines?
 # getting a key that appears multiple times in the file
 # getting keys out of order
-# reading from -
+# reading from a file
 # non-ASCII characters on command line
 # non-ASCII output

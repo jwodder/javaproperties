@@ -7,6 +7,10 @@ key = value
 zebra apple
 e\\u00f0=escaped
 e\\\\u00f0=not escaped
+latin-1 = \xF0
+bmp = \\u2603
+astral = \\uD83D\\uDC10
+bad-surrogate = \\uDC10\\uD83D
 '''
 
 def test_cmd_get_exists():
@@ -70,6 +74,28 @@ def test_cmd_get_utf8_not_exists():
     assert r.exit_code == 1
     assert r.output_bytes == b'javaproperties: x\xC3\xB0: key not found\n'
 
+def test_cmd_get_latin1_output():
+    r = CliRunner().invoke(javaproperties, ['get', '-', 'latin-1'], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'\xC3\xB0\n'
+
+def test_cmd_get_bmp_output():
+    r = CliRunner().invoke(javaproperties, ['get', '-', 'bmp'], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'\xE2\x98\x83\n'
+
+def test_cmd_get_astral_output():
+    r = CliRunner().invoke(javaproperties, ['get', '-', 'astral'], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'\xF0\x9F\x90\x90\n'
+
+def test_cmd_get_bad_surrogate_output():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', 'bad-surrogate'
+    ], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'\xED\xB0\x90\xED\xA0\xBD\n'
+
 
 # --encoding
 # -d
@@ -77,5 +103,4 @@ def test_cmd_get_utf8_not_exists():
 # universal newlines?
 # getting a key that appears multiple times in the file
 # getting keys out of order
-# reading from -
-# non-ASCII output
+# reading from a file
