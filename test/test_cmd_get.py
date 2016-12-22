@@ -1,4 +1,6 @@
+import sys
 from   click.testing           import CliRunner
+import pytest
 from   javaproperties.__main__ import javaproperties
 
 INPUT = b'''\
@@ -89,12 +91,22 @@ def test_cmd_get_astral_output():
     assert r.exit_code == 0
     assert r.output_bytes == b'\xF0\x9F\x90\x90\n'
 
-def test_cmd_get_bad_surrogate_output():
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='Python 2 only')
+def test_cmd_get_bad_surrogate_output_py2():
     r = CliRunner().invoke(javaproperties, [
         'get', '-', 'bad-surrogate'
     ], input=INPUT)
     assert r.exit_code == 0
     assert r.output_bytes == b'\xED\xB0\x90\xED\xA0\xBD\n'
+
+@pytest.mark.xfail(reason='https://github.com/pallets/click/issues/705')
+@pytest.mark.skipif(sys.version_info[0] < 3, reason='Python 3 only')
+def test_cmd_get_bad_surrogate_output_py3():
+    r = CliRunner().invoke(javaproperties, [
+        'get', '-', 'bad-surrogate'
+    ], input=INPUT)
+    assert r.exit_code == 0
+    assert r.output_bytes == b'??\n'
 
 
 # --encoding
