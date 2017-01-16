@@ -1,14 +1,14 @@
 .. currentmodule:: javaproperties
 
-"Plain" ``.properties`` Format
-==============================
+Simple Line-Oriented ``.properties`` Format
+===========================================
 
 Format Overview
 ---------------
 
-The "plain" ``.properties`` file format consists of a series of key-value
-string pairs, one (or fewer) per line, with the key & value separated by the
-first occurrence of an equals sign (``=``, optionally with surrounding
+The simple line-oriented ``.properties`` file format consists of a series of
+key-value string pairs, one (or fewer) per line, with the key & value separated
+by the first occurrence of an equals sign (``=``, optionally with surrounding
 whitespace), a colon (``:``, optionally with surrounding whitespace), or
 non-leading whitespace.  A line without a separator is treated as a key whose
 value is the empty string.  If the same key occurs more than once in a single

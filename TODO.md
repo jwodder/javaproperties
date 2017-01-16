@@ -14,18 +14,17 @@
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
-    - Look for an official term for the "plain" format ("simple line-oriented
-      format"?)
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Test against & add support for pypy?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
 - Split the CLI into a separate package???
-- Generate manpages for the CLI commands?
+- Test against and indicate support for Python 3.6
 
 New Features
 ------------
 - `dump`: Support writing `str`s in Python 2
+    - Use `unicode_literals` less?
 - Implement `Properties.list`?
 - Give the dump functions `ensure_ascii` arguments
 - Give the dump functions `keep_unicode`(?) arguments (mutually exclusive with
@@ -55,7 +54,8 @@ Commands
 
 - Support XML properties files:
     - Support converting between JSON and XML properties
-    - Add a command for converting between XML format and "plain" format
+    - Add a command for converting between XML format and simple line-oriented
+      format
     - Support autodetecting whether a properties file is in XML based on file
       extension (or other means?) ?
     - Support by just adding `properties2xml` and `xml2properties` commands?

@@ -18,10 +18,10 @@
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 
 ``javaproperties`` provides support for reading & writing Java |properties|_
-files (both the "plain" format and XML) with a simple API based on the ``json``
-module — though, for recovering Java addicts, it also includes a ``Properties``
-class intended to match the behavior of |propclass|_ as much as is Pythonically
-possible.
+files (both the simple line-oriented format and XML) with a simple API based on
+the ``json`` module — though, for recovering Java addicts, it also includes a
+``Properties`` class intended to match the behavior of |propclass|_ as much as
+is Pythonically possible.
 
 Also included are three command-line programs for basic manipulation of
 ``.properties`` files (getting & setting values, etc.) as well as converting to
