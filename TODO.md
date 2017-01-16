@@ -15,11 +15,9 @@
     - Add docstrings for the private functions
     - Include examples in main docs?
 - Handle "narrow" Python builds (only for Python versions < 3.3)
-- Test against & add support for pypy?
 - Restrict `TIMESTAMP_RGX` to only match C locale timestamps?
 - Restrict `TIMESTAMP_RGX` to only consider `[ \t\f]` as whitespace?
 - Split the CLI into a separate package???
-- Test against and indicate support for Python 3.6
 
 New Features
 ------------

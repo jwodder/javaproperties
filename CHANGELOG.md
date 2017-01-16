@@ -2,6 +2,7 @@ v0.2.1 (in development)
 -----------------------
 - **Bugfix** to `javaproperties` command: Don't die horribly on missing
   non-ASCII keys
+- PyPy now supported
 
 v0.2.0 (2016-11-14)
 -------------------
