@@ -28,7 +28,12 @@ setup(
 
     setup_requires=['pytest-runner>=2.0,<3'],
     install_requires=['click>=6.5,<7', 'six>=1.4.0,<2'],
-    tests_require=['freezegun', 'pytest>=2.8,<3', 'python-dateutil'],
+    tests_require=[
+        'freezegun',
+        'pytest>=2.8,<3',
+        'pytest-flakes>=1.0,<2',
+        'python-dateutil',
+    ],
 
     classifiers=[
         'Development Status :: 4 - Beta',
