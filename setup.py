@@ -30,7 +30,7 @@ setup(
     install_requires=['click>=6.5,<7', 'six>=1.4.0,<2'],
     tests_require=[
         'freezegun',
-        'pytest>=2.8,<3',
+        'pytest>=3.0,<4',
         'pytest-flakes>=1.0,<2',
         'python-dateutil',
     ],
