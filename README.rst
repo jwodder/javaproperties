@@ -6,6 +6,9 @@
 .. image:: https://travis-ci.org/jwodder/javaproperties.svg?branch=master
     :target: https://travis-ci.org/jwodder/javaproperties
 
+.. image:: https://coveralls.io/repos/github/jwodder/javaproperties/badge.svg?branch=master
+    :target: https://coveralls.io/github/jwodder/javaproperties?branch=master
+
 .. image:: https://img.shields.io/pypi/pyversions/javaproperties.svg
     :target: https://pypi.python.org/pypi/javaproperties
 
