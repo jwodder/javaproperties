@@ -7,6 +7,7 @@
     :target: https://travis-ci.org/jwodder/javaproperties
 
 .. image:: https://img.shields.io/pypi/pyversions/javaproperties.svg
+    :target: https://pypi.python.org/pypi/javaproperties
 
 .. image:: https://img.shields.io/github/license/jwodder/javaproperties.svg?maxAge=2592000
     :target: https://opensource.org/licenses/MIT
