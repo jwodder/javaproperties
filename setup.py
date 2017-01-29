@@ -31,6 +31,7 @@ setup(
     tests_require=[
         'freezegun',
         'pytest>=3.0,<4',
+        'pytest-cov>=2.0,<3',
         'pytest-flakes>=1.0,<2',
         'python-dateutil',
     ],

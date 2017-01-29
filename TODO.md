@@ -11,7 +11,6 @@
     - Test the `Properties` class
     - Make sure that the CLI tests that assume UTF-8 encoding for I/O will work
       on non-sane platforms
-    - Measure test coverage?
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
