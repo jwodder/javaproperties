@@ -26,15 +26,7 @@ setup(
     long_description=long_desc,
     url='https://github.com/jwodder/javaproperties',
 
-    setup_requires=['pytest-runner~=2.0'],
     install_requires=['click~=6.5', 'six~=1.4'],
-    tests_require=[
-        'freezegun',
-        'pytest~=3.0',
-        'pytest-cov~=2.0',
-        'pytest-flakes~=1.0',
-        'python-dateutil',
-    ],
 
     classifiers=[
         'Development Status :: 4 - Beta',
