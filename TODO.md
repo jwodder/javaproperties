@@ -9,8 +9,6 @@
     - Test `properties2json` and `json2properties`
     - Run doctest on the README examples somehow?
     - Test the `Properties` class
-    - Make sure that the CLI tests that assume UTF-8 encoding for I/O will work
-      on non-sane platforms
 - Documentation:
     - Add docstrings for the private functions
     - Include examples in main docs?
@@ -43,6 +41,7 @@ Commands
 - `javaproperties`:
     - Give `set`, `delete`, and `format` (and `select`?) `--in-place` options
       (with optional `--backup <file>`) as an alternative to `--outfile`
+        - `--backup` implies `--in-place`
     - Give `set` and `delete` a `--format` option for also reformatting
     - Give `format` and `select` `--preserve-timestamp` options
     - Add options for completely suppressing the timestamp
