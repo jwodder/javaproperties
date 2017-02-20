@@ -26,7 +26,7 @@ setup(
     long_description=long_desc,
     url='https://github.com/jwodder/javaproperties',
 
-    install_requires=['click~=6.5', 'six~=1.4'],
+    install_requires=['click>=6.5,<7', 'six>=1.4.0,<2'],
 
     classifiers=[
         'Development Status :: 4 - Beta',
