@@ -156,8 +156,9 @@ def escape(field):
     Escape a string so that it can be safely used as either a key or value in a
     ``.properties`` file.  All non-ASCII characters, all nonprintable or space
     characters, and the characters ``\\ # ! = :`` are all escaped using either
+    the single-character escapes recognized by `unescape` (when they exist) or
     ``\\uXXXX`` escapes (after converting non-BMP characters to surrogate
-    pairs) or the single-character escapes recognized by `unescape`.
+    pairs).
 
     :param field: the string to escape
     :type field: text string

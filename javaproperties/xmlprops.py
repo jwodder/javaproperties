@@ -10,9 +10,9 @@ def load_xml(fp, object_pairs_hook=dict):
     and return a `dict` of the key-value pairs.
 
     Beyond basic XML well-formedness, `load_xml` only checks that the root
-    element is named ``properties`` and that all of its ``entry`` children have
-    ``key`` attributes.  No further validation is performed; if any ``entry``\
-    s happen to contain nested tags, the behavior is undefined.
+    element is named "``properties``" and that all of its ``<entry>`` children
+    have ``key`` attributes.  No further validation is performed; if any
+    ``<entry>``\ s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``fp`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of
@@ -46,9 +46,9 @@ def loads_xml(s, object_pairs_hook=dict):
     return a `dict` of the key-value pairs.
 
     Beyond basic XML well-formedness, `loads_xml` only checks that the root
-    element is named ``properties`` and that all of its ``entry`` children have
-    ``key`` attributes.  No further validation is performed; if any ``entry``\
-    s happen to contain nested tags, the behavior is undefined.
+    element is named "``properties``" and that all of its ``<entry>`` children
+    have ``key`` attributes.  No further validation is performed; if any
+    ``<entry>``\ s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``s`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of

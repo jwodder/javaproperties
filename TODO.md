@@ -35,6 +35,9 @@ New Features
 - Add an equivalent of `parse` for XML that can extract the comment?
 - Python 3.6: Take advantage of PEP 495 when handling naïve datetimes
 - Export `getproperties` and `setproperties`?
+- Make `parse` return a generator of `KeyValue`, `Whitespace`, and `Comment`
+  objects?
+    - Give `Comment` an `is_timestamp()` method
 
 Commands
 --------
