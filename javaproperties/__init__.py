@@ -17,6 +17,7 @@ Visit <https://github.com/jwodder/javaproperties> or
 """
 
 from .propclass import Properties
+from .propfile  import PropertiesFile
 from .reading   import load, loads, parse, unescape
 from .writing   import dump, dumps, java_timestamp, join_key_value, escape, \
                         to_comment
@@ -30,6 +31,7 @@ __url__          = 'https://github.com/jwodder/javaproperties'
 
 __all__ = [
     'Properties',
+    'PropertiesFile',
     'dump',
     'dump_xml',
     'dumps',

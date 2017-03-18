@@ -27,6 +27,9 @@ setup(
     url='https://github.com/jwodder/javaproperties',
 
     install_requires=['click>=6.5,<7', 'six>=1.4.0,<2'],
+    extras_require={
+        ':python_version<"2.7"': ['ordereddict'],
+    },
 
     classifiers=[
         'Development Status :: 4 - Beta',
