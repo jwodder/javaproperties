@@ -34,8 +34,11 @@ nonexistent=mu
 # --separator
 # --outfile
 # --escaped
-# --preserve-timestamp
+# --preserve-timestamp when there is a timestamp in input
+# no --preserve-timestamp, with & without a timestamp in input
 # stripping extra trailing line continuations
 # universal newlines?
 # setting a key that appears multiple times in the file
 # reading from a file
+# non-ASCII characters on command line
+# non-ASCII output
