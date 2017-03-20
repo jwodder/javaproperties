@@ -167,3 +167,5 @@ bad-surrogate=\\udc10\\ud83d
 # getting a key that appears multiple times in the file
 # getting keys out of order
 # reading from a file
+# key in source with a non-escaped Latin-1 character
+# key with non-BMP character

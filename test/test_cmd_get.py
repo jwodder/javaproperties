@@ -116,3 +116,5 @@ def test_cmd_get_bad_surrogate_output_py3():
 # getting a key that appears multiple times in the file
 # getting keys out of order
 # reading from a file
+# key in source with a non-escaped Latin-1 character
+# key with non-BMP character

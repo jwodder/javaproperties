@@ -140,3 +140,5 @@ def test_cmd_delete_utf8_not_exists():
 # deleting a key that appears multiple times in the file
 # deleting keys out of order
 # reading from a file
+# key in source with a non-escaped Latin-1 character
+# key with non-BMP character

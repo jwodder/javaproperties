@@ -86,3 +86,5 @@ def test_cmd_format_file():
 # separator
 # --outfile
 # reading from -
+# key in source with a non-escaped Latin-1 character
+# key with non-BMP character
