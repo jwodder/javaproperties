@@ -9,13 +9,13 @@ try:
 except ImportError:
     from ordereddict import OrderedDict
 
-_type_err = 'Keys & values of Properties objects must be strings'
+_type_err = 'Keys & values of PropertiesFile objects must be strings'
 
 PropertyLine = collections.namedtuple('PropertyLine', 'key value source')
 
 class PropertiesFile(collections.MutableMapping):
     def __init__(self):  ### TODO: Support initialization from another mapping
-        #: mapping from keys to line numbers
+        #: mapping from keys to list of line numbers
         self._indices = {}
         #: mapping from line numbers to (key, value, source) tuples
         self._lines = OrderedDict()
@@ -25,11 +25,15 @@ class PropertiesFile(collections.MutableMapping):
         Assert the internal consistency of the instance's data structures.
         This method is for debugging only.
         """
-        for k,i in six.iteritems(self._indices):
-            assert i in self._lines, 'Key index does not map to line'
-            assert self._lines[i].key is not None, 'Key maps to comment/blank'
-            assert self._lines[i].key == k, 'Key does not map to itself'
-            assert self._lines[i].value is not None, 'Key has null value'
+        for k,ix in six.iteritems(self._indices):
+            assert k is not None, 'null key'
+            assert ix, 'Key does not map to any indices'
+            assert ix == sorted(ix), "Key's indices are not in order"
+            for i in ix:
+                assert i in self._lines, 'Key index does not map to line'
+                assert self._lines[i].key is not None, 'Key maps to comment'
+                assert self._lines[i].key == k, 'Key does not map to itself'
+                assert self._lines[i].value is not None, 'Key has null value'
         prev = None
         for i, line in six.iteritems(self._lines):
             assert prev is None or prev < i, 'Line indices out of order'
@@ -44,33 +48,36 @@ class PropertiesFile(collections.MutableMapping):
                     assert loads(line.source) == {line.key: line.value}, \
                         'Key source does not deserialize to itself'
                 assert line.key in self._indices, 'Key is missing from map'
-                assert self._indices[line.key] == i, \
+                assert i in self._indices[line.key], \
                     'Key does not map to itself'
 
     def __getitem__(self, key):
         if not isinstance(key, six.string_types):
             raise TypeError(_type_err)
-        return self._lines[self._indices[key]].value
+        return self._lines[self._indices[key][-1]].value
 
     def __setitem__(self, key, value):
         if not isinstance(key, six.string_types) or \
                 not isinstance(value, six.string_types):
             raise TypeError(_type_err)
         try:
-            i = self._indices[key]
+            ix = self._indices[key]
         except KeyError:
-            i = self._indices[key] = next(reversed(self._lines), -1) + 1
-        self._lines[i] = PropertyLine(key, value, None)
+            ix = [next(reversed(self._lines), -1) + 1]
+        for i in ix[:-1]:
+            del self._lines[i]
+        self._indices[key] = ix[-1:]
+        self._lines[ix[-1]] = PropertyLine(key, value, None)
 
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
             raise TypeError(_type_err)
-        del self._lines[self._indices[key]]
-        del self._indices[key]
+        for i in self._indices.pop(key):
+            del self._lines[i]
 
     def __iter__(self):
-        for line in six.itervalues(self._lines):
-            if line.key is not None:
+        for i, line in six.iteritems(self._lines):
+            if line.key is not None and self._indices[line.key][-1] == i:
                 yield line.key
 
     def __len__(self):
@@ -85,12 +92,9 @@ class PropertiesFile(collections.MutableMapping):
     def load(cls, fp):
         obj = cls()
         for i, (k, v, src) in enumerate(parse(fp)):
-            obj._lines[i] = PropertyLine(k, v, src)
             if k is not None:
-                if k in obj._indices:
-                    ### TODO: Preserve the previous line somehow???
-                    del obj._lines[obj._indices[k]]
-                obj._indices[k] = i
+                obj._indices.setdefault(k, []).append(i)
+            obj._lines[i] = PropertyLine(k, v, src)
         return obj
 
     @classmethod

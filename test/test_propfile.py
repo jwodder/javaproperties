@@ -36,6 +36,7 @@ def test_propfile_dumps():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
@@ -58,6 +59,7 @@ def test_propfile_setitem():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
@@ -80,6 +82,7 @@ def test_propfile_additem():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
@@ -103,6 +106,7 @@ def test_propfile_delitem():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
@@ -126,6 +130,7 @@ def test_propfile_move_item():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
@@ -148,6 +153,7 @@ def test_propfile_set_nochange():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo: first definition
 bar=only definition
 
 # Comment between values
