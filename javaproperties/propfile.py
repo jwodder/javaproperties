@@ -14,11 +14,14 @@ _type_err = 'Keys & values of PropertiesFile objects must be strings'
 PropertyLine = collections.namedtuple('PropertyLine', 'key value source')
 
 class PropertiesFile(collections.MutableMapping):
-    def __init__(self):  ### TODO: Support initialization from another mapping
+    def __init__(self, data=None, **kwargs):
         #: mapping from keys to list of line numbers
         self._indices = {}
         #: mapping from line numbers to (key, value, source) tuples
         self._lines = OrderedDict()
+        if data is not None:
+            self.update(data)
+        self.update(kwargs)
 
     def _check(self):
         """

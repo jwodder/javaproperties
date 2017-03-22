@@ -1,6 +1,11 @@
 from   __future__     import unicode_literals
 from   javaproperties import PropertiesFile, dumps
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
+
 INPUT = '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -18,6 +23,12 @@ foo : second definition
 
 # Comment at end of file
 '''
+
+def test_propfile_empty():
+    pf = PropertiesFile()
+    pf._check()
+    assert dict(pf) == {}
+    assert pf.dumps() == ''
 
 def test_propfile_loads():
     pf = PropertiesFile.loads(INPUT)
@@ -196,3 +207,22 @@ foo=redefinition
 
 # Comment at end of file
 '''
+
+def test_propfile_from_ordereddict():
+    pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]))
+    pf._check()
+    assert dict(pf) == {"apple": "zebra", "key": "value"}
+    assert pf.dumps() == 'key=value\napple=zebra\n'
+
+def test_propfile_from_kwarg():
+    pf = PropertiesFile(key='value')
+    pf._check()
+    assert dict(pf) == {"key": "value"}
+    assert pf.dumps() == 'key=value\n'
+
+def test_propfile_from_ordereddict_and_kwarg():
+    pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]),
+                        key='lock')
+    pf._check()
+    assert dict(pf) == {"apple": "zebra", "key": "lock"}
+    assert pf.dumps() == 'key=lock\napple=zebra\n'
