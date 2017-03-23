@@ -108,15 +108,15 @@ class PropertiesFile(collections.MutableMapping):
             fp = six.StringIO(s)
         return cls.load(fp)
 
-    def dump(self, fp):
-        ### TODO: Support setting the separator and timestamp
+    def dump(self, fp, separator='='):
+        ### TODO: Support setting the timestamp
         for line in six.itervalues(self._lines):
             if line.source is None:
-                print(join_key_value(line.key, line.value), file=fp)
+                print(join_key_value(line.key, line.value, separator), file=fp)
             else:
                 fp.write(line.source)
 
-    def dumps(self):
+    def dumps(self, separator='='):
         s = six.StringIO()
-        self.dump(s)
+        self.dump(s, separator=separator)
         return s.getvalue()

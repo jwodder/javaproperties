@@ -43,23 +43,7 @@ def test_propfile_loads():
 def test_propfile_dumps():
     pf = PropertiesFile.loads(INPUT)
     pf._check()
-    assert pf.dumps() == '''\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-key = value
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-'''
+    assert pf.dumps() == INPUT
 
 def test_propfile_setitem():
     pf = PropertiesFile.loads(INPUT)
@@ -226,3 +210,31 @@ def test_propfile_from_ordereddict_and_kwarg():
     pf._check()
     assert dict(pf) == {"apple": "zebra", "key": "lock"}
     assert pf.dumps() == 'key=lock\napple=zebra\n'
+
+def test_propfile_dumps_separator():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    assert pf.dumps(separator='\t') == INPUT
+
+def test_propfile_set_dumps_separator():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    pf["key"] = "lock"
+    pf._check()
+    assert pf.dumps(separator='\t') == '''\
+# A comment before the timestamp
+#Thu Mar 16 17:06:52 EDT 2017
+# A comment after the timestamp
+foo: first definition
+bar=only definition
+
+# Comment between values
+
+key\tlock
+
+zebra \\
+    apple
+foo : second definition
+
+# Comment at end of file
+'''
