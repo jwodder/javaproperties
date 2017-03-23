@@ -1,12 +1,10 @@
 from   __future__     import unicode_literals
-import sys
-import pytest
 from   javaproperties import loads
 
-need_ordereddict = pytest.mark.skipif(
-    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
-    reason='No OrderedDict before 2.7/3.1',
-)
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 def test_loads_simple():
     assert loads('key=value') == {"key": "value"}
@@ -170,15 +168,11 @@ def test_loads_multiple_crlf():
 def test_loads_multiple_cr():
     assert loads('key = value\rfoo = bar') == {"key": "value", "foo": "bar"}
 
-@need_ordereddict
 def test_loads_multiple_ordereddict():
-    from collections import OrderedDict
     assert loads('key = value\nfoo = bar', object_pairs_hook=OrderedDict) == \
         OrderedDict([("key", "value"), ("foo", "bar")])
 
-@need_ordereddict
 def test_loads_multiple_ordereddict_rev():
-    from collections import OrderedDict
     assert loads('foo = bar\nkey = value', object_pairs_hook=OrderedDict) == \
         OrderedDict([("foo", "bar"), ("key", "value")])
 

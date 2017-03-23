@@ -1,12 +1,11 @@
 from   __future__     import unicode_literals
-import sys
 import pytest
 from   javaproperties import loads_xml
 
-need_ordereddict = pytest.mark.skipif(
-    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
-    reason='No OrderedDict before 2.7/3.1',
-)
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 def test_loads_xml_nothing():
     assert loads_xml('<properties></properties>') == {}
@@ -45,9 +44,7 @@ def test_loads_xml_extra_whitespace():
 def test_loads_xml_multiple():
     assert loads_xml('<properties><entry key="key">value</entry><entry key="foo">bar</entry></properties>') == {"key": "value", "foo": "bar"}
 
-@need_ordereddict
 def test_loads_xml_multiple_ordereddict():
-    from collections import OrderedDict
     assert loads_xml('''
 <properties>
     <entry key="key">value</entry>
@@ -56,9 +53,7 @@ def test_loads_xml_multiple_ordereddict():
 ''', object_pairs_hook=OrderedDict) == \
         OrderedDict([("key", "value"), ("foo", "bar")])
 
-@need_ordereddict
 def test_loads_xml_multiple_ordereddict_rev():
-    from collections import OrderedDict
     assert loads_xml('''
 <properties>
     <entry key="foo">bar</entry>

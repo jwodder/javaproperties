@@ -1,20 +1,19 @@
 from   __future__     import unicode_literals
 from   datetime       import datetime
 import time
-import sys
 from   dateutil.tz    import tzoffset
 import pytest
 from   javaproperties import dumps
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 @pytest.fixture(autouse=True)
 def set_timezone(monkeypatch):
     monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0/M11.1.0')
     time.tzset()
-
-need_ordereddict = pytest.mark.skipif(
-    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
-    reason='No OrderedDict before 2.7/3.1',
-)
 
 def test_dumps_nothing():
     assert dumps({}, timestamp=False) == ''
@@ -44,34 +43,26 @@ def test_dumps_two_simple_rev_sorted():
         sort_keys=True,
     ) == 'key=value\nzebra=apple\n'
 
-@need_ordereddict
 def test_dumps_ordereddict():
-    from collections import OrderedDict
     assert dumps(
         OrderedDict([("key", "value"), ("zebra", "apple")]),
         timestamp=False,
     ) == 'key=value\nzebra=apple\n'
 
-@need_ordereddict
 def test_dumps_ordereddict_rev():
-    from collections import OrderedDict
     assert dumps(
         OrderedDict([("zebra", "apple"), ("key", "value")]),
         timestamp=False,
     ) == 'zebra=apple\nkey=value\n'
 
-@need_ordereddict
 def test_dumps_ordereddict_sorted():
-    from collections import OrderedDict
     assert dumps(
         OrderedDict([("key", "value"), ("zebra", "apple")]),
         timestamp=False,
         sort_keys=True,
     ) == 'key=value\nzebra=apple\n'
 
-@need_ordereddict
 def test_dumps_ordereddict_rev_sorted():
-    from collections import OrderedDict
     assert dumps(
         OrderedDict([("zebra", "apple"), ("key", "value")]),
         timestamp=False,

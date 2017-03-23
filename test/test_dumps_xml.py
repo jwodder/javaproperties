@@ -1,12 +1,10 @@
 from   __future__     import unicode_literals
-import sys
-import pytest
 from   javaproperties import dumps_xml
 
-need_ordereddict = pytest.mark.skipif(
-    sys.version_info[:2] < (2,7) or sys.version_info[:2] == (3,0),
-    reason='No OrderedDict before 2.7/3.1',
-)
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 def test_dumps_xml_nothing():
     assert dumps_xml({}) == '''\
@@ -65,9 +63,7 @@ def test_dumps_xml_two_simple_rev_sorted():
 </properties>
 '''
 
-@need_ordereddict
 def test_dumps_xml_ordereddict():
-    from collections import OrderedDict
     assert dumps_xml(OrderedDict([("key","value"), ("zebra","apple")])) == '''\
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -76,9 +72,7 @@ def test_dumps_xml_ordereddict():
 </properties>
 '''
 
-@need_ordereddict
 def test_dumps_xml_ordereddict_rev():
-    from collections import OrderedDict
     assert dumps_xml(OrderedDict([("zebra","apple"), ("key","value")])) == '''\
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -87,9 +81,7 @@ def test_dumps_xml_ordereddict_rev():
 </properties>
 '''
 
-@need_ordereddict
 def test_dumps_xml_ordereddict_sorted():
-    from collections import OrderedDict
     assert dumps_xml(
         OrderedDict([("key", "value"), ("zebra", "apple")]),
         sort_keys=True,
@@ -101,9 +93,7 @@ def test_dumps_xml_ordereddict_sorted():
 </properties>
 '''
 
-@need_ordereddict
 def test_dumps_xml_ordereddict_rev_sorted():
-    from collections import OrderedDict
     assert dumps_xml(
         OrderedDict([("zebra", "apple"), ("key", "value")]),
         sort_keys=True,
