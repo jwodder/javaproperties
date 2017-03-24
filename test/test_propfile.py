@@ -28,6 +28,8 @@ def test_propfile_empty():
     pf = PropertiesFile()
     pf._check()
     assert dict(pf) == {}
+    assert list(pf) == []
+    assert list(reversed(pf)) == []
     assert pf.dumps() == ''
 
 def test_propfile_loads():
@@ -39,6 +41,8 @@ def test_propfile_loads():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf) == ["foo", "bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
 
 def test_propfile_dumps():
     pf = PropertiesFile.loads(INPUT)
@@ -50,6 +54,8 @@ def test_propfile_setitem():
     pf._check()
     pf["key"] = "lock"
     pf._check()
+    assert list(pf) == ["foo", "bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -73,6 +79,8 @@ def test_propfile_additem():
     pf._check()
     pf["new"] = "old"
     pf._check()
+    assert list(pf) == ["foo", "bar", "key", "zebra", "new"]
+    assert list(reversed(pf)) == ["new", "zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -97,6 +105,8 @@ def test_propfile_delitem():
     pf._check()
     del pf["key"]
     pf._check()
+    assert list(pf) == ["foo", "bar", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -121,6 +131,8 @@ def test_propfile_move_item():
     pf._check()
     pf["key"] = "recreated"
     pf._check()
+    assert list(pf) == ["foo", "bar", "zebra", "key"]
+    assert list(reversed(pf)) == ["key", "zebra", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -144,6 +156,8 @@ def test_propfile_set_nochange():
     pf._check()
     pf["key"] = "value"
     pf._check()
+    assert list(pf) == ["foo", "bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -175,6 +189,8 @@ def test_propfile_set_repeated_key():
     pf._check()
     pf["foo"] = "redefinition"
     pf._check()
+    assert list(pf) == ["foo", "bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
@@ -196,12 +212,16 @@ def test_propfile_from_ordereddict():
     pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]))
     pf._check()
     assert dict(pf) == {"apple": "zebra", "key": "value"}
+    assert list(pf) == ["key", "apple"]
+    assert list(reversed(pf)) == ["apple", "key"]
     assert pf.dumps() == 'key=value\napple=zebra\n'
 
 def test_propfile_from_kwarg():
     pf = PropertiesFile(key='value')
     pf._check()
     assert dict(pf) == {"key": "value"}
+    assert list(pf) == ["key"]
+    assert list(reversed(pf)) == ["key"]
     assert pf.dumps() == 'key=value\n'
 
 def test_propfile_from_ordereddict_and_kwarg():
@@ -209,6 +229,8 @@ def test_propfile_from_ordereddict_and_kwarg():
                         key='lock')
     pf._check()
     assert dict(pf) == {"apple": "zebra", "key": "lock"}
+    assert list(pf) == ["key", "apple"]
+    assert list(reversed(pf)) == ["apple", "key"]
     assert pf.dumps() == 'key=lock\napple=zebra\n'
 
 def test_propfile_dumps_separator():

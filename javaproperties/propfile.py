@@ -83,6 +83,12 @@ class PropertiesFile(collections.MutableMapping):
             if line.key is not None and self._indices[line.key][-1] == i:
                 yield line.key
 
+    def __reversed__(self):
+        for i in reversed(self._lines):
+            line = self._lines[i]
+            if line.key is not None and self._indices[line.key][-1] == i:
+                yield line.key
+
     def __len__(self):
         return len(self._indices)
 
