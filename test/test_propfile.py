@@ -178,10 +178,10 @@ foo : second definition
 
 def test_propfile_dumps_function():
     assert dumps(PropertiesFile.loads(INPUT), timestamp=False) == '''\
+foo=second definition
 bar=only definition
 key=value
 zebra=apple
-foo=second definition
 '''
 
 def test_propfile_set_repeated_key():

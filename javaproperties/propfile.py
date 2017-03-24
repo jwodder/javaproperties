@@ -16,7 +16,7 @@ PropertyLine = collections.namedtuple('PropertyLine', 'key value source')
 class PropertiesFile(collections.MutableMapping):
     def __init__(self, data=None, **kwargs):
         #: mapping from keys to list of line numbers
-        self._indices = {}
+        self._indices = OrderedDict()
         #: mapping from line numbers to (key, value, source) tuples
         self._lines = OrderedDict()
         if data is not None:
@@ -79,15 +79,10 @@ class PropertiesFile(collections.MutableMapping):
             del self._lines[i]
 
     def __iter__(self):
-        for i, line in six.iteritems(self._lines):
-            if line.key is not None and self._indices[line.key][-1] == i:
-                yield line.key
+        return iter(self._indices)
 
     def __reversed__(self):
-        for i in reversed(self._lines):
-            line = self._lines[i]
-            if line.key is not None and self._indices[line.key][-1] == i:
-                yield line.key
+        return reversed(self._indices)
 
     def __len__(self):
         return len(self._indices)
