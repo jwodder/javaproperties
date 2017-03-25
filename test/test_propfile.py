@@ -27,6 +27,8 @@ foo : second definition
 def test_propfile_empty():
     pf = PropertiesFile()
     pf._check()
+    assert len(pf) == 0
+    assert not bool(pf)
     assert dict(pf) == {}
     assert list(pf) == []
     assert list(reversed(pf)) == []
@@ -35,6 +37,8 @@ def test_propfile_empty():
 def test_propfile_loads():
     pf = PropertiesFile.loads(INPUT)
     pf._check()
+    assert len(pf) == 4
+    assert bool(pf)
     assert dict(pf) == {
         "foo": "second definition",
         "bar": "only definition",
@@ -154,6 +158,7 @@ key=recreated
 def test_propfile_set_nochange():
     pf = PropertiesFile.loads(INPUT)
     pf._check()
+    assert pf["key"] == "value"
     pf["key"] = "value"
     pf._check()
     assert list(pf) == ["foo", "bar", "key", "zebra"]
@@ -211,6 +216,8 @@ foo=redefinition
 def test_propfile_from_ordereddict():
     pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]))
     pf._check()
+    assert len(pf) == 2
+    assert bool(pf)
     assert dict(pf) == {"apple": "zebra", "key": "value"}
     assert list(pf) == ["key", "apple"]
     assert list(reversed(pf)) == ["apple", "key"]
@@ -219,6 +226,8 @@ def test_propfile_from_ordereddict():
 def test_propfile_from_kwarg():
     pf = PropertiesFile(key='value')
     pf._check()
+    assert len(pf) == 1
+    assert bool(pf)
     assert dict(pf) == {"key": "value"}
     assert list(pf) == ["key"]
     assert list(reversed(pf)) == ["key"]
@@ -228,6 +237,8 @@ def test_propfile_from_ordereddict_and_kwarg():
     pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]),
                         key='lock')
     pf._check()
+    assert len(pf) == 2
+    assert bool(pf)
     assert dict(pf) == {"apple": "zebra", "key": "lock"}
     assert list(pf) == ["key", "apple"]
     assert list(reversed(pf)) == ["apple", "key"]
@@ -260,3 +271,78 @@ foo : second definition
 
 # Comment at end of file
 '''
+
+def test_propfile_copy():
+    pf = PropertiesFile({"Foo": "bar"})
+    pf2 = pf.copy()
+    pf._check()
+    pf2._check()
+    assert pf is not pf2
+    assert isinstance(pf2, PropertiesFile)
+    assert dict(pf2) == {"Foo": "bar"}
+    assert pf == pf2
+    pf2["Foo"] = "gnusto"
+    pf._check()
+    pf2._check()
+    assert dict(pf) == {"Foo": "bar"}
+    assert dict(pf2) == {"Foo": "gnusto"}
+    assert pf != pf2
+    pf2["fOO"] = "quux"
+    pf._check()
+    pf2._check()
+    assert dict(pf) == {"Foo": "bar"}
+    assert dict(pf2) == {"Foo": "gnusto", "fOO": "quux"}
+    assert pf != pf2
+
+def test_propfile_eq_empty():
+    pf = PropertiesFile()
+    pf2 = PropertiesFile()
+    assert pf is not pf2
+    assert pf == pf2
+
+def test_propfile_eq_nonempty():
+    pf = PropertiesFile({"Foo": "bar"})
+    pf2 = PropertiesFile({"Foo": "bar"})
+    assert pf is not pf2
+    assert pf == pf2
+
+def test_propfile_eq_self():
+    pf = PropertiesFile.loads(INPUT)
+    assert pf == pf
+
+def test_propfile_neq():
+    assert PropertiesFile({"Foo": "bar"}) != PropertiesFile({"Foo": "BAR"})
+
+def test_propfile_eq_dict():
+    pf = PropertiesFile({"Foo": "BAR"})
+    assert pf == {"Foo": "BAR"}
+    assert {"Foo": "BAR"} == pf
+    assert pf != {"Foo": "bar"}
+    assert {"Foo": "bar"} != pf
+
+def test_propfile_eq_set_nochange():
+    pf = PropertiesFile.loads(INPUT)
+    pf2 = PropertiesFile.loads(INPUT)
+    assert pf == pf2
+    assert pf["key"] == pf2["key"] == "value"
+    pf2["key"] = "value"
+    assert pf == pf2
+    assert dict(pf) == dict(pf2)
+    assert pf.dumps() == INPUT
+    assert pf.dumps() != pf2.dumps()
+
+def test_propfile_neq_one_comment():
+    pf = PropertiesFile.loads('#This is a comment.\nkey=value\n')
+    pf2 = PropertiesFile.loads('key=value\n')
+    assert pf != pf2
+    assert dict(pf) == dict(pf2)
+
+def test_propfile_neq_different_comments():
+    pf = PropertiesFile.loads('#This is a comment.\nkey=value\n')
+    pf2 = PropertiesFile.loads('#This is also a comment.\nkey=value\n')
+    assert pf != pf2
+    assert dict(pf) == dict(pf2)
+
+# comparing PropertiesFiles that differ only in repeated keys
+# copying (and then dumping) a PropertiesFile with comments and repeated keys
+# loading & dumping trailing backslash at end of input

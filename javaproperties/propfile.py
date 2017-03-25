@@ -87,10 +87,27 @@ class PropertiesFile(collections.MutableMapping):
     def __len__(self):
         return len(self._indices)
 
+    def _comparable(self):
+        return [
+            (None, line.source) if line.key is None else (line.key, line.value)
+            for i, line in six.iteritems(self._lines)
+            ### TODO: Also include non-final repeated keys???
+            if line.key is None or self._indices[line.key][-1] == i
+        ]
+
+    def __eq__(self, other):
+        if isinstance(other, PropertiesFile):
+            return self._comparable() == other._comparable()
+        ### TODO: Special-case OrderedDict?
+        elif isinstance(other, collections.Mapping):
+            return dict(self) == other
+        else:
+            return NotImplemented
+
+    def __ne__(self, other):
+        return not (self == other)
+
     #def __repr__(self):
-    #def __eq__(self, other):
-    #def __ne__(self, other):
-    #def __reversed__(self):
 
     @classmethod
     def load(cls, fp):
@@ -121,3 +138,11 @@ class PropertiesFile(collections.MutableMapping):
         s = six.StringIO()
         self.dump(s, separator=separator)
         return s.getvalue()
+
+    def copy(self):
+        dup = self.__class__()
+        dup._indices = OrderedDict(
+            (k, list(v)) for k,v in six.iteritems(self._indices)
+        )
+        dup._lines = self._lines.copy()
+        return dup
