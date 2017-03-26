@@ -279,8 +279,8 @@ def test_propfile_copy():
     pf2._check()
     assert pf is not pf2
     assert isinstance(pf2, PropertiesFile)
-    assert dict(pf2) == {"Foo": "bar"}
     assert pf == pf2
+    assert dict(pf) == dict(pf2) == {"Foo": "bar"}
     pf2["Foo"] = "gnusto"
     pf._check()
     pf2._check()
@@ -293,6 +293,57 @@ def test_propfile_copy():
     assert dict(pf) == {"Foo": "bar"}
     assert dict(pf2) == {"Foo": "gnusto", "fOO": "quux"}
     assert pf != pf2
+
+def test_propfile_copy_more():
+    pf = PropertiesFile.loads(INPUT)
+    pf2 = pf.copy()
+    pf._check()
+    pf2._check()
+    assert pf is not pf2
+    assert isinstance(pf2, PropertiesFile)
+    assert pf == pf2
+    assert dict(pf) == dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
+    pf2["foo"] = "third definition"
+    del pf2["bar"]
+    pf2["key"] = "value"
+    pf2["zebra"] = "horse"
+    pf2["new"] = "old"
+    pf._check()
+    pf2._check()
+    assert pf != pf2
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
+    assert dict(pf2) == {
+        "foo": "third definition",
+        "key": "value",
+        "zebra": "horse",
+        "new": "old",
+    }
+    assert pf.dumps() == INPUT
+    assert pf2.dumps() == '''\
+# A comment before the timestamp
+#Thu Mar 16 17:06:52 EDT 2017
+# A comment after the timestamp
+
+# Comment between values
+
+key=value
+
+zebra=horse
+foo=third definition
+
+# Comment at end of file
+new=old
+'''
 
 def test_propfile_eq_empty():
     pf = PropertiesFile()
@@ -343,6 +394,38 @@ def test_propfile_neq_different_comments():
     assert pf != pf2
     assert dict(pf) == dict(pf2)
 
-# comparing PropertiesFiles that differ only in repeated keys
-# copying (and then dumping) a PropertiesFile with comments and repeated keys
-# loading & dumping trailing backslash at end of input
+def test_propfile_eq_one_repeated_key():
+    pf = PropertiesFile.loads('key = value\nkey: other value\n')
+    pf2 = PropertiesFile.loads('key other value')
+    assert pf == pf2
+    assert dict(pf) == dict(pf2) == {"key": "other value"}
+
+def test_propfile_eq_repeated_keys():
+    pf = PropertiesFile.loads('key = value\nkey: other value\n')
+    pf2 = PropertiesFile.loads('key: whatever\nkey other value')
+    assert pf == pf2
+    assert dict(pf) == dict(pf2) == {"key": "other value"}
+
+def test_propfile_preserve_trailing_escape():
+    pf = PropertiesFile.loads('key = value\\')
+    pf._check()
+    assert dict(pf) == {"key": "value"}
+    assert pf.dumps() == 'key = value\\\n'
+
+def test_propfile_add_after_trailing_escape():
+    pf = PropertiesFile.loads('key = value\\')
+    pf._check()
+    pf["new"] = "old"
+    assert dict(pf) == {"key": "value", "new": "old"}
+    assert pf.dumps() == 'key = value\nnew=old\n'
+
+def test_propfile_add_after_trailing_comment_escape():
+    pf = PropertiesFile.loads('#key = value\\')
+    pf._check()
+    pf["new"] = "old"
+    assert dict(pf) == {"new": "old"}
+    assert pf.dumps() == '#key = value\\\nnew=old\n'
+
+# lack of newline at EOF
+# preserving mixtures of line endings
+# trailing escape followed/not followed by newline at EOF

@@ -1,5 +1,6 @@
 from   __future__ import print_function
 import collections
+import re
 import six
 from   .reading   import loads, parse
 from   .writing   import join_key_value
@@ -64,13 +65,28 @@ class PropertiesFile(collections.MutableMapping):
                 not isinstance(value, six.string_types):
             raise TypeError(_type_err)
         try:
-            ix = self._indices[key]
+            ixes = self._indices[key]
         except KeyError:
-            ix = [next(reversed(self._lines), -1) + 1]
-        for i in ix[:-1]:
-            del self._lines[i]
-        self._indices[key] = ix[-1:]
-        self._lines[ix[-1]] = PropertyLine(key, value, None)
+            try:
+                lasti = next(reversed(self._lines))
+            except StopIteration:
+                ix = 0
+            else:
+                ix = lasti + 1
+                # We're adding a line to the end of the file, so make sure the
+                # line before it doesn't end with a trailing line continuation.
+                lastline = self._lines[lasti]
+                if lastline.key is not None and lastline.source is not None:
+                    self._lines[lasti] = lastline._replace(
+                        source=re.sub(r'(?<!\\)((?:\\\\)*)\\$', r'\1',
+                                      lastline.source)
+                    )
+        else:
+            ix = ixes.pop()
+            for i in ixes:
+                del self._lines[i]
+        self._indices[key] = [ix]
+        self._lines[ix] = PropertyLine(key, value, None)
 
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
@@ -133,6 +149,8 @@ class PropertiesFile(collections.MutableMapping):
                 print(join_key_value(line.key, line.value, separator), file=fp)
             else:
                 fp.write(line.source)
+                if not line.source.endswith(('\r', '\n')):
+                    fp.write('\n')
 
     def dumps(self, separator='='):
         s = six.StringIO()
