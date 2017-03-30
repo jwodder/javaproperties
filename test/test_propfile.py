@@ -200,6 +200,7 @@ def test_propfile_set_repeated_key():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo=redefinition
 bar=only definition
 
 # Comment between values
@@ -208,7 +209,6 @@ key = value
 
 zebra \\
     apple
-foo=redefinition
 
 # Comment at end of file
 '''
@@ -333,13 +333,13 @@ def test_propfile_copy_more():
 # A comment before the timestamp
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
+foo=third definition
 
 # Comment between values
 
 key=value
 
 zebra=horse
-foo=third definition
 
 # Comment at end of file
 new=old

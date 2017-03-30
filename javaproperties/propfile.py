@@ -82,7 +82,10 @@ class PropertiesFile(collections.MutableMapping):
                                       lastline.source)
                     )
         else:
-            ix = ixes.pop()
+            # Update the first occurrence of the key and discard the rest.
+            # This way, the order in which the keys are listed in the file and
+            # dict will be preserved.
+            ix = ixes.pop(0)
             for i in ixes:
                 del self._lines[i]
         self._indices[key] = [ix]
