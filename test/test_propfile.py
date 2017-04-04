@@ -410,22 +410,84 @@ def test_propfile_preserve_trailing_escape():
     pf = PropertiesFile.loads('key = value\\')
     pf._check()
     assert dict(pf) == {"key": "value"}
-    assert pf.dumps() == 'key = value\\\n'
+    assert pf.dumps() == 'key = value\\'
 
 def test_propfile_add_after_trailing_escape():
     pf = PropertiesFile.loads('key = value\\')
     pf._check()
     pf["new"] = "old"
+    pf._check()
     assert dict(pf) == {"key": "value", "new": "old"}
     assert pf.dumps() == 'key = value\nnew=old\n'
+
+def test_propfile_preserve_trailing_comment_escape():
+    pf = PropertiesFile.loads('#key = value\\')
+    pf._check()
+    assert dict(pf) == {}
+    assert pf.dumps() == '#key = value\\'
 
 def test_propfile_add_after_trailing_comment_escape():
     pf = PropertiesFile.loads('#key = value\\')
     pf._check()
     pf["new"] = "old"
+    pf._check()
     assert dict(pf) == {"new": "old"}
     assert pf.dumps() == '#key = value\\\nnew=old\n'
 
-# lack of newline at EOF
+def test_propfile_preserve_no_trailing_newline():
+    pf = PropertiesFile.loads('key = value')
+    pf._check()
+    assert dict(pf) == {"key": "value"}
+    assert pf.dumps() == 'key = value'
+
+def test_propfile_add_after_no_trailing_newline():
+    pf = PropertiesFile.loads('key = value\\')
+    pf._check()
+    pf["new"] = "old"
+    pf._check()
+    assert dict(pf) == {"key": "value", "new": "old"}
+    assert pf.dumps() == 'key = value\nnew=old\n'
+
+def test_propfile_preserve_comment_no_trailing_newline():
+    pf = PropertiesFile.loads('#key = value')
+    pf._check()
+    assert dict(pf) == {}
+    assert pf.dumps() == '#key = value'
+
+def test_propfile_add_after_comment_no_trailing_newline():
+    pf = PropertiesFile.loads('#key = value')
+    pf._check()
+    pf["new"] = "old"
+    pf._check()
+    assert dict(pf) == {"new": "old"}
+    assert pf.dumps() == '#key = value\nnew=old\n'
+
+def test_propfile_preserve_trailing_escape_nl():
+    pf = PropertiesFile.loads('key = value\\\n')
+    pf._check()
+    assert dict(pf) == {"key": "value"}
+    assert pf.dumps() == 'key = value\\\n'
+
+def test_propfile_add_after_trailing_escape_nl():
+    pf = PropertiesFile.loads('key = value\\\n')
+    pf._check()
+    pf["new"] = "old"
+    pf._check()
+    assert dict(pf) == {"key": "value", "new": "old"}
+    assert pf.dumps() == 'key = value\nnew=old\n'
+
+def test_propfile_preserve_trailing_comment_escape_nl():
+    pf = PropertiesFile.loads('#key = value\\\n')
+    pf._check()
+    assert dict(pf) == {}
+    assert pf.dumps() == '#key = value\\\n'
+
+def test_propfile_add_after_trailing_comment_escape_nl():
+    pf = PropertiesFile.loads('#key = value\\\n')
+    pf._check()
+    pf["new"] = "old"
+    pf._check()
+    assert dict(pf) == {"new": "old"}
+    assert pf.dumps() == '#key = value\\\nnew=old\n'
+
 # preserving mixtures of line endings
-# trailing escape followed/not followed by newline at EOF

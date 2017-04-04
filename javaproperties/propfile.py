@@ -74,13 +74,16 @@ class PropertiesFile(collections.MutableMapping):
             else:
                 ix = lasti + 1
                 # We're adding a line to the end of the file, so make sure the
-                # line before it doesn't end with a trailing line continuation.
+                # line before it ends with a newline and (if it's not a
+                # comment) doesn't end with a trailing line continuation.
                 lastline = self._lines[lasti]
-                if lastline.key is not None and lastline.source is not None:
-                    self._lines[lasti] = lastline._replace(
-                        source=re.sub(r'(?<!\\)((?:\\\\)*)\\$', r'\1',
-                                      lastline.source)
-                    )
+                if lastline.source is not None:
+                    lastsrc = lastline.source
+                    if lastline.key is not None:
+                        lastsrc=re.sub(r'(?<!\\)((?:\\\\)*)\\$', r'\1', lastsrc)
+                    if not lastsrc.endswith(('\r', '\n')):
+                        lastsrc += '\n'
+                    self._lines[lasti] = lastline._replace(source=lastsrc)
         else:
             # Update the first occurrence of the key and discard the rest.
             # This way, the order in which the keys are listed in the file and
@@ -152,8 +155,6 @@ class PropertiesFile(collections.MutableMapping):
                 print(join_key_value(line.key, line.value, separator), file=fp)
             else:
                 fp.write(line.source)
-                if not line.source.endswith(('\r', '\n')):
-                    fp.write('\n')
 
     def dumps(self, separator='='):
         s = six.StringIO()
