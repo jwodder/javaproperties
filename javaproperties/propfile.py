@@ -15,13 +15,45 @@ _type_err = 'Keys & values of PropertiesFile objects must be strings'
 PropertyLine = collections.namedtuple('PropertyLine', 'key value source')
 
 class PropertiesFile(collections.MutableMapping):
-    def __init__(self, data=None, **kwargs):
+    """
+    .. versionadded:: 0.3.0
+
+    A custom mapping class for reading from, editing, and writing to a
+    ``.properties`` file while preserving comments & whitespace in the original
+    input.
+
+    A `PropertiesFile` instance can be constructed from another mapping and/or
+    iterable of pairs, after which it will act like a normal
+    `~collections.OrderedDict`.  Alternatively, an instance can be constructed
+    from a file or string with `PropertiesFile.load()` or
+    `PropertiesFile.loads()`, and the resulting instance will remember the
+    formatting of its input and retain that formatting when written back to a
+    file or string with the `~PropertiesFile.dump()` or
+    `~PropertiesFile.dumps()` method.
+
+    When not reading or writing, `PropertiesFile` behaves like a normal
+    `~collections.MutableMapping` class (i.e., you can do ``props[key] =
+    value`` and so forth), except that (a) like `~collections.OrderedDict`, key
+    insertion order is remembered, and (b) like `Properties`, it may only be
+    used to store strings and will raise a `~exceptions.TypeError` if passed a
+    non-string object as key or value.
+
+    Two `PropertiesFile` instances compare equal iff both their key-value pairs
+    and comment & whitespace lines are equal and in the same order.  When
+    comparing a `PropertiesFile` to any other type of mapping, only the
+    key-value pairs are considered, and order is ignored.
+
+    `PropertiesFile` currently only supports reading & writing the simple
+    line-oriented format, not XML.
+    """
+
+    def __init__(self, mapping=None, **kwargs):
         #: mapping from keys to list of line numbers
         self._indices = OrderedDict()
         #: mapping from line numbers to (key, value, source) tuples
         self._lines = OrderedDict()
-        if data is not None:
-            self.update(data)
+        if mapping is not None:
+            self.update(mapping)
         self.update(kwargs)
 
     def _check(self):

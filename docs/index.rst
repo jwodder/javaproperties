@@ -25,6 +25,7 @@ Also included are three command-line programs for basic manipulation of
     plain
     xmlprops
     propclass
+    propfile
     util
     cli
 
