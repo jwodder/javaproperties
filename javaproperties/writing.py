@@ -10,14 +10,15 @@ from   .util      import itemize
 def dump(props, fp, separator='=', comments=None, timestamp=True,
          sort_keys=False):
     """
-    Write a series of key-value pairs to a file in ``.properties`` format.
+    Write a series of key-value pairs to a file in simple line-oriented
+    ``.properties`` format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be text strings.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: A file-like object to write the values of ``props`` to.  It must
         have been opened as a text file with a Latin-1-compatible encoding.
-    :param separator: the string to use for separating keys & values.  Only
+    :param separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
     :type separator: text string
@@ -45,13 +46,13 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
 
 def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     """
-    Convert a series of key-value pairs to a text string in ``.properties``
-    format.
+    Convert a series of key-value pairs to a text string in simple
+    line-oriented ``.properties`` format.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
         All keys and values in ``props`` must be text strings.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
-    :param separator: the string to use for separating keys & values.  Only
+    :param separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
     :type separator: text string
@@ -98,7 +99,7 @@ def to_comment(comment):
 def join_key_value(key, value, separator='='):
     r"""
     Join a key and value together into a single line suitable for adding to a
-    ``.properties`` file.  No trailing newline is added.
+    simple line-oriented ``.properties`` file.  No trailing newline is added.
 
     >>> join_key_value('possible separators', '= : space')
     'possible\\ separators=\\= \\: space'

@@ -34,9 +34,9 @@ class PropertiesFile(collections.MutableMapping):
     When not reading or writing, `PropertiesFile` behaves like a normal
     `~collections.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that (a) like `~collections.OrderedDict`, key
-    insertion order is remembered, and (b) like `Properties`, it may only be
-    used to store strings and will raise a `~exceptions.TypeError` if passed a
-    non-string object as key or value.
+    insertion order is remembered and is used when iterating & dumping, and (b)
+    like `Properties`, it may only be used to store strings and will raise a
+    `~exceptions.TypeError` if passed a non-string object as key or value.
 
     Two `PropertiesFile` instances compare equal iff both their key-value pairs
     and comment & whitespace lines are equal and in the same order.  When
@@ -46,6 +46,10 @@ class PropertiesFile(collections.MutableMapping):
     `PropertiesFile` currently only supports reading & writing the simple
     line-oriented format, not XML.
     """
+
+    ### Mention that comment & whitespace data can be removed with `dict(pf)`?
+    ### Mention __reversed__
+    ### Mention that passing to the `dumps()` function discards comments
 
     def __init__(self, mapping=None, **kwargs):
         #: mapping from keys to list of line numbers
@@ -165,6 +169,19 @@ class PropertiesFile(collections.MutableMapping):
 
     @classmethod
     def load(cls, fp):
+        """
+        Parse the contents of the `~io.IOBase.readline`-supporting file-like
+        object ``fp`` as a simple line-oriented ``.properties`` file and return
+        a `PropertiesFile` instance.
+
+        ``fp`` may be either a text or binary filehandle, with or without
+        universal newlines enabled.  If it is a binary filehandle, its contents
+        are decoded as Latin-1.
+
+        :param fp: the file from which to read the ``.properties`` document
+        :type fp: file-like object
+        :rtype: PropertiesFile
+        """
         obj = cls()
         for i, (k, v, src) in enumerate(parse(fp)):
             if k is not None:
@@ -174,6 +191,17 @@ class PropertiesFile(collections.MutableMapping):
 
     @classmethod
     def loads(cls, s):
+        """
+        Parse the contents of the string ``s`` as a simple line-oriented
+        ``.properties`` file and return a `PropertiesFile` instance.
+
+        ``s`` may be either a text string or bytes string.  If it is a bytes
+        string, its contents are decoded as Latin-1.
+
+        :param string s: the string from which to read the ``.properties``
+            document
+        :rtype: PropertiesFile
+        """
         if isinstance(s, six.binary_type):
             fp = six.BytesIO(s)
         else:
@@ -181,6 +209,27 @@ class PropertiesFile(collections.MutableMapping):
         return cls.load(fp)
 
     def dump(self, fp, separator='='):
+        """
+        Write the mapping to a file in simple line-oriented ``.properties``
+        format.
+
+        If the instance was originally created from a file or string with
+        `PropertiesFile.load()` or `PropertiesFile.loads()`, then the output
+        will include the comments and whitespace from the original input, and
+        any keys that haven't been deleted or reassigned will retain their
+        original formatting and multiplicity.  Key-value pairs that have been
+        modified or added to the mapping will be reformatted with
+        `join_key_value()` using the given separator.  All key-value pairs are
+        output in the order they were defined, with new keys added to the end.
+
+        :param fp: A file-like object to write the mapping to.  It must have
+            been opened as a text file with a Latin-1-compatible encoding.
+        :param separator: The string to use for separating new or modified keys
+            & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with added
+            whitespace) should ever be used as the separator.
+        :type separator: text string
+        :return: `None`
+        """
         ### TODO: Support setting the timestamp
         for line in six.itervalues(self._lines):
             if line.source is None:
@@ -189,11 +238,31 @@ class PropertiesFile(collections.MutableMapping):
                 fp.write(line.source)
 
     def dumps(self, separator='='):
+        """
+        Convert the mapping to a text string in simple line-oriented
+        ``.properties`` format.
+
+        If the instance was originally created from a file or string with
+        `PropertiesFile.load()` or `PropertiesFile.loads()`, then the output
+        will include the comments and whitespace from the original input, and
+        any keys that haven't been deleted or reassigned will retain their
+        original formatting and multiplicity.  Key-value pairs that have been
+        modified or added to the mapping will be reformatted with
+        `join_key_value()` using the given separator.  All key-value pairs are
+        output in the order they were defined, with new keys added to the end.
+
+        :param separator: The string to use for separating new or modified keys
+            & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with added
+            whitespace) should ever be used as the separator.
+        :type separator: text string
+        :rtype: text string
+        """
         s = six.StringIO()
         self.dump(s, separator=separator)
         return s.getvalue()
 
     def copy(self):
+        """ Create a copy of the mapping """
         dup = self.__class__()
         dup._indices = OrderedDict(
             (k, list(v)) for k,v in six.iteritems(self._indices)
