@@ -23,20 +23,25 @@ class PropertiesFile(collections.MutableMapping):
     input.
 
     A `PropertiesFile` instance can be constructed from another mapping and/or
-    iterable of pairs, after which it will act like a normal
+    iterable of pairs, after which it will act like an
     `~collections.OrderedDict`.  Alternatively, an instance can be constructed
     from a file or string with `PropertiesFile.load()` or
     `PropertiesFile.loads()`, and the resulting instance will remember the
     formatting of its input and retain that formatting when written back to a
     file or string with the `~PropertiesFile.dump()` or
-    `~PropertiesFile.dumps()` method.
+    `~PropertiesFile.dumps()` method.  The formatting information attached to
+    an instance ``pf`` can be forgotten by constructing another mapping from it
+    via ``dict(pf)``, ``OrderedDict(pf)``, or even ``PropertiesFile(pf)`` (Use
+    the `copy()` method if you want to create another `PropertiesFile` instance
+    with the same data & formatting).
 
     When not reading or writing, `PropertiesFile` behaves like a normal
     `~collections.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that (a) like `~collections.OrderedDict`, key
-    insertion order is remembered and is used when iterating & dumping, and (b)
-    like `Properties`, it may only be used to store strings and will raise a
-    `~exceptions.TypeError` if passed a non-string object as key or value.
+    insertion order is remembered and is used when iterating & dumping (and
+    `reversed` is supported), and (b) like `Properties`, it may only be used to
+    store strings and will raise a `~exceptions.TypeError` if passed a
+    non-string object as key or value.
 
     Two `PropertiesFile` instances compare equal iff both their key-value pairs
     and comment & whitespace lines are equal and in the same order.  When
@@ -46,10 +51,6 @@ class PropertiesFile(collections.MutableMapping):
     `PropertiesFile` currently only supports reading & writing the simple
     line-oriented format, not XML.
     """
-
-    ### Mention that comment & whitespace data can be removed with `dict(pf)`?
-    ### Mention __reversed__
-    ### Mention that passing to the `dumps()` function discards comments
 
     def __init__(self, mapping=None, **kwargs):
         #: mapping from keys to list of line numbers
@@ -222,6 +223,13 @@ class PropertiesFile(collections.MutableMapping):
         `join_key_value()` using the given separator.  All key-value pairs are
         output in the order they were defined, with new keys added to the end.
 
+        .. note::
+
+            Serializing a `PropertiesFile` instance with the :func:`dump()`
+            function instead will cause all formatting information to be
+            ignored, as :func:`dump()` will treat the instance like a normal
+            mapping.
+
         :param fp: A file-like object to write the mapping to.  It must have
             been opened as a text file with a Latin-1-compatible encoding.
         :param separator: The string to use for separating new or modified keys
@@ -251,6 +259,13 @@ class PropertiesFile(collections.MutableMapping):
         `join_key_value()` using the given separator.  All key-value pairs are
         output in the order they were defined, with new keys added to the end.
 
+        .. note::
+
+            Serializing a `PropertiesFile` instance with the :func:`dumps()`
+            function instead will cause all formatting information to be
+            ignored, as :func:`dumps()` will treat the instance like a normal
+            mapping.
+
         :param separator: The string to use for separating new or modified keys
             & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with added
             whitespace) should ever be used as the separator.
@@ -262,7 +277,7 @@ class PropertiesFile(collections.MutableMapping):
         return s.getvalue()
 
     def copy(self):
-        """ Create a copy of the mapping """
+        """ Create a copy of the mapping, including formatting information """
         dup = self.__class__()
         dup._indices = OrderedDict(
             (k, list(v)) for k,v in six.iteritems(self._indices)
