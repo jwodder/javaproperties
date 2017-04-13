@@ -1,5 +1,5 @@
-v0.3.0 (in development)
------------------------
+v0.3.0 (2017-04-13)
+-------------------
 - Added the `PropertiesFile` class for preserving comments in files [#1]
 - The `ordereddict` package is now required under Python 2.6
 
