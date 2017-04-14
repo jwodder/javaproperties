@@ -17,7 +17,7 @@ Also included are three command-line programs for basic manipulation of
 .. note::
 
     Throughout the following, "text string" means a Unicode character string —
-    `unicode <python2:unicode>` in Python 2, `str` in Python 3.
+    |unicode|_ in Python 2, `str` in Python 3.
 
 .. toctree::
     :maxdepth: 2

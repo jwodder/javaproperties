@@ -25,9 +25,9 @@ def load_xml(fp, object_pairs_hook=dict):
     .. note::
 
         This uses `xml.etree.ElementTree` for parsing, which does not have
-        decent support for `unicode <python2:unicode>` input in Python 2.
-        Files containing non-ASCII characters need to be opened in binary mode
-        in Python 2, while Python 3 accepts both binary and text input.
+        decent support for |unicode|_ input in Python 2.  Files containing
+        non-ASCII characters need to be opened in binary mode in Python 2,
+        while Python 3 accepts both binary and text input.
 
     :param fp: the file from which to read the XML properties document
     :type fp: file-like object
@@ -61,11 +61,10 @@ def loads_xml(s, object_pairs_hook=dict):
     .. note::
 
         This uses `xml.etree.ElementTree` for parsing, which does not have
-        decent support for `unicode <python2:unicode>` input in Python 2.
-        Strings containing non-ASCII characters need to be encoded as bytes in
-        Python 2 (Use either UTF-8 or UTF-16 if the XML document does not
-        contain an encoding declaration), while Python 3 accepts both binary
-        and text input.
+        decent support for |unicode|_ input in Python 2.  Strings containing
+        non-ASCII characters need to be encoded as bytes in Python 2 (Use
+        either UTF-8 or UTF-16 if the XML document does not contain an encoding
+        declaration), while Python 3 accepts both binary and text input.
 
     :param string s: the string from which to read the XML properties document
     :param callable object_pairs_hook: class or function for combining the

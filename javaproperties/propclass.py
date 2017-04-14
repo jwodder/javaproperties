@@ -12,11 +12,10 @@ class Properties(collections.MutableMapping):
     """
     A port of |java8properties|_ that tries to match its behavior as much as is
     Pythonically possible.  `Properties` behaves like a normal
-    `~collections.MutableMapping` class (i.e., you can do ``props[key] =
+    `~collections.abc.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that it may only be used to store strings
-    (`str <python2:str>` and `unicode <python2:unicode>` in Python 2; just
-    `str` in Python 3).  Attempts to use a non-string object as a key or value
-    will produce a `~exceptions.TypeError`.
+    (|py2str|_ and |unicode|_ in Python 2; just `str` in Python 3).  Attempts
+    to use a non-string object as a key or value will produce a `TypeError`.
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
         initialize the `Properties` object.  All keys and values in ``data``
@@ -176,10 +175,9 @@ class Properties(collections.MutableMapping):
         .. note::
 
             This uses `xml.etree.ElementTree` for parsing, which does not have
-            decent support for `unicode <python2:unicode>` input in Python 2.
-            Files containing non-ASCII characters need to be opened in binary
-            mode in Python 2, while Python 3 accepts both binary and text
-            input.
+            decent support for |unicode|_ input in Python 2.  Files containing
+            non-ASCII characters need to be opened in binary mode in Python 2,
+            while Python 3 accepts both binary and text input.
 
         :param inStream: the file from which to read the XML properties document
         :type inStream: file-like object

@@ -36,12 +36,12 @@ class PropertiesFile(collections.MutableMapping):
     with the same data & formatting).
 
     When not reading or writing, `PropertiesFile` behaves like a normal
-    `~collections.MutableMapping` class (i.e., you can do ``props[key] =
+    `~collections.abc.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that (a) like `~collections.OrderedDict`, key
     insertion order is remembered and is used when iterating & dumping (and
     `reversed` is supported), and (b) like `Properties`, it may only be used to
-    store strings and will raise a `~exceptions.TypeError` if passed a
-    non-string object as key or value.
+    store strings and will raise a `TypeError` if passed a non-string object as
+    key or value.
 
     Two `PropertiesFile` instances compare equal iff both their key-value pairs
     and comment & whitespace lines are equal and in the same order.  When
