@@ -26,7 +26,7 @@ setup(
     long_description=long_desc,
     url='https://github.com/jwodder/javaproperties',
 
-    install_requires=['click>=6.5,<7', 'six>=1.4.0,<2'],
+    install_requires=['six>=1.4.0,<2'],
     extras_require={
         ':python_version<"2.7"': ['ordereddict'],
     },
@@ -55,12 +55,4 @@ setup(
         'Topic :: Software Development :: Libraries :: Java Libraries',
         'Topic :: Utilities',
     ],
-
-    entry_points={
-        "console_scripts": [
-            'javaproperties = javaproperties.__main__:javaproperties',
-            'properties2json = javaproperties.tojson:tojson',
-            'json2properties = javaproperties.fromjson:fromjson',
-        ]
-    },
 )

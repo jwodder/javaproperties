@@ -27,7 +27,6 @@ Also included are three command-line programs for basic manipulation of
     propclass
     propfile
     util
-    cli
 
 Indices and tables
 ==================
