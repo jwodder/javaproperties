@@ -1,5 +1,7 @@
 v0.4.0 (in development)
 -----------------------
+- Split off the command-line programs into a separate package,
+  [`javaproperties-cli`](https://github.com/jwodder/javaproperties-cli)
 
 v0.3.0 (2017-04-13)
 -------------------

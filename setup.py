@@ -49,7 +49,6 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
 
         'License :: OSI Approved :: MIT License',
-        'Environment :: Console',
         'Intended Audience :: Developers',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries :: Java Libraries',

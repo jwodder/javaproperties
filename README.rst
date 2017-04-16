@@ -27,9 +27,9 @@ the ``json`` module — though, for recovering Java addicts, it also includes a
 ``Properties`` class intended to match the behavior of |propclass|_ as much as
 is Pythonically possible.
 
-Also included are three command-line programs for basic manipulation of
-``.properties`` files (getting & setting values, etc.) as well as converting to
-& from the much more widely-supported JSON format.
+Previous versions of ``javaproperties`` included command-line programs for
+basic manipulation of ``.properties`` files.  As of version 0.4.0, these
+programs have been split off into a separate package, |clipkg|_.
 
 
 Installation
@@ -125,3 +125,6 @@ Dump as XML::
 
 .. |propclass| replace:: Java 8's ``java.net.Properties``
 .. _propclass: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
+
+.. |clipkg| replace:: ``javaproperties-cli``
+.. _clipkg: https://github.com/jwodder/javaproperties-cli
