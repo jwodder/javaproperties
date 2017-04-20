@@ -1,4 +1,4 @@
-SPHINXOPTS    = -Wn
+SPHINXOPTS    = -W
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
