@@ -4,11 +4,11 @@
 javaproperties — Read & write Java .properties files in Python
 ==============================================================
 
-`javaproperties` provides support for reading & writing Java |properties|_
-files (both the simple line-oriented format and XML) with a simple API based on
-the `json` module — though, for recovering Java addicts, it also includes a
-`Properties` class intended to match the behavior of |java8properties|_ as much
-as is Pythonically possible.
+`javaproperties` provides support for reading & writing |properties|_ (both the
+simple line-oriented format and XML) with a simple API based on the `json`
+module — though, for recovering Java addicts, it also includes a `Properties`
+class intended to match the behavior of |java8properties|_ as much as is
+Pythonically possible.
 
 Previous versions of `javaproperties` included command-line programs for
 basic manipulation of ``.properties`` files.  As of version 0.4.0, these
@@ -34,7 +34,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`search`
 
-.. |properties| replace:: ``.properties``
+.. |properties| replace:: Java ``.properties`` files
 .. _properties: https://en.wikipedia.org/wiki/.properties
 
 .. |java8properties| replace:: Java 8's ``java.net.Properties``

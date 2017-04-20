@@ -21,9 +21,9 @@
 | `Documentation <https://javaproperties.readthedocs.io/en/latest>`_
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 
-``javaproperties`` provides support for reading & writing Java |properties|_
-files (both the simple line-oriented format and XML) with a simple API based on
-the ``json`` module — though, for recovering Java addicts, it also includes a
+``javaproperties`` provides support for reading & writing |properties|_ (both
+the simple line-oriented format and XML) with a simple API based on the
+``json`` module — though, for recovering Java addicts, it also includes a
 ``Properties`` class intended to match the behavior of |propclass|_ as much as
 is Pythonically possible.
 
@@ -120,7 +120,7 @@ Dump as XML::
 `And more! <https://javaproperties.readthedocs.io>`_
 
 
-.. |properties| replace:: ``.properties``
+.. |properties| replace:: Java ``.properties`` files
 .. _properties: https://en.wikipedia.org/wiki/.properties
 
 .. |propclass| replace:: Java 8's ``java.net.Properties``
