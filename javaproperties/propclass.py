@@ -74,11 +74,6 @@ class Properties(collections.MutableMapping):
     def __ne__(self, other):
         return not (self == other)
 
-    def __nonzero__(self):
-        return bool(self.data)
-
-    __bool__ = __nonzero__
-
     def getProperty(self, key, defaultValue=None):
         """
         Fetch the value associated with the key ``key`` in the `Properties`
