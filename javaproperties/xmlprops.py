@@ -106,7 +106,7 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     :return: `None`
     """
     fp = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
-    print('<?xml version="1.0" encoding={0} standalone="no"?>'\
+    print('<?xml version="1.0" encoding={0} standalone="no"?>'
           .format(quoteattr(encoding)), file=fp)
     for s in _stream_xml(props, comment, sort_keys):
         print(s, file=fp)

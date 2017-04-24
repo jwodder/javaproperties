@@ -302,7 +302,7 @@ def test_propfile_copy_more():
     assert pf is not pf2
     assert isinstance(pf2, PropertiesFile)
     assert pf == pf2
-    assert dict(pf) == dict(pf) == {
+    assert dict(pf) == dict(pf2) == {
         "foo": "second definition",
         "bar": "only definition",
         "key": "value",
@@ -491,3 +491,5 @@ def test_propfile_add_after_trailing_comment_escape_nl():
     assert pf.dumps() == '#key = value\\\nnew=old\n'
 
 # preserving mixtures of line endings
+# conversion to an OrderedDict
+# setitem, getitem, etc.: Test conversion to a dict afterwards

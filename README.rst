@@ -18,7 +18,7 @@
 
 `GitHub <https://github.com/jwodder/javaproperties>`_
 | `PyPI <https://pypi.python.org/pypi/javaproperties>`_
-| `Documentation <https://javaproperties.readthedocs.io/en/v0.4.0>`_
+| `Documentation <https://javaproperties.readthedocs.io/en/latest>`_
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 
 ``javaproperties`` provides support for reading & writing |properties|_ (both
