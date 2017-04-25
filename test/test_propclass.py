@@ -162,7 +162,6 @@ def test_propclass_eq_self():
 def test_propclass_neq():
     assert Properties({"Foo": "bar"}) != Properties({"Foo": "BAR"})
 
-@pytest.mark.xfail(reason='Not implemented yet')
 def test_propclass_eq_dict():
     p = Properties({"Foo": "BAR"})
     assert p == {"Foo": "BAR"}
@@ -213,6 +212,19 @@ def test_propclass_eq_repeated_keys():
     assert p == p2
     assert dict(p) == dict(p2) == {"key": "other value"}
 
-# store
+# store() when non-empty (with & without comment)
 # dumps() function?
 # defaults
+# asserting `load` doesn't affect `defaults`?
+# setitem on an empty instance
+# get/delete nonexistent key
+# equality when `defaults` is involved
+# initialization from a list of pairs
+# assigning a non-string key/value
+# initialization with a non-string key/value
+# getProperty
+# propertyNames
+# setProperty
+# stringPropertyNames
+# loadFromXML
+# storeToXML (with & without comment)

@@ -13,7 +13,6 @@
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Give `PropertiesFile` a decent `__repr__`
 - Give `Properties` a `copy` method
-- Rewrite `Properties.__eq__` to support comparison against arbitrary mappings
 
 New Features
 ------------

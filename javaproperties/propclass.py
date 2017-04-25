@@ -2,7 +2,6 @@
 import collections
 from   six       import string_types
 from   .reading  import load
-from   .util     import itemize
 from   .writing  import dump
 from   .xmlprops import load_xml, dump_xml
 
@@ -31,14 +30,13 @@ class Properties(collections.MutableMapping):
 
     def __init__(self, data=None, defaults=None):
         self.data = {}
-        if data is not None:
-            for k,v in itemize(data):
-                self[k] = v
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
         #: `getProperty`, `propertyNames`, and `stringPropertyNames` use this
         #: attribute; all other methods (including the standard mapping
         #: methods) ignore it.
         self.defaults = defaults
+        if data is not None:
+            self.update(data)
 
     def __getitem__(self, key):
         if not isinstance(key, string_types):
@@ -67,9 +65,12 @@ class Properties(collections.MutableMapping):
                 .format(__package__, self)
 
     def __eq__(self, other):
-        return type(self) is type(other) and \
-                self.data == other.data and \
-                self.defaults == other.defaults
+        if isinstance(other, Properties):
+            return self.data == other.data and self.defaults == other.defaults
+        elif isinstance(other, collections.Mapping):
+            return dict(self) == other
+        else:
+            return NotImplemented
 
     def __ne__(self, other):
         return not (self == other)

@@ -493,3 +493,8 @@ def test_propfile_add_after_trailing_comment_escape_nl():
 # preserving mixtures of line endings
 # conversion to an OrderedDict
 # setitem, getitem, etc.: Test conversion to a dict afterwards
+# setitem on an empty instance
+# get/delete nonexistent key
+# initialization from a list of pairs
+# assigning a non-string key/value
+# initialization with a non-string key/value
