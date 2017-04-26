@@ -12,7 +12,6 @@
     - Add an example of each format to the format descriptions
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Give `PropertiesFile` a decent `__repr__`
-- Give `Properties` a `copy` method
 
 New Features
 ------------

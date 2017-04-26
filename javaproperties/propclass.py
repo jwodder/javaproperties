@@ -199,3 +199,10 @@ class Properties(collections.MutableMapping):
         :return: `None`
         """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
+
+    def copy(self):
+        """
+        Create a copy of the mapping.  The copy's `defaults` attribute will
+        refer to the same instance as the original's `defaults`.
+        """
+        return self.__class__(self.data, self.defaults)

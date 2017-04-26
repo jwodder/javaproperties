@@ -1,6 +1,5 @@
 from   __future__     import unicode_literals
 from   freezegun      import freeze_time
-import pytest
 from   six            import StringIO
 from   javaproperties import Properties
 
@@ -92,7 +91,6 @@ def test_propclass_from_dict():
     assert bool(p)
     assert dict(p) == {"apple": "zebra", "key": "value"}
 
-@pytest.mark.xfail(reason='Not implemented yet')
 def test_propclass_copy():
     p = Properties({"Foo": "bar"})
     p2 = p.copy()
@@ -109,7 +107,6 @@ def test_propclass_copy():
     assert dict(p2) == {"Foo": "gnusto", "fOO": "quux"}
     assert p != p2
 
-@pytest.mark.xfail(reason='Not implemented yet')
 def test_propclass_copy_more():
     p = Properties()
     p.load(StringIO(INPUT))
