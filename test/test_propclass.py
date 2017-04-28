@@ -235,7 +235,7 @@ def test_propclass_propertyNames():
 
 def test_propclass_stringPropertyNames():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    assert p.stringPropertyNames() == {"key", "apple", "foo"}
+    assert p.stringPropertyNames() == set(["key", "apple", "foo"])
 
 def test_propclass_getProperty():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
