@@ -1,5 +1,7 @@
 from   __future__     import unicode_literals
+import collections
 from   freezegun      import freeze_time
+import pytest
 from   six            import StringIO
 from   javaproperties import Properties
 
@@ -87,6 +89,12 @@ def test_propclass_delitem():
 
 def test_propclass_from_dict():
     p = Properties({"key": "value", "apple": "zebra"})
+    assert len(p) == 2
+    assert bool(p)
+    assert dict(p) == {"apple": "zebra", "key": "value"}
+
+def test_propclass_from_pairs():
+    p = Properties([("key", "value"), ("apple", "zebra")])
     assert len(p) == 2
     assert bool(p)
     assert dict(p) == {"apple": "zebra", "key": "value"}
@@ -209,19 +217,78 @@ def test_propclass_eq_repeated_keys():
     assert p == p2
     assert dict(p) == dict(p2) == {"key": "other value"}
 
+def test_propclass_load_eq_from_dict():
+    p = Properties()
+    p.load(StringIO(INPUT))
+    assert p == Properties({
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    })
+
+def test_propclass_propertyNames():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    names = p.propertyNames()
+    assert isinstance(names, collections.Iterator)
+    assert sorted(names) == ["apple", "foo", "key"]
+
+def test_propclass_stringPropertyNames():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    assert p.stringPropertyNames() == {"key", "apple", "foo"}
+
+def test_propclass_getProperty():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    assert p.getProperty("key") == "value"
+
+def test_propclass_getProperty_default():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    assert p.getProperty("key", "default") == "value"
+
+def test_propclass_getProperty_missing():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    assert p.getProperty("missing") is None
+
+def test_propclass_getProperty_missing_default():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    assert p.getProperty("missing", "default") == "default"
+
+def test_propclass_nonstring_key():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        p[42] = 'forty-two'
+    assert str(excinfo.value) == \
+        'Keys & values of Properties objects must be strings'
+
+def test_propclass_nonstring_value():
+    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        p['forty-two'] = 42
+    assert str(excinfo.value) == \
+        'Keys & values of Properties objects must be strings'
+
+def test_propclass_from_nonstring_key():
+    with pytest.raises(TypeError) as excinfo:
+        Properties({"key": "value", 42: "forty-two"})
+    assert str(excinfo.value) == \
+        'Keys & values of Properties objects must be strings'
+
+def test_propclass_from_nonstring_value():
+    with pytest.raises(TypeError) as excinfo:
+        Properties({"key": "value", "forty-two": 42})
+    assert str(excinfo.value) == \
+        'Keys & values of Properties objects must be strings'
+
 # store() when non-empty (with & without comment)
 # dumps() function?
-# defaults
+# defaults (with some keys overlapped by the "main" object, some not)
+# defaults with defaults
 # asserting `load` doesn't affect `defaults`?
 # setitem on an empty instance
 # get/delete nonexistent key
 # equality when `defaults` is involved
-# initialization from a list of pairs
-# assigning a non-string key/value
-# initialization with a non-string key/value
-# getProperty
-# propertyNames
 # setProperty
-# stringPropertyNames
 # loadFromXML
 # storeToXML (with & without comment)
+# load() on a nonempty instance
+# getitem
