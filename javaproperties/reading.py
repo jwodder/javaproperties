@@ -81,7 +81,7 @@ def parse(fp):
                 ln = ln.decode('iso-8859-1')
             if ln == '':
                 return
-            for l in ascii_splitlines(ln, True):
+            for l in ascii_splitlines(ln):
                 yield l
     liter = lineiter()
     for source in liter:
