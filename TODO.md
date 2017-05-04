@@ -12,7 +12,8 @@
     - Add an example of each format to the format descriptions
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Give `PropertiesFile` a decent `__repr__`
-- Confirm that Java passes invalid `\u` escape sequences through unchanged
+- Try to include the line number (and column number and filename?) in
+  `InvalidUEscapeError`s
 
 New Features
 ------------

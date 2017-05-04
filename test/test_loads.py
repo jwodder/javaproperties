@@ -1,5 +1,6 @@
 from   __future__     import unicode_literals
-from   javaproperties import loads
+import pytest
+from   javaproperties import InvalidUEscapeError, loads
 
 try:
     from collections import OrderedDict
@@ -308,3 +309,104 @@ def test_loads_form_feed_separator():
 
 def test_loads_escaped_form_feed():
     assert loads('key\\\fvalue=pair') == {"key\fvalue": "pair"}
+
+def test_loads_u_hex_invalid():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uabcx')
+    assert excinfo.value.escape == '\\uabcx'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uabcx = bad')
+    assert excinfo.value.escape == '\\uabcx'
+
+def test_loads_u_hex_space():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uabc ')
+    assert excinfo.value.escape == '\\uabc '
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uabc  = bad')
+    assert excinfo.value.escape == '\\uabc'
+
+def test_loads_u_hex_eof():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uabc')
+    assert excinfo.value.escape == '\\uabc'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uabc = bad')
+    assert excinfo.value.escape == '\\uabc'
+
+def test_loads_u_invalid_hex():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uxabc')
+    assert excinfo.value.escape == '\\uxabc'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uxabc = bad')
+    assert excinfo.value.escape == '\\uxabc'
+
+def test_loads_u_space_hex():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\u abc')
+    assert excinfo.value.escape == '\\u abc'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\u abc = bad')
+    assert excinfo.value.escape == '\\u'
+
+def test_loads_u_eof():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\u')
+    assert excinfo.value.escape == '\\u'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\u')
+    assert excinfo.value.escape == '\\u'
+
+def test_loads_u_invalid_eof():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\ux')
+    assert excinfo.value.escape == '\\ux'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\ux = bad')
+    assert excinfo.value.escape == '\\ux'
+
+def test_loads_u_space_eof():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\u ')
+    assert excinfo.value.escape == '\\u '
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\u  = bad')
+    assert excinfo.value.escape == '\\u'
+
+def test_loads_u_hex_sep():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uab=bad')
+    assert excinfo.value.escape == '\\uab'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uab:bad')
+    assert excinfo.value.escape == '\\uab'
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('\\uab bad')
+    assert excinfo.value.escape == '\\uab'
+
+def test_loads_u_escaped_escape():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uab\\cd')
+    assert excinfo.value.escape == '\\uab\\c'
+
+def test_loads_u_u_escape_escape():
+    with pytest.raises(InvalidUEscapeError) as excinfo:
+        loads('bad = \\uab\\u0063d')
+    assert excinfo.value.escape == '\\uab\\u'
+
+def test_loads_u_extra():
+    assert loads('the = \\u00f0e') == {"the": "\xF0e"}
+    assert loads('\\u00f0e = the') == {"\xF0e": "the"}
+
+def test_loads_big_U_escape():
+    assert loads('goat = \\U0001F410') == {"goat": "U0001F410"}
+
+def test_loads_key_unicode_eq_value():
+    assert loads('key\\u003Dvalue') == {"key=value": ""}
+
+def test_loads_key_unicode_colon_value():
+    assert loads('key\\u003Avalue') == {"key:value": ""}
+
+def test_loads_key_unicode_space_value():
+    assert loads('key\\u0020value') == {"key value": ""}

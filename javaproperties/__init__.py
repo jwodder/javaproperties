@@ -14,7 +14,7 @@ Visit <https://github.com/jwodder/javaproperties> or
 
 from .propclass import Properties
 from .propfile  import PropertiesFile
-from .reading   import load, loads, parse, unescape
+from .reading   import InvalidUEscapeError, load, loads, parse, unescape
 from .writing   import dump, dumps, java_timestamp, join_key_value, escape, \
                         to_comment
 from .xmlprops  import load_xml, loads_xml, dump_xml, dumps_xml
@@ -26,6 +26,7 @@ __license__      = 'MIT'
 __url__          = 'https://github.com/jwodder/javaproperties'
 
 __all__ = [
+    'InvalidUEscapeError',
     'Properties',
     'PropertiesFile',
     'dump',
