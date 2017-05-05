@@ -26,6 +26,8 @@ def load(fp, object_pairs_hook=dict):
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
+    :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+        occurs in the input
     """
     return object_pairs_hook((k,v) for k,v,_ in parse(fp) if k is not None)
 
@@ -49,6 +51,8 @@ def loads(s, object_pairs_hook=dict):
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
+    :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+        occurs in the input
     """
     fp = BytesIO(s) if isinstance(s, binary_type) else StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
@@ -73,6 +77,8 @@ def parse(fp):
     :param fp: the file from which to read the ``.properties`` document
     :type fp: file-like object
     :rtype: generator of triples of text strings
+    :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+        occurs in the input
     """
     def lineiter():
         while True:
@@ -121,6 +127,8 @@ def unescape(field):
     :param field: the string to decode
     :type field: text string
     :rtype: text string
+    :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+        occurs in the input
     """
     return re.sub(r'[\uD800-\uDBFF][\uDC00-\uDFFF]', _unsurrogate,
                   re.sub(r'\\(u.{0,4}|.)', _unesc, field))
@@ -142,8 +150,16 @@ def _unsurrogate(m):
     c,d = map(ord, m.group())
     return unichr(((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000)
 
+
 class InvalidUEscapeError(ValueError):
+    """
+    Raised when an invalid ``\\uXXXX`` escape sequence (i.e., a ``\\u`` not
+    immediately followed by four hexadecimal digits) is encountered in a simple
+    line-oriented ``.properties`` file
+    """
+
     def __init__(self, escape):
+        #: The invalid ``\uXXXX`` escape sequence encountered
         self.escape = escape
         super(InvalidUEscapeError, self).__init__(escape)
 

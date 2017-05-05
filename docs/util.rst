@@ -8,3 +8,5 @@ Low-Level Utilities
 .. autofunction:: parse
 .. autofunction:: to_comment
 .. autofunction:: unescape
+.. autoexception:: InvalidUEscapeError
+    :show-inheritance:
