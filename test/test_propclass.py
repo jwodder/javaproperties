@@ -279,11 +279,60 @@ def test_propclass_from_nonstring_value():
     assert str(excinfo.value) == \
         'Keys & values of Properties objects must be strings'
 
+def test_propclass_defaults():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert len(p) == 2
+    assert bool(p)
+    assert dict(p) == {"key": "value", "apple": "zebra"}
+
+def test_propclass_defaults_getitem():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p["apple"] == "zebra"
+
+def test_propclass_defaults_getitem_overridden():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p["key"] == "value"
+
+def test_propclass_defaults_getitem_defaulted():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    with pytest.raises(KeyError):
+        p["horse"]
+
+def test_propclass_defaults_getProperty():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p.getProperty("apple") == "zebra"
+
+def test_propclass_defaults_getProperty_overridden():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p.getProperty("key") == "value"
+
+def test_propclass_defaults_getProperty_defaulted():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p.getProperty("horse") == "orange"
+
+def test_propclass_defaults_propertyNames():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    names = p.propertyNames()
+    assert isinstance(names, collections.Iterator)
+    assert sorted(names) == ["apple", "horse", "key"]
+
+def test_propclass_defaults_stringPropertyNames():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    assert p.stringPropertyNames() == set(["key", "apple", "horse"])
+
 # store() when non-empty (with & without comment)
 # dumps() function?
-# defaults (with some keys overlapped by the "main" object, some not)
 # defaults with defaults
-# asserting `load` doesn't affect `defaults`?
+# asserting `load` and `setitem` don't affect `defaults`
 # setitem on an empty instance
 # get/delete nonexistent key
 # equality when `defaults` is involved
