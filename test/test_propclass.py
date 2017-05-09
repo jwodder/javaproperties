@@ -48,6 +48,14 @@ def test_propclass_load():
         "zebra": "apple",
     }
 
+def test_propclass_getitem():
+    p = Properties()
+    p.load(StringIO(INPUT))
+    assert p["key"] == "value"
+    assert p["foo"] == "second definition"
+    with pytest.raises(KeyError):
+        p["missing"]
+
 def test_propclass_setitem():
     p = Properties()
     p.load(StringIO(INPUT))
@@ -329,15 +337,92 @@ def test_propclass_defaults_stringPropertyNames():
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p.stringPropertyNames() == set(["key", "apple", "horse"])
 
+def test_propclass_setProperty():
+    p = Properties()
+    p.load(StringIO(INPUT))
+    p.setProperty("key", "lock")
+    assert len(p) == 4
+    assert bool(p)
+    assert dict(p) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "lock",
+        "zebra": "apple",
+    }
+
+def test_propclass_defaults_setProperty():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p.setProperty("apple", "banana")
+    assert dict(p) == {"key": "value", "apple": "banana"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setProperty_overridden():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p.setProperty("key", "hole")
+    assert dict(p) == {"key": "hole", "apple": "zebra"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setProperty_new():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p.setProperty("new", "old")
+    assert dict(p) == {"key": "value", "apple": "zebra", "new": "old"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setProperty_new_override():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p.setProperty("horse", "pony")
+    assert dict(p) == {"key": "value", "apple": "zebra", "horse": "pony"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setitem():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p["apple"] = "banana"
+    assert dict(p) == {"key": "value", "apple": "banana"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setitem_overridden():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p["key"] = "hole"
+    assert dict(p) == {"key": "hole", "apple": "zebra"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setitem_new():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p["new"] = "old"
+    assert dict(p) == {"key": "value", "apple": "zebra", "new": "old"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+def test_propclass_defaults_setitem_new_override():
+    defs = Properties({"key": "lock", "horse": "orange"})
+    p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
+    p["horse"] = "pony"
+    assert dict(p) == {"key": "value", "apple": "zebra", "horse": "pony"}
+    assert dict(defs) == {"key": "lock", "horse": "orange"}
+
+@freeze_time('2016-11-07 20:29:40')
+def test_propclass_empty_setitem():
+    p = Properties()
+    p["key"] = "value"
+    assert len(p) == 1
+    assert bool(p)
+    assert dict(p) == {"key": "value"}
+    s = StringIO()
+    p.store(s)
+    assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
+
 # store() when non-empty (with & without comment)
 # dumps() function?
 # defaults with defaults
-# asserting `load` and `setitem` don't affect `defaults`
-# setitem on an empty instance
+# asserting `load` doesn't affect `defaults`
 # get/delete nonexistent key
 # equality when `defaults` is involved
-# setProperty
 # loadFromXML
 # storeToXML (with & without comment)
 # load() on a nonempty instance
-# getitem
