@@ -123,7 +123,7 @@ Dump as XML::
 .. |properties| replace:: Java ``.properties`` files
 .. _properties: https://en.wikipedia.org/wiki/.properties
 
-.. |propclass| replace:: Java 8's ``java.net.Properties``
+.. |propclass| replace:: Java 8's ``java.util.Properties``
 .. _propclass: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
 .. |clipkg| replace:: ``javaproperties-cli``

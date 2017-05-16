@@ -24,7 +24,7 @@ class Properties(collections.MutableMapping):
         for `getProperty`
     :type defaults: `Properties` or `None`
 
-    .. |java8properties| replace:: Java 8's ``java.net.Properties``
+    .. |java8properties| replace:: Java 8's ``java.util.Properties``
     .. _java8properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
     """
 

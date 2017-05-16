@@ -6,7 +6,7 @@ Read & write Java .properties files
 files (both the simple line-oriented format and XML) with a simple API based on
 the ``json`` module — though, for recovering Java addicts, it also includes a
 ``Properties`` class intended to match the behavior of Java 8's
-``java.net.Properties`` as much as is Pythonically possible.
+``java.util.Properties`` as much as is Pythonically possible.
 
 Visit <https://github.com/jwodder/javaproperties> or
 <http://javaproperties.rtfd.io> for more information.

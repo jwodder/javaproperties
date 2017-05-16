@@ -37,7 +37,7 @@ Indices and tables
 .. |properties| replace:: Java ``.properties`` files
 .. _properties: https://en.wikipedia.org/wiki/.properties
 
-.. |java8properties| replace:: Java 8's ``java.net.Properties``
+.. |java8properties| replace:: Java 8's ``java.util.Properties``
 .. _java8properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
 
 .. |clipkg| replace:: ``javaproperties-cli``
