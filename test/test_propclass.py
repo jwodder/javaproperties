@@ -48,6 +48,19 @@ def test_propclass_load():
         "zebra": "apple",
     }
 
+def test_propclass_nonempty_load():
+    p = Properties({"key": "lock", "horse": "orange"})
+    p.load(StringIO(INPUT))
+    assert len(p) == 5
+    assert bool(p)
+    assert dict(p) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "horse": "orange",
+        "key": "value",
+        "zebra": "apple",
+    }
+
 def test_propclass_getitem():
     p = Properties()
     p.load(StringIO(INPUT))
@@ -425,4 +438,3 @@ def test_propclass_empty_setitem():
 # equality when `defaults` is involved
 # loadFromXML
 # storeToXML (with & without comment)
-# load() on a nonempty instance
