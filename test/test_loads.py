@@ -314,86 +314,107 @@ def test_loads_u_hex_invalid():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uabcx')
     assert excinfo.value.escape == '\\uabcx'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabcx'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uabcx = bad')
     assert excinfo.value.escape == '\\uabcx'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabcx'
 
 def test_loads_u_hex_space():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uabc ')
     assert excinfo.value.escape == '\\uabc '
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabc '
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uabc  = bad')
     assert excinfo.value.escape == '\\uabc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabc'
 
 def test_loads_u_hex_eof():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uabc')
     assert excinfo.value.escape == '\\uabc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabc'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uabc = bad')
     assert excinfo.value.escape == '\\uabc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uabc'
 
 def test_loads_u_invalid_hex():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uxabc')
     assert excinfo.value.escape == '\\uxabc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uxabc'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uxabc = bad')
     assert excinfo.value.escape == '\\uxabc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uxabc'
 
 def test_loads_u_space_hex():
     with pytest.raises(InvalidUEscapeError) as excinfo:
-        loads('bad = \\u abc')
+        loads('bad = \\u abcx')
     assert excinfo.value.escape == '\\u abc'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u abc'
     with pytest.raises(InvalidUEscapeError) as excinfo:
-        loads('\\u abc = bad')
+        loads('\\u abcx = bad')
     assert excinfo.value.escape == '\\u'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u'
 
 def test_loads_u_eof():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\u')
     assert excinfo.value.escape == '\\u'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\u')
     assert excinfo.value.escape == '\\u'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u'
 
 def test_loads_u_invalid_eof():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\ux')
     assert excinfo.value.escape == '\\ux'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\ux'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\ux = bad')
     assert excinfo.value.escape == '\\ux'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\ux'
 
 def test_loads_u_space_eof():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\u ')
     assert excinfo.value.escape == '\\u '
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u '
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\u  = bad')
     assert excinfo.value.escape == '\\u'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\u'
 
 def test_loads_u_hex_sep():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uab=bad')
     assert excinfo.value.escape == '\\uab'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uab'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uab:bad')
     assert excinfo.value.escape == '\\uab'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uab'
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('\\uab bad')
     assert excinfo.value.escape == '\\uab'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uab'
 
 def test_loads_u_escaped_escape():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uab\\cd')
     assert excinfo.value.escape == '\\uab\\c'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uab\\c'
 
 def test_loads_u_u_escape_escape():
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads('bad = \\uab\\u0063d')
     assert excinfo.value.escape == '\\uab\\u'
+    assert str(excinfo.value) == 'Invalid \\u escape sequence: \\uab\\u'
 
 def test_loads_u_extra():
     assert loads('the = \\u00f0e') == {"the": "\xF0e"}

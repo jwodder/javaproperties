@@ -47,3 +47,5 @@ New Features
     - Support concatenating two `PropertiesFile`s?
     - Add an option for preserving the separator used in the input when
       overwriting a key-value pair?
+    - Should instances stringify to their `dump` representations?
+- Should `Properties` instances stringify to their `dump` representations?

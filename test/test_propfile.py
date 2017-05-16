@@ -1,4 +1,5 @@
 from   __future__     import unicode_literals
+import pytest
 from   javaproperties import PropertiesFile, dumps
 
 try:
@@ -52,6 +53,15 @@ def test_propfile_dumps():
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert pf.dumps() == INPUT
+
+def test_propfile_getitem():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    assert pf["key"] == "value"
+    assert pf["foo"] == "second definition"
+    with pytest.raises(KeyError):
+        pf["missing"]
+    pf._check()
 
 def test_propfile_setitem():
     pf = PropertiesFile.loads(INPUT)
@@ -201,6 +211,29 @@ def test_propfile_set_repeated_key():
 #Thu Mar 16 17:06:52 EDT 2017
 # A comment after the timestamp
 foo=redefinition
+bar=only definition
+
+# Comment between values
+
+key = value
+
+zebra \\
+    apple
+
+# Comment at end of file
+'''
+
+def test_propfile_delete_repeated_key():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    del pf["foo"]
+    pf._check()
+    assert list(pf) == ["bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar"]
+    assert pf.dumps() == '''\
+# A comment before the timestamp
+#Thu Mar 16 17:06:52 EDT 2017
+# A comment after the timestamp
 bar=only definition
 
 # Comment between values
@@ -406,6 +439,11 @@ def test_propfile_eq_repeated_keys():
     assert pf == pf2
     assert dict(pf) == dict(pf2) == {"key": "other value"}
 
+def test_propfile_neq_string():
+    pf = PropertiesFile.loads('key = value\nkey: other value\n')
+    assert pf != 'key = value\nkey: other value\n'
+    assert 'key = value\nkey: other value\n' != pf
+
 def test_propfile_preserve_trailing_escape():
     pf = PropertiesFile.loads('key = value\\')
     pf._check()
@@ -490,11 +528,42 @@ def test_propfile_add_after_trailing_comment_escape_nl():
     assert dict(pf) == {"new": "old"}
     assert pf.dumps() == '#key = value\\\nnew=old\n'
 
+def test_propfile_get_nonstring_key():
+    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        pf[42]
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
+def test_propfile_set_nonstring_key():
+    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        pf[42] = 'forty-two'
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
+def test_propfile_set_nonstring_value():
+    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        pf['forty-two'] = 42
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
+def test_propfile_from_nonstring_key():
+    with pytest.raises(TypeError) as excinfo:
+        PropertiesFile({"key": "value", 42: "forty-two"})
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
+def test_propfile_from_nonstring_value():
+    with pytest.raises(TypeError) as excinfo:
+        PropertiesFile({"key": "value", "forty-two": 42})
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
 # preserving mixtures of line endings
 # conversion to an OrderedDict
 # setitem, getitem, etc.: Test conversion to a dict afterwards
 # setitem on an empty instance
-# get/delete nonexistent key
+# delete nonexistent key
 # initialization from a list of pairs
-# assigning a non-string key/value
-# initialization with a non-string key/value

@@ -166,3 +166,8 @@ def test_java_timestamp_november():
 
 def test_java_timestamp_december():
     assert java_timestamp(1481562732) == 'Mon Dec 12 12:12:12 EST 2016'
+
+def test_java_timestamp_dogfood_type_error():
+    with pytest.raises(TypeError) as excinfo:
+        java_timestamp('Mon Dec 12 12:12:12 EST 2016')
+    assert str(excinfo.value) == 'Timestamp must be number or datetime.datetime'

@@ -114,7 +114,7 @@ def test_propclass_from_dict():
     assert bool(p)
     assert dict(p) == {"apple": "zebra", "key": "value"}
 
-def test_propclass_from_pairs():
+def test_propclass_from_pairs_list():
     p = Properties([("key", "value"), ("apple", "zebra")])
     assert len(p) == 2
     assert bool(p)
@@ -248,6 +248,12 @@ def test_propclass_load_eq_from_dict():
         "zebra": "apple",
     })
 
+def test_propclass_neq_string():
+    p = Properties()
+    p.load(StringIO(INPUT))
+    assert p != INPUT
+    assert INPUT != p
+
 def test_propclass_propertyNames():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     names = p.propertyNames()
@@ -274,14 +280,14 @@ def test_propclass_getProperty_missing_default():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("missing", "default") == "default"
 
-def test_propclass_nonstring_key():
+def test_propclass_set_nonstring_key():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     with pytest.raises(TypeError) as excinfo:
         p[42] = 'forty-two'
     assert str(excinfo.value) == \
         'Keys & values of Properties objects must be strings'
 
-def test_propclass_nonstring_value():
+def test_propclass_set_nonstring_value():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     with pytest.raises(TypeError) as excinfo:
         p['forty-two'] = 42
@@ -434,7 +440,7 @@ def test_propclass_empty_setitem():
 # dumps() function?
 # defaults with defaults
 # asserting `load` doesn't affect `defaults`
-# get/delete nonexistent key
+# delete nonexistent key
 # equality when `defaults` is involved
 # loadFromXML
 # storeToXML (with & without comment)
