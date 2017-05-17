@@ -2,7 +2,8 @@ v0.5.0 (in development)
 -----------------------
 - Invalid `\uXXXX` escape sequences now cause an `InvalidUEscapeError` to be
   raised
-- `Properties` instances can now compare equal to `dict`s
+- `Properties` instances can now compare equal to `dict`s and other mapping
+  types
 - Gave `Properties` a `copy` method
 
 v0.4.0 (2017-04-22)

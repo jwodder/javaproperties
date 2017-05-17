@@ -16,6 +16,15 @@ class Properties(collections.MutableMapping):
     (|py2str|_ and |unicode|_ in Python 2; just `str` in Python 3).  Attempts
     to use a non-string object as a key or value will produce a `TypeError`.
 
+    Two `Properties` instances compare equal iff both their key-value pairs and
+    :attr:`defaults` attributes are equal.  When comparing a `Properties`
+    instance to any other type of mapping, only the key-value pairs are
+    considered.
+
+    .. versionchanged:: 0.5.0
+         `Properties` instances can now compare equal to `dict`\\ s and other
+         mapping types
+
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
         initialize the `Properties` object.  All keys and values in ``data``
         must be text strings.
@@ -107,10 +116,16 @@ class Properties(collections.MutableMapping):
         universal newlines enabled.  If it is a binary filehandle, its contents
         are decoded as Latin-1.
 
+        .. versionchanged:: 0.5.0
+            Invalid ``\\uXXXX`` escape sequences will now cause an
+            `InvalidUEscapeError` to be raised
+
         :param inStream: the file from which to read the ``.properties``
             document
         :type inStream: file-like object
         :return: `None`
+        :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+            occurs in the input
         """
         self.data.update(load(inStream))
 
@@ -202,7 +217,9 @@ class Properties(collections.MutableMapping):
 
     def copy(self):
         """
-        Create a copy of the mapping.  The copy's `defaults` attribute will
-        refer to the same instance as the original's `defaults`.
+        .. versionadded:: 0.5.0
+
+        Create a shallow copy of the mapping.  The copy's `defaults` attribute
+        will be the same instance as the original's `defaults`.
         """
-        return self.__class__(self.data, self.defaults)
+        return type(self)(self.data, self.defaults)

@@ -21,6 +21,10 @@ def load(fp, object_pairs_hook=dict):
     ``fp`` (including duplicates) in order of occurrence.  `load` will then
     return the value returned by ``object_pairs_hook``.
 
+    .. versionchanged:: 0.5.0
+        Invalid ``\\uXXXX`` escape sequences will now cause an
+        `InvalidUEscapeError` to be raised
+
     :param fp: the file from which to read the ``.properties`` document
     :type fp: file-like object
     :param callable object_pairs_hook: class or function for combining the
@@ -46,6 +50,10 @@ def loads(s, object_pairs_hook=dict):
     generator of ``(key, value)`` pairs representing the key-value entries in
     ``s`` (including duplicates) in order of occurrence.  `loads` will then
     return the value returned by ``object_pairs_hook``.
+
+    .. versionchanged:: 0.5.0
+        Invalid ``\\uXXXX`` escape sequences will now cause an
+        `InvalidUEscapeError` to be raised
 
     :param string s: the string from which to read the ``.properties`` document
     :param callable object_pairs_hook: class or function for combining the
@@ -73,6 +81,10 @@ def parse(fp):
     ``fp`` may be either a text or binary filehandle, with or without universal
     newlines enabled.  If it is a binary filehandle, its contents are decoded
     as Latin-1.
+
+    .. versionchanged:: 0.5.0
+        Invalid ``\\uXXXX`` escape sequences will now cause an
+        `InvalidUEscapeError` to be raised
 
     :param fp: the file from which to read the ``.properties`` document
     :type fp: file-like object
@@ -124,6 +136,10 @@ def unescape(field):
     escape-decoding are further decoded into the non-BMP characters they
     represent.  (Invalid & isolated surrogate code points are left as-is.)
 
+    .. versionchanged:: 0.5.0
+        Invalid ``\\uXXXX`` escape sequences will now cause an
+        `InvalidUEscapeError` to be raised
+
     :param field: the string to decode
     :type field: text string
     :rtype: text string
@@ -153,6 +169,8 @@ def _unsurrogate(m):
 
 class InvalidUEscapeError(ValueError):
     """
+    .. versionadded:: 0.5.0
+
     Raised when an invalid ``\\uXXXX`` escape sequence (i.e., a ``\\u`` not
     immediately followed by four hexadecimal digits) is encountered in a simple
     line-oriented ``.properties`` file

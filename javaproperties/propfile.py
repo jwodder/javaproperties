@@ -179,9 +179,15 @@ class PropertiesFile(collections.MutableMapping):
         universal newlines enabled.  If it is a binary filehandle, its contents
         are decoded as Latin-1.
 
+        .. versionchanged:: 0.5.0
+            Invalid ``\\uXXXX`` escape sequences will now cause an
+            `InvalidUEscapeError` to be raised
+
         :param fp: the file from which to read the ``.properties`` document
         :type fp: file-like object
         :rtype: PropertiesFile
+        :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+            occurs in the input
         """
         obj = cls()
         for i, (k, v, src) in enumerate(parse(fp)):
@@ -199,9 +205,15 @@ class PropertiesFile(collections.MutableMapping):
         ``s`` may be either a text string or bytes string.  If it is a bytes
         string, its contents are decoded as Latin-1.
 
+        .. versionchanged:: 0.5.0
+            Invalid ``\\uXXXX`` escape sequences will now cause an
+            `InvalidUEscapeError` to be raised
+
         :param string s: the string from which to read the ``.properties``
             document
         :rtype: PropertiesFile
+        :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
+            occurs in the input
         """
         if isinstance(s, six.binary_type):
             fp = six.BytesIO(s)
@@ -278,7 +290,7 @@ class PropertiesFile(collections.MutableMapping):
 
     def copy(self):
         """ Create a copy of the mapping, including formatting information """
-        dup = self.__class__()
+        dup = type(self)()
         dup._indices = OrderedDict(
             (k, list(v)) for k,v in six.iteritems(self._indices)
         )
