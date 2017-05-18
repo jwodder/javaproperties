@@ -138,6 +138,24 @@ foo : second definition
 # Comment at end of file
 '''
 
+def test_propfile_delitem_missing():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    with pytest.raises(KeyError):
+        del pf["missing"]
+    pf._check()
+    assert len(pf) == 4
+    assert bool(pf)
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
+    assert list(pf) == ["foo", "bar", "key", "zebra"]
+    assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
+    assert pf.dumps() == INPUT
+
 def test_propfile_move_item():
     pf = PropertiesFile.loads(INPUT)
     pf._check()
@@ -265,6 +283,16 @@ def test_propfile_from_kwarg():
     assert list(pf) == ["key"]
     assert list(reversed(pf)) == ["key"]
     assert pf.dumps() == 'key=value\n'
+
+def test_propfile_from_pairs_list():
+    pf = PropertiesFile([('key', 'value'), ('apple', 'zebra')])
+    pf._check()
+    assert len(pf) == 2
+    assert bool(pf)
+    assert dict(pf) == {"apple": "zebra", "key": "value"}
+    assert list(pf) == ["key", "apple"]
+    assert list(reversed(pf)) == ["apple", "key"]
+    assert pf.dumps() == 'key=value\napple=zebra\n'
 
 def test_propfile_from_ordereddict_and_kwarg():
     pf = PropertiesFile(OrderedDict([('key', 'value'), ('apple', 'zebra')]),
@@ -561,9 +589,18 @@ def test_propfile_from_nonstring_value():
     assert str(excinfo.value) == \
         'Keys & values of PropertiesFile objects must be strings'
 
+def test_propfile_empty_setitem():
+    pf = PropertiesFile()
+    pf._check()
+    pf["key"] = "value"
+    pf._check()
+    assert len(pf) == 1
+    assert bool(pf)
+    assert dict(pf) == {"key": "value"}
+    assert list(pf) == ["key"]
+    assert list(reversed(pf)) == ["key"]
+    assert pf.dumps() == 'key=value\n'
+
 # preserving mixtures of line endings
 # conversion to an OrderedDict
 # setitem, getitem, etc.: Test conversion to a dict afterwards
-# setitem on an empty instance
-# delete nonexistent key
-# initialization from a list of pairs

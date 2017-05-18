@@ -108,6 +108,20 @@ def test_propclass_delitem():
         "zebra": "apple",
     }
 
+def test_propclass_delitem_missing():
+    p = Properties()
+    p.load(StringIO(INPUT))
+    with pytest.raises(KeyError):
+        del p["missing"]
+    assert len(p) == 4
+    assert bool(p)
+    assert dict(p) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
+
 def test_propclass_from_dict():
     p = Properties({"key": "value", "apple": "zebra"})
     assert len(p) == 2
@@ -440,7 +454,6 @@ def test_propclass_empty_setitem():
 # dumps() function?
 # defaults with defaults
 # asserting `load` doesn't affect `defaults`
-# delete nonexistent key
 # equality when `defaults` is involved
 # loadFromXML
 # storeToXML (with & without comment)
