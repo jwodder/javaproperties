@@ -1,6 +1,6 @@
 from   __future__     import unicode_literals
 import collections
-from   freezegun      import freeze_time
+import time
 import pytest
 from   six            import StringIO
 from   javaproperties import Properties
@@ -26,8 +26,11 @@ foo : second definition
 # Comment at end of file
 '''
 
-@freeze_time('2016-11-07 20:29:40')
-def test_propclass_empty():
+def test_propclass_empty(mocker):
+    mocker.patch(
+        'time.localtime',
+        return_value=time.struct_time((2016, 11, 7, 15, 29, 40, 0, 312, 0)),
+    )
     p = Properties()
     assert len(p) == 0
     assert not bool(p)
@@ -35,6 +38,7 @@ def test_propclass_empty():
     s = StringIO()
     p.store(s)
     assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\n'
+    time.localtime.assert_called_once_with(None)
 
 def test_propclass_load():
     p = Properties()
@@ -439,8 +443,11 @@ def test_propclass_defaults_setitem_new_override():
     assert dict(p) == {"key": "value", "apple": "zebra", "horse": "pony"}
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
-@freeze_time('2016-11-07 20:29:40')
-def test_propclass_empty_setitem():
+def test_propclass_empty_setitem(mocker):
+    mocker.patch(
+        'time.localtime',
+        return_value=time.struct_time((2016, 11, 7, 15, 29, 40, 0, 312, 0)),
+    )
     p = Properties()
     p["key"] = "value"
     assert len(p) == 1
@@ -449,6 +456,7 @@ def test_propclass_empty_setitem():
     s = StringIO()
     p.store(s)
     assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
+    time.localtime.assert_called_once_with(None)
 
 # store() when non-empty (with & without comment)
 # dumps() function?

@@ -11,9 +11,9 @@
     - Include examples in main docs?
     - Add an example of each format to the format descriptions
 - Handle "narrow" Python builds (only for Python versions < 3.3)
-- Give `PropertiesFile` a decent `__repr__`
 - Try to include the line number (and column number and filename?) in
   `InvalidUEscapeError`s
+- Update `Properties` to match Java 9: <https://docs.oracle.com/javase/9/docs/api/java/util/Properties.html>
 
 New Features
 ------------

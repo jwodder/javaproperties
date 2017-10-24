@@ -2,7 +2,6 @@ from   __future__     import unicode_literals
 from   datetime       import datetime
 import time
 from   dateutil.tz    import tzstr
-from   freezegun      import freeze_time
 import pytest
 from   javaproperties import java_timestamp
 
@@ -22,9 +21,13 @@ def test_java_timestamp_none():
 def test_java_timestamp_false():
     assert java_timestamp(False) == ''
 
-@freeze_time('2016-11-07 20:29:40')
-def test_java_timestamp_now():
+def test_java_timestamp_now(mocker):
+    mocker.patch(
+        'time.localtime',
+        return_value=time.struct_time((2016, 11, 7, 15, 29, 40, 0, 312, 0)),
+    )
     assert java_timestamp() == 'Mon Nov 07 15:29:40 EST 2016'
+    time.localtime.assert_called_once_with(None)
 
 def test_java_timestamp_zero():
     assert java_timestamp(0) == 'Wed Dec 31 19:00:00 EST 1969'

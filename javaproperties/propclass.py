@@ -70,8 +70,8 @@ class Properties(collections.MutableMapping):
         return len(self.data)
 
     def __repr__(self):
-        return'{0}.{1.__class__.__name__}({1.data!r}, defaults={1.defaults!r})'\
-                .format(__package__, self)
+        return '{0.__module__}.{0.__name__}({1.data!r}, defaults={1.defaults!r})'\
+                .format(type(self), self)
 
     def __eq__(self, other):
         if isinstance(other, Properties):

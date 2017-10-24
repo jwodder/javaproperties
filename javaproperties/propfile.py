@@ -166,8 +166,6 @@ class PropertiesFile(collections.MutableMapping):
     def __ne__(self, other):
         return not (self == other)
 
-    #def __repr__(self):
-
     @classmethod
     def load(cls, fp):
         """
