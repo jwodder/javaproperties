@@ -8,11 +8,11 @@ from   javaproperties import java_timestamp
 # Unix timestamps and datetime objects don't support leap seconds or month 13,
 # so there's no need (and no way) to test handling of them here.
 
-old_pacific = tzstr('PST8PDT,M4.1.0/M10.5.0')
+old_pacific = tzstr('PST8PDT,M4.1.0,M10.5.0')
 
 @pytest.fixture(autouse=True)
 def set_timezone(monkeypatch):
-    monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0/M11.1.0')
+    monkeypatch.setenv('TZ', 'EST5EDT,M3.2.0,M11.1.0')
     time.tzset()
 
 def test_java_timestamp_none():
