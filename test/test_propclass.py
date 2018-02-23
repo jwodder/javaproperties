@@ -29,7 +29,7 @@ foo : second definition
 def test_propclass_empty(mocker):
     mocker.patch(
         'time.localtime',
-        return_value=time.struct_time((2016, 11, 7, 15, 29, 40, 0, 312, 0)),
+        return_value=time.localtime(1478550580),
     )
     p = Properties()
     assert len(p) == 0
@@ -446,7 +446,7 @@ def test_propclass_defaults_setitem_new_override():
 def test_propclass_empty_setitem(mocker):
     mocker.patch(
         'time.localtime',
-        return_value=time.struct_time((2016, 11, 7, 15, 29, 40, 0, 312, 0)),
+        return_value=time.localtime(1478550580),
     )
     p = Properties()
     p["key"] = "value"
