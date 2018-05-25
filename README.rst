@@ -40,10 +40,6 @@ Just use `pip <https://pip.pypa.io>`_ (You have pip, right?) to install
 
     pip install javaproperties
 
-If you happen to be still stuck using Python 2.6, you will need to make sure
-that the `ordereddict <https://pypi.python.org/pypi/ordereddict>`_ package is
-installed as well: ``pip install ordereddict``
-
 
 Examples
 ========
