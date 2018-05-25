@@ -17,10 +17,7 @@ def test_java_timestamp_false():
     assert java_timestamp(False) == ''
 
 def test_java_timestamp_now(mocker):
-    mocker.patch(
-        'time.localtime',
-        return_value=time.localtime(1478550580),
-    )
+    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
     assert java_timestamp() == 'Mon Nov 07 15:29:40 EST 2016'
     time.localtime.assert_called_once_with(None)
 

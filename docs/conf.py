@@ -44,6 +44,9 @@ rst_epilog = '''
 '''
 
 html_theme = 'sphinx_rtd_theme'
+html_theme_options = {
+    "collapse_navigation": False,
+}
 html_last_updated_fmt = '%Y %b %d'
 html_show_sourcelink = True
 html_show_sphinx = True

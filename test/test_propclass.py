@@ -27,10 +27,7 @@ foo : second definition
 '''
 
 def test_propclass_empty(mocker):
-    mocker.patch(
-        'time.localtime',
-        return_value=time.localtime(1478550580),
-    )
+    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
     p = Properties()
     assert len(p) == 0
     assert not bool(p)
@@ -444,10 +441,7 @@ def test_propclass_defaults_setitem_new_override():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 def test_propclass_empty_setitem(mocker):
-    mocker.patch(
-        'time.localtime',
-        return_value=time.localtime(1478550580),
-    )
+    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
     p = Properties()
     p["key"] = "value"
     assert len(p) == 1
