@@ -1,11 +1,7 @@
 from   __future__     import unicode_literals
+from   collections    import OrderedDict
 import pytest
 from   javaproperties import loads_xml
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 def test_loads_xml_nothing():
     assert loads_xml('<properties></properties>') == {}

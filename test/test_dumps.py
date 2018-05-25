@@ -1,12 +1,9 @@
 from   __future__     import unicode_literals
+from   collections    import OrderedDict
 from   datetime       import datetime
 from   dateutil.tz    import tzoffset
 from   javaproperties import dumps
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 def test_dumps_nothing():
     assert dumps({}, timestamp=False) == ''

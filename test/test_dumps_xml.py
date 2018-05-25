@@ -1,10 +1,6 @@
 from   __future__     import unicode_literals
+from   collections    import OrderedDict
 from   javaproperties import dumps_xml
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 def test_dumps_xml_nothing():
     assert dumps_xml({}) == '''\

@@ -1,14 +1,11 @@
-from   __future__ import print_function
+from   __future__  import print_function
 import collections
+from   collections import OrderedDict
 import re
 import six
-from   .reading   import loads, parse
-from   .writing   import join_key_value
+from   .reading    import loads, parse
+from   .writing    import join_key_value
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 _type_err = 'Keys & values of PropertiesFile objects must be strings'
 

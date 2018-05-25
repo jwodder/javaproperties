@@ -1,11 +1,7 @@
 from   __future__     import unicode_literals
+from   collections    import OrderedDict
 import pytest
 from   javaproperties import PropertiesFile, dumps
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 INPUT = '''\
 # A comment before the timestamp

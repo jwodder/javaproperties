@@ -1,11 +1,7 @@
 from   __future__     import unicode_literals
+from   collections    import OrderedDict
 import pytest
 from   javaproperties import InvalidUEscapeError, loads
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    from ordereddict import OrderedDict
 
 def test_loads_simple():
     assert loads('key=value') == {"key": "value"}

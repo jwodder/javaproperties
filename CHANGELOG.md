@@ -5,6 +5,7 @@ v0.5.0 (in development)
 - `Properties` instances can now compare equal to `dict`s and other mapping
   types
 - Gave `Properties` a `copy` method
+- Drop support for Python 2.6 and 3.3
 
 v0.4.0 (2017-04-22)
 -------------------
