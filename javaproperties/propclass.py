@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-import collections
-from   six       import string_types
+from   six       import PY2, string_types
 from   .reading  import load
 from   .writing  import dump
 from   .xmlprops import load_xml, dump_xml
 
+if PY2:
+    from collections     import Mapping, MutableMapping
+else:
+    from collections.abc import Mapping, MutableMapping
+
 _type_err = 'Keys & values of Properties objects must be strings'
 
-class Properties(collections.MutableMapping):
+class Properties(MutableMapping):
     """
     A port of |java8properties|_ that tries to match its behavior as much as is
     Pythonically possible.  `Properties` behaves like a normal
@@ -76,7 +80,7 @@ class Properties(collections.MutableMapping):
     def __eq__(self, other):
         if isinstance(other, Properties):
             return self.data == other.data and self.defaults == other.defaults
-        elif isinstance(other, collections.Mapping):
+        elif isinstance(other, Mapping):
             return dict(self) == other
         else:
             return NotImplemented

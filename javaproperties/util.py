@@ -1,8 +1,13 @@
-import collections
 import re
+from   six import PY2
+
+if PY2:
+    from collections     import Mapping
+else:
+    from collections.abc import Mapping
 
 def itemize(kvs, sort_keys=False):
-    if isinstance(kvs, collections.Mapping):
+    if isinstance(kvs, Mapping):
         items = ((k, kvs[k]) for k in kvs)
     else:
         items = kvs

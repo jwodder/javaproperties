@@ -1,17 +1,20 @@
 from   __future__  import print_function
-import collections
-from   collections import OrderedDict
+from   collections import OrderedDict, namedtuple
 import re
 import six
 from   .reading    import loads, parse
 from   .writing    import join_key_value
 
+if six.PY2:
+    from collections     import Mapping, MutableMapping
+else:
+    from collections.abc import Mapping, MutableMapping
 
 _type_err = 'Keys & values of PropertiesFile objects must be strings'
 
-PropertyLine = collections.namedtuple('PropertyLine', 'key value source')
+PropertyLine = namedtuple('PropertyLine', 'key value source')
 
-class PropertiesFile(collections.MutableMapping):
+class PropertiesFile(MutableMapping):
     """
     .. versionadded:: 0.3.0
 
@@ -155,7 +158,7 @@ class PropertiesFile(collections.MutableMapping):
         if isinstance(other, PropertiesFile):
             return self._comparable() == other._comparable()
         ### TODO: Special-case OrderedDict?
-        elif isinstance(other, collections.Mapping):
+        elif isinstance(other, Mapping):
             return dict(self) == other
         else:
             return NotImplemented

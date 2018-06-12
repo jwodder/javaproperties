@@ -1,9 +1,13 @@
 from   __future__     import unicode_literals
-import collections
 import time
 import pytest
-from   six            import StringIO
+from   six            import PY2, StringIO
 from   javaproperties import Properties
+
+if PY2:
+    from collections     import Iterator
+else:
+    from collections.abc import Iterator
 
 # Making the global INPUT object a StringIO would cause it be exhausted after
 # the first test and thereafter appear to be empty.  Thus, a new StringIO must
@@ -272,7 +276,7 @@ def test_propclass_neq_string():
 def test_propclass_propertyNames():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     names = p.propertyNames()
-    assert isinstance(names, collections.Iterator)
+    assert isinstance(names, Iterator)
     assert sorted(names) == ["apple", "foo", "key"]
 
 def test_propclass_stringPropertyNames():
@@ -363,7 +367,7 @@ def test_propclass_defaults_propertyNames():
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     names = p.propertyNames()
-    assert isinstance(names, collections.Iterator)
+    assert isinstance(names, Iterator)
     assert sorted(names) == ["apple", "horse", "key"]
 
 def test_propclass_defaults_stringPropertyNames():
