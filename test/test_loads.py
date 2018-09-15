@@ -428,4 +428,8 @@ def test_loads_key_unicode_colon_value():
 def test_loads_key_unicode_space_value():
     assert loads('key\\u0020value') == {"key value": ""}
 
-# escaped backslash + uXXXX
+def test_loads_escaped_u():
+    assert loads('key=\\\\u2603') == {"key": "\\u2603"}
+
+def test_loads_escaped_u_invalid():
+    assert loads('key=\\\\u260x') == {"key": "\\u260x"}

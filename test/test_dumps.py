@@ -4,7 +4,6 @@ from   datetime       import datetime
 from   dateutil.tz    import tzoffset
 from   javaproperties import dumps
 
-
 def test_dumps_nothing():
     assert dumps({}, timestamp=False) == ''
 
