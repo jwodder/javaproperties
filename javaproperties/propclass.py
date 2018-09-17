@@ -44,9 +44,9 @@ class Properties(MutableMapping):
     def __init__(self, data=None, defaults=None):
         self.data = {}
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
-        #: `getProperty`, `propertyNames`, and `stringPropertyNames` use this
-        #: attribute; all other methods (including the standard mapping
-        #: methods) ignore it.
+        #: `getProperty`, `propertyNames`, `stringPropertyNames`, and `__eq__`
+        #: use this attribute; all other methods (including the standard
+        #: mapping methods) ignore it.
         self.defaults = defaults
         if data is not None:
             self.update(data)

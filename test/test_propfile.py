@@ -64,6 +64,12 @@ def test_propfile_setitem():
     pf._check()
     pf["key"] = "lock"
     pf._check()
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "lock",
+        "zebra": "apple",
+    }
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -89,6 +95,13 @@ def test_propfile_additem():
     pf._check()
     pf["new"] = "old"
     pf._check()
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+        "new": "old",
+    }
     assert list(pf) == ["foo", "bar", "key", "zebra", "new"]
     assert list(reversed(pf)) == ["new", "zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -115,6 +128,11 @@ def test_propfile_delitem():
     pf._check()
     del pf["key"]
     pf._check()
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "zebra": "apple",
+    }
     assert list(pf) == ["foo", "bar", "zebra"]
     assert list(reversed(pf)) == ["zebra", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -159,6 +177,12 @@ def test_propfile_move_item():
     pf._check()
     pf["key"] = "recreated"
     pf._check()
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "recreated",
+        "zebra": "apple",
+    }
     assert list(pf) == ["foo", "bar", "zebra", "key"]
     assert list(reversed(pf)) == ["key", "zebra", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -185,6 +209,12 @@ def test_propfile_set_nochange():
     assert pf["key"] == "value"
     pf["key"] = "value"
     pf._check()
+    assert dict(pf) == {
+        "foo": "second definition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -218,6 +248,12 @@ def test_propfile_set_repeated_key():
     pf._check()
     pf["foo"] = "redefinition"
     pf._check()
+    assert dict(pf) == {
+        "foo": "redefinition",
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -242,6 +278,11 @@ def test_propfile_delete_repeated_key():
     pf._check()
     del pf["foo"]
     pf._check()
+    assert dict(pf) == {
+        "bar": "only definition",
+        "key": "value",
+        "zebra": "apple",
+    }
     assert list(pf) == ["bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar"]
     assert pf.dumps() == '''\
@@ -573,6 +614,13 @@ def test_propfile_set_nonstring_value():
     assert str(excinfo.value) == \
         'Keys & values of PropertiesFile objects must be strings'
 
+def test_propfile_del_nonstring_key():
+    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
+    with pytest.raises(TypeError) as excinfo:
+        del pf[42]
+    assert str(excinfo.value) == \
+        'Keys & values of PropertiesFile objects must be strings'
+
 def test_propfile_from_nonstring_key():
     with pytest.raises(TypeError) as excinfo:
         PropertiesFile({"key": "value", 42: "forty-two"})
@@ -597,6 +645,14 @@ def test_propfile_empty_setitem():
     assert list(reversed(pf)) == ["key"]
     assert pf.dumps() == 'key=value\n'
 
+def test_propfile_to_ordereddict():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    assert OrderedDict(pf) == OrderedDict([
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ])
+
 # preserving mixtures of line endings
-# conversion to an OrderedDict
-# setitem, getitem, etc.: Test conversion to a dict afterwards

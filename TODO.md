@@ -2,8 +2,6 @@
     - Test reading & writing bytes in both Python 2 and Python 3
     - Test utility functions in isolation
     - Run doctest on the README examples somehow?
-    - Test the `Properties` class
-    - Test on Windows with Appveyor?
     - Test `parse` (primarily handling of comments/blanks, repeated keys, and
       backslash at EOF)
 - Documentation:
