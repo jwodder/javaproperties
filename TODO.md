@@ -11,7 +11,7 @@
 - Handle "narrow" Python builds (only for Python versions < 3.3)
 - Try to include the line number (and column number and filename?) in
   `InvalidUEscapeError`s
-- Update `Properties` to match Java 9: <https://docs.oracle.com/javase/9/docs/api/java/util/Properties.html>
+- Update `Properties` to match Java 10: <https://docs.oracle.com/javase/10/docs/api/java/util/Properties.html>
 
 New Features
 ------------
