@@ -212,14 +212,21 @@ def java_timestamp(timestamp=True):
         if timestamp is True:
             timestamp = None
         elif isinstance(timestamp, datetime):
-            # Mapping `timetuple` through `mktime` and `localtime` is necessary
-            # for determining whether DST is in effect (which, in turn, is
-            # necessary for determining which timezone name to use).  The only
-            # downside to using standard functions instead of `python-dateutil`
-            # is that `mktime`, apparently, handles times duplicated by DST
-            # non-deterministically (cf. <https://git.io/vixsE>), but there's
-            # no right way to deal with those anyway, so...
-            timestamp = time.mktime(timestamp.timetuple())
+            try:
+                # Use `datetime.timestamp()` if it's available, as it (unlike
+                # `datetime.timetuple()`) takes `fold` into account for naïve
+                # datetimes
+                timestamp = timestamp.timestamp()
+            except AttributeError:  # Pre-Python 3.3
+                # Mapping `timetuple` through `mktime` and `localtime` is
+                # necessary for determining whether DST is in effect (which, in
+                # turn, is necessary for determining which timezone name to
+                # use).  The only downside to using standard functions instead
+                # of `python-dateutil` is that `mktime`, apparently, handles
+                # times duplicated by DST non-deterministically (cf.
+                # <https://git.io/vixsE>), but there's no right way to deal
+                # with those anyway, so...
+                timestamp = time.mktime(timestamp.timetuple())
         elif not isinstance(timestamp, numbers.Number):
             raise TypeError('Timestamp must be number or datetime.datetime')
         timebits = time.localtime(timestamp)
