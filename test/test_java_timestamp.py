@@ -1,5 +1,6 @@
 from   __future__     import unicode_literals
 from   datetime       import datetime
+import sys
 import time
 from   dateutil.tz    import tzstr
 import pytest
@@ -42,12 +43,24 @@ def test_java_timestamp_aware_before_fall_back():
 
 def test_java_timestamp_aware_duplicated():
     # Times duplicated by DST are interpreted non-deterministically by Python
-    # (cf. <https://git.io/vixsE>), so there are two possible return values for
-    # this call.
+    # pre-3.6 (cf. <https://git.io/vixsE>), so there are two possible return
+    # values for this call.
     assert java_timestamp(datetime(2006, 10,29, 1, 30, 0, 0, old_pacific)) in \
         ('Sun Oct 29 01:30:00 PDT 2006', 'Sun Oct 29 01:30:00 PST 2006')
     ### Shouldn't this actually be well-defined (albeit dependent upon
     ### dateutil's implementation behavior)?
+
+@pytest.mark.skipif(sys.version_info[:2] < (3,6), reason='Python 3.6+ only')
+def test_java_timestamp_aware_pre_fold():
+    assert java_timestamp(
+        datetime(2006, 10,29, 1, 30, 0, 0, old_pacific, fold=0)
+    ) == 'Sun Oct 29 01:30:00 PDT 2006'
+
+@pytest.mark.skipif(sys.version_info[:2] < (3,6), reason='Python 3.6+ only')
+def test_java_timestamp_aware_post_fold():
+    assert java_timestamp(
+        datetime(2006, 10,29, 1, 30, 0, 0, old_pacific, fold=1)
+    ) == 'Sun Oct 29 01:30:00 PST 2006'
 
 def test_java_timestamp_aware_after_fall_back():
     assert java_timestamp(datetime(2006, 10,29, 2, 0, 1, 0, old_pacific)) == \
@@ -144,10 +157,20 @@ def test_java_timestamp_before_fall_back():
 
 def test_java_timestamp_naive_duplicated():
     # Times duplicated by DST are interpreted non-deterministically by Python
-    # (cf. <https://git.io/vixsE>), so there are two possible return values for
-    # this call.
+    # pre-3.6 (cf. <https://git.io/vixsE>), so there are two possible return
+    # values for this call.
     assert java_timestamp(datetime(2016, 11, 6, 1, 30, 0)) in \
         ('Sun Nov 06 01:30:00 EDT 2016', 'Sun Nov 06 01:30:00 EST 2016')
+
+@pytest.mark.skipif(sys.version_info[:2] < (3,6), reason='Python 3.6+ only')
+def test_java_timestamp_naive_pre_fold():
+    assert java_timestamp(datetime(2016, 11, 6, 1, 30, 0, fold=0)) == \
+        'Sun Nov 06 01:30:00 EDT 2016'
+
+@pytest.mark.skipif(sys.version_info[:2] < (3,6), reason='Python 3.6+ only')
+def test_java_timestamp_naive_post_fold():
+    assert java_timestamp(datetime(2016, 11, 6, 1, 30, 0, fold=1)) == \
+        'Sun Nov 06 01:30:00 EST 2016'
 
 def test_java_timestamp_after_fall_back():
     assert java_timestamp(1478412001) == 'Sun Nov 06 01:00:01 EST 2016'
