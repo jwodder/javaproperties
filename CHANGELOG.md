@@ -1,3 +1,6 @@
+v0.6.0 (in development)
+-----------------------
+
 v0.5.0 (2018-09-18)
 -------------------
 - **Breaking**: Invalid `\uXXXX` escape sequences now cause an
