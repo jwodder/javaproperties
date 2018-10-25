@@ -2,6 +2,8 @@ v0.5.1 (in development)
 -----------------------
 - **Bugfix**: `java_timestamp()` now properly handles naïve `datetime` objects
   with `fold=1`
+- Include installation instructions, examples, and GitHub links in the Read the
+  Docs site
 
 v0.5.0 (2018-09-18)
 -------------------
