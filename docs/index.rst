@@ -5,7 +5,7 @@ javaproperties — Read & write Java .properties files in Python
 ==============================================================
 
 `GitHub <https://github.com/jwodder/javaproperties>`_
-| `PyPI <https://pypi.python.org/pypi/javaproperties>`_
+| `PyPI <https://pypi.org/project/javaproperties>`_
 | `Documentation <https://javaproperties.readthedocs.io>`_
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 

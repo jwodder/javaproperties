@@ -10,7 +10,7 @@
     :target: https://codecov.io/gh/jwodder/javaproperties
 
 .. image:: https://img.shields.io/pypi/pyversions/javaproperties.svg
-    :target: https://pypi.python.org/pypi/javaproperties
+    :target: https://pypi.org/project/javaproperties
 
 .. image:: https://img.shields.io/github/license/jwodder/javaproperties.svg?maxAge=2592000
     :target: https://opensource.org/licenses/MIT
@@ -20,7 +20,7 @@
     :target: https://saythanks.io/to/jwodder
 
 `GitHub <https://github.com/jwodder/javaproperties>`_
-| `PyPI <https://pypi.python.org/pypi/javaproperties>`_
+| `PyPI <https://pypi.org/project/javaproperties>`_
 | `Documentation <https://javaproperties.readthedocs.io>`_
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 
