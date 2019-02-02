@@ -48,6 +48,31 @@ any unprintable characters, are escaped with the escape sequences listed above.
 Unicode characters outside the Basic Multilingual Plane are first converted to
 UTF-16 surrogate pairs before escaping with ``\uXXXX`` escapes.
 
+An example simple line-oriented ``.properties`` file:
+
+.. code-block:: properties
+
+    #This is a comment.
+    foo=bar
+    baz: quux
+    gnusto cleesh
+    snowman = \u2603
+    goat = \ud83d\udc10
+    host\:port=127.0.0.1\:80
+
+This corresponds to the Python `dict`:
+
+.. code-block:: python
+
+    {
+        "foo": "bar",
+        "baz": "quux",
+        "gnusto": "cleesh",
+        "snowman": "☃",
+        "goat": "🐐",
+        "host:port": "127.0.0.1:80",
+    }
+
 Functions
 ---------
 .. autofunction:: dump

@@ -1,3 +1,7 @@
+v0.6.0 (in development)
+-----------------------
+- Added an example of each format to the format descriptions in the docs
+
 v0.5.1 (2018-10-25)
 -------------------
 - **Bugfix**: `java_timestamp()` now properly handles naïve `datetime` objects
