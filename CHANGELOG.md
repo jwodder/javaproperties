@@ -1,5 +1,5 @@
-v0.6.0 (in development)
------------------------
+v0.5.2 (2019-04-08)
+-------------------
 - Added an example of each format to the format descriptions in the docs
 - Fix building in non-UTF-8 environments
 

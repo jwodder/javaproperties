@@ -3,7 +3,7 @@ from javaproperties import __version__
 
 project   = 'javaproperties'
 author    = 'John T. Wodder II'
-copyright = '2016-2018 John T. Wodder II'
+copyright = '2016-2019 John T. Wodder II'
 
 extensions = [
     'sphinx.ext.autodoc',
