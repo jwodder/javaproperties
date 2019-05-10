@@ -23,6 +23,7 @@
 | `PyPI <https://pypi.org/project/javaproperties>`_
 | `Documentation <https://javaproperties.readthedocs.io>`_
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
+| `Changelog <https://github.com/jwodder/javaproperties/blob/master/CHANGELOG.md>`_
 
 ``javaproperties`` provides support for reading & writing |properties|_ (both
 the simple line-oriented format and XML) with a simple API based on the
