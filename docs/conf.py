@@ -1,4 +1,3 @@
-from __future__     import unicode_literals
 from javaproperties import __version__
 
 project   = 'javaproperties'
@@ -12,7 +11,10 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
-autodoc_default_flags = ['members', 'undoc-members']
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+}
 # NOTE: Do not set 'inherited-members', as it will cause all of the
 # MutableMapping methods to be listed under `Properties`.
 
