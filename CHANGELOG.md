@@ -1,3 +1,7 @@
+v0.6.0 (in development)
+-----------------------
+- Include changelog in the Read the Docs site
+
 v0.5.2 (2019-04-08)
 -------------------
 - Added an example of each format to the format descriptions in the docs

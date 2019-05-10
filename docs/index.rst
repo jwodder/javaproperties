@@ -10,7 +10,7 @@ javaproperties — Read & write Java .properties files in Python
 | `Issues <https://github.com/jwodder/javaproperties/issues>`_
 
 .. toctree::
-    :maxdepth: 2
+    :hidden:
 
     plain
     xmlprops
@@ -18,6 +18,7 @@ javaproperties — Read & write Java .properties files in Python
     propfile
     util
     cli
+    changelog
 
 `javaproperties` provides support for reading & writing |properties|_ (both the
 simple line-oriented format and XML) with a simple API based on the `json`
