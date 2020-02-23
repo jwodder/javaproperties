@@ -1,12 +1,13 @@
 from   __future__     import unicode_literals
+import pytest
 from   six            import BytesIO
 from   javaproperties import load_xml
 
 # The only thing special about `load_xml` compared to `loads_xml` is encoding,
 # so that's the only thing we'll test here.
 
-def test_load_xml_ascii():
-    assert load_xml(BytesIO(b'''\
+@pytest.mark.parametrize('b', [
+    b'''\
 <?xml version="1.0" encoding="ASCII" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -15,15 +16,9 @@ def test_load_xml_ascii():
 <entry key="snowman">&#9731;</entry>
 <entry key="goat">&#128016;</entry>
 </properties>
-''')) == {
-        'key': 'value',
-        'edh': '\xF0',
-        'snowman': '\u2603',
-        'goat': '\U0001F410',
-    }
+''',
 
-def test_load_xml_latin1():
-    assert load_xml(BytesIO(b'''\
+    b'''\
 <?xml version="1.0" encoding="Latin-1" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -32,15 +27,9 @@ def test_load_xml_latin1():
 <entry key="snowman">&#9731;</entry>
 <entry key="goat">&#128016;</entry>
 </properties>
-''')) == {
-        'key': 'value',
-        'edh': '\xF0',
-        'snowman': '\u2603',
-        'goat': '\U0001F410',
-    }
+''',
 
-def test_load_xml_utf16be():
-    assert load_xml(BytesIO('''\
+    '''\
 <?xml version="1.0" encoding="UTF-16BE" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -49,15 +38,9 @@ def test_load_xml_utf16be():
 <entry key="snowman">\u2603</entry>
 <entry key="goat">\U0001F410</entry>
 </properties>
-'''.encode('utf-16be'))) == {
-        'key': 'value',
-        'edh': '\xF0',
-        'snowman': '\u2603',
-        'goat': '\U0001F410',
-    }
+'''.encode('utf-16be'),
 
-def test_load_xml_utf8():
-    assert load_xml(BytesIO(b'''\
+    b'''\
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -66,7 +49,10 @@ def test_load_xml_utf8():
 <entry key="snowman">\xE2\x98\x83</entry>
 <entry key="goat">\xF0\x9F\x90\x90</entry>
 </properties>
-''')) == {
+''',
+])
+def test_load_xml(b):
+    assert load_xml(BytesIO(b)) == {
         'key': 'value',
         'edh': '\xF0',
         'snowman': '\u2603',

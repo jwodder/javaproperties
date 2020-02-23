@@ -1,105 +1,112 @@
 from   __future__     import unicode_literals
 from   collections    import OrderedDict
+import pytest
 from   javaproperties import dumps_xml
 
-def test_dumps_xml_nothing():
-    assert dumps_xml({}) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-</properties>
-'''
+@pytest.mark.parametrize('d,s', [
+    (
+        {},
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_simple():
-    assert dumps_xml({"key": "value"}) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-</properties>
-'''
+    (
+        {"key": "value"},
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_two_simple():
-    assert dumps_xml([("key", "value"), ("zebra", "apple")]) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
-
-def test_dumps_xml_two_simple_rev():
-    assert dumps_xml([("zebra", "apple"), ("key", "value")]) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="zebra">apple</entry>
-<entry key="key">value</entry>
-</properties>
-'''
-
-def test_dumps_xml_two_simple_sorted():
-    assert dumps_xml(
+    (
         [("key", "value"), ("zebra", "apple")],
-        sort_keys=True,
-    ) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_two_simple_rev_sorted():
-    assert dumps_xml(
+    (
         [("zebra", "apple"), ("key", "value")],
-        sort_keys=True,
-    ) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '<entry key="key">value</entry>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_ordereddict():
-    assert dumps_xml(OrderedDict([("key","value"), ("zebra","apple")])) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
 
-def test_dumps_xml_ordereddict_rev():
-    assert dumps_xml(OrderedDict([("zebra","apple"), ("key","value")])) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="zebra">apple</entry>
-<entry key="key">value</entry>
-</properties>
-'''
+    (
+        OrderedDict([("key","value"), ("zebra","apple")]),
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_ordereddict_sorted():
-    assert dumps_xml(
+    (
+        OrderedDict([("zebra","apple"), ("key","value")]),
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '<entry key="key">value</entry>\n'
+        '</properties>\n'
+    ),
+])
+def test_dumps_xml(d,s):
+    assert dumps_xml(d) == s
+
+@pytest.mark.parametrize('d,s', [
+    (
+        {"key": "value", "zebra": "apple"},
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
+
+    (
+        [("key", "value"), ("zebra", "apple")],
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
+
+    (
+        [("zebra", "apple"), ("key", "value")],
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
+
+    (
         OrderedDict([("key", "value"), ("zebra", "apple")]),
-        sort_keys=True,
-    ) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
 
-def test_dumps_xml_ordereddict_rev_sorted():
-    assert dumps_xml(
+    (
         OrderedDict([("zebra", "apple"), ("key", "value")]),
-        sort_keys=True,
-    ) == '''\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="zebra">apple</entry>
-</properties>
-'''
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="zebra">apple</entry>\n'
+        '</properties>\n'
+    ),
+])
+def test_dumps_xml_sorted(d,s):
+    assert dumps_xml(d, sort_keys=True) == s
 
 def test_dumps_xml_comment():
     assert dumps_xml({"key": "value"}, comment='This is a comment.') == '''\

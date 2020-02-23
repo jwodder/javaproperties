@@ -15,7 +15,6 @@ New Features
 ------------
 - `dump`: Support writing `str`s in Python 2
     - Use `unicode_literals` less?
-- Implement `Properties.list`?
 - Give the dump functions `charset` and `comment_charset` arguments for
   specifying what characters to convert to `\uXXXX` escapes and what not;
   possible values: `ASCII = 'ascii'`, `LATIN_1 = 'latin-1'`, `UNICODE_BMP =
