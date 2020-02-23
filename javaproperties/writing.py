@@ -184,18 +184,21 @@ def _esc(m):
     try:
         return _escapes[c]
     except KeyError:
-        c = ord(c)
-        if c > 0xFFFF:
-            # Does Python really not have a decent builtin way to calculate
-            # surrogate pairs?
-            assert c <= 0x10FFFF
-            c -= 0x10000
-            return '\\u{0:04x}\\u{1:04x}'.format(
-                0xD800 + (c >> 10),
-                0xDC00 + (c & 0x3FF)
-            )
-        else:
-            return '\\u{0:04x}'.format(c)
+        return _to_u_escape(c)
+
+def _to_u_escape(c):
+    c = ord(c)
+    if c > 0xFFFF:
+        # Does Python really not have a decent builtin way to calculate
+        # surrogate pairs?
+        assert c <= 0x10FFFF
+        c -= 0x10000
+        return '\\u{0:04x}\\u{1:04x}'.format(
+            0xD800 + (c >> 10),
+            0xDC00 + (c & 0x3FF)
+        )
+    else:
+        return '\\u{0:04x}'.format(c)
 
 NEEDS_ESCAPE_ASCII_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
 NEEDS_ESCAPE_UNICODE_RGX = re.compile(r'[\x00-\x1F\x7F]|[\\#!=:]')
@@ -303,3 +306,9 @@ def java_timestamp(timestamp=True):
                 mon=MONTHS[timebits.tm_mon-1],
                 wday=DAYS_OF_WEEK[timebits.tm_wday]
             )
+
+def javapropertiesreplace_errors(e):
+    if isinstance(e, UnicodeEncodeError):
+        return (''.join(map(_to_u_escape, e.object[e.start:e.end])), e.end)
+    else:
+        raise e

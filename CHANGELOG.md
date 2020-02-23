@@ -11,6 +11,8 @@ v0.6.0 (in development)
   controlling what characters in the `comments` parameter are escaped
 - Gave `to_comment()` an `ensure_ascii` parameter for controlling what
   characters are escaped
+- Added a custom encoding error handler `'javapropertiesreplace'` that encodes
+  invalid characters as `\uXXXX` escape sequences
 
 v0.5.2 (2019-04-08)
 -------------------

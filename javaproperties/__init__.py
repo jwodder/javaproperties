@@ -15,7 +15,8 @@ Visit <https://github.com/jwodder/javaproperties> or
 from .propclass import Properties
 from .propfile  import PropertiesFile
 from .reading   import InvalidUEscapeError, load, loads, parse, unescape
-from .writing   import dump, dumps, java_timestamp, join_key_value, escape, \
+from .writing   import dump, dumps, java_timestamp, \
+                        javapropertiesreplace_errors, join_key_value, escape, \
                         to_comment
 from .xmlprops  import load_xml, loads_xml, dump_xml, dumps_xml
 
@@ -35,6 +36,7 @@ __all__ = [
     'dumps_xml',
     'escape',
     'java_timestamp',
+    'javapropertiesreplace_errors',
     'join_key_value',
     'load',
     'load_xml',
@@ -44,3 +46,6 @@ __all__ = [
     'to_comment',
     'unescape',
 ]
+
+import codecs
+codecs.register_error('javapropertiesreplace', javapropertiesreplace_errors)
