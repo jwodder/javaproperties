@@ -1,4 +1,5 @@
 from   __future__ import unicode_literals
+import platform
 import sys
 import pytest
 import javaproperties  # noqa
@@ -62,10 +63,24 @@ def test_javapropertiesreplace(s, enc, b):
     ),
     pytest.param(
         'utf-16be',
-        marks=pytest.mark.skipif(
-            sys.version_info[0] == 2,
-            reason='Python 3 only',
-        ),
+        marks=[
+            pytest.mark.skipif(
+                sys.version_info[0] == 2,
+                reason='Python 3 only',
+            ),
+            # Certain versions of pypy3.6 (including the one on Travis as of
+            # 2020-02-23) have a bug in their handling of encoding errors when
+            # the target encoding is UTF-16.  The latest known version to
+            # feature this bug is 7.1.1 (Python version 3.6.1), and the
+            # earliest known version after this to feature a fix is 7.2.0
+            # (Python version 3.6.9); I don't *think* there were any releases
+            # in between those two versions, but it isn't entirely clear.
+            pytest.mark.xfail(
+                platform.python_implementation().lower() == 'pypy'
+                    and sys.version_info[:3] < (3,6,9),
+                reason='Broken on this version of PyPy',
+            )
+        ],
     ),
     'mac_roman',
     'cp500',
