@@ -10,7 +10,7 @@ if six.PY2:
 else:
     from collections.abc import Mapping, MutableMapping
 
-_type_err = 'Keys & values of PropertiesFile objects must be strings'
+_type_err = 'Keys & values of PropertiesFile instances must be strings'
 
 PropertyLine = namedtuple('PropertyLine', 'key value source')
 

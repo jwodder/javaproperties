@@ -9,7 +9,7 @@ if PY2:
 else:
     from collections.abc import Mapping, MutableMapping
 
-_type_err = 'Keys & values of Properties objects must be strings'
+_type_err = 'Keys & values of Properties instances must be strings'
 
 class Properties(MutableMapping):
     """
@@ -30,7 +30,7 @@ class Properties(MutableMapping):
          mapping types
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
-        initialize the `Properties` object.  All keys and values in ``data``
+        initialize the `Properties` instance.  All keys and values in ``data``
         must be text strings.
     :type data: mapping or `None`
     :param defaults: a set of default properties that will be used as fallback
@@ -91,7 +91,7 @@ class Properties(MutableMapping):
     def getProperty(self, key, defaultValue=None):
         """
         Fetch the value associated with the key ``key`` in the `Properties`
-        object.  If the key is not present, `defaults` is checked, and then
+        instance.  If the key is not present, `defaults` is checked, and then
         *its* `defaults`, etc., until either a value for ``key`` is found or
         the next `defaults` is `None`, in which case `defaultValue` is
         returned.
@@ -99,7 +99,7 @@ class Properties(MutableMapping):
         :param key: the key to look up the value of
         :type key: text string
         :param defaultValue: the value to return if ``key`` is not found in the
-            `Properties` object
+            `Properties` instance
         :rtype: text string (if ``key`` was found)
         :raises TypeError: if ``key`` is not a string
         """
@@ -113,7 +113,7 @@ class Properties(MutableMapping):
 
     def load(self, inStream):
         """
-        Update the `Properties` object with the entries in a ``.properties``
+        Update the `Properties` instance with the entries in a ``.properties``
         file or file-like object.
 
         ``inStream`` may be either a text or binary filehandle, with or without
@@ -135,9 +135,9 @@ class Properties(MutableMapping):
 
     def propertyNames(self):
         r"""
-        Returns a generator of all distinct keys in the `Properties` object and
-        its `defaults` (and its `defaults`\ ’s `defaults`, etc.) in unspecified
-        order
+        Returns a generator of all distinct keys in the `Properties` instance
+        and its `defaults` (and its `defaults`\ ’s `defaults`, etc.) in
+        unspecified order
 
         :rtype: generator of text strings
         """
@@ -154,7 +154,7 @@ class Properties(MutableMapping):
 
     def store(self, out, comments=None):
         """
-        Write the `Properties` object's entries (in unspecified order) in
+        Write the `Properties` instance's entries (in unspecified order) in
         ``.properties`` format to ``out``, including the current timestamp.
 
         :param out: A file-like object to write the properties to.  It must
@@ -168,7 +168,7 @@ class Properties(MutableMapping):
 
     def stringPropertyNames(self):
         r"""
-        Returns a `set` of all keys in the `Properties` object and its
+        Returns a `set` of all keys in the `Properties` instance and its
         `defaults` (and its `defaults`\ ’s `defaults`, etc.)
 
         :rtype: `set` of text strings
@@ -180,7 +180,7 @@ class Properties(MutableMapping):
 
     def loadFromXML(self, inStream):
         """
-        Update the `Properties` object with the entries in the XML properties
+        Update the `Properties` instance with the entries in the XML properties
         file ``inStream``.
 
         Beyond basic XML well-formedness, `loadFromXML` only checks that the
@@ -205,7 +205,7 @@ class Properties(MutableMapping):
 
     def storeToXML(self, out, comment=None, encoding='UTF-8'):
         """
-        Write the `Properties` object's entries (in unspecified order) in XML
+        Write the `Properties` instance's entries (in unspecified order) in XML
         properties format to ``out``.
 
         :param out: a file-like object to write the properties to
