@@ -45,6 +45,7 @@ from   javaproperties import InvalidUEscapeError, loads
     ('goat = \uD83D\\uDC10', {"goat": "\U0001F410"}),
     ('goat = \\uD83D\uDC10', {"goat": "\U0001F410"}),
     ('taog = \uDC10\uD83D', {"taog": "\uDC10\uD83D"}),
+    ('goat = \\uD83D\\\n    \\uDC10', {"goat": "\U0001F410"}),
     ('\\\n# comment', {"#": "comment"}),
     ('   \\\n# comment', {"#": "comment"}),
     ('key = value\\\n    # comment', {"key": "value# comment"}),
