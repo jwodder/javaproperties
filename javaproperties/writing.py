@@ -308,6 +308,13 @@ def java_timestamp(timestamp=True):
             )
 
 def javapropertiesreplace_errors(e):
+    """
+    .. versionadded:: 0.6.0
+
+    Implements the ``'javapropertiesreplace'`` error handling (for text
+    encodings only): unencodable characters are replaced by ``\\uXXXX`` escape
+    sequences (with non-BMP characters converted to surrogate pairs first)
+    """
     if isinstance(e, UnicodeEncodeError):
         return (''.join(map(_to_u_escape, e.object[e.start:e.end])), e.end)
     else:
