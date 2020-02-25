@@ -1,8 +1,8 @@
 from   __future__  import print_function
 from   collections import OrderedDict, namedtuple
-import re
 import six
 from   .reading    import loads, parse
+from   .util       import CONTINUED_RGX
 from   .writing    import join_key_value
 
 if six.PY2:
@@ -117,7 +117,7 @@ class PropertiesFile(MutableMapping):
                 if lastline.source is not None:
                     lastsrc = lastline.source
                     if lastline.key is not None:
-                        lastsrc=re.sub(r'(?<!\\)((?:\\\\)*)\\$', r'\1', lastsrc)
+                        lastsrc = CONTINUED_RGX.sub(r'\1', lastsrc)
                     if not lastsrc.endswith(('\r', '\n')):
                         lastsrc += '\n'
                     self._lines[lasti] = lastline._replace(source=lastsrc)

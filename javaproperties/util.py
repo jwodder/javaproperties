@@ -6,6 +6,10 @@ if PY2:
 else:
     from collections.abc import Mapping
 
+CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\$')
+
+EOL_RGX = re.compile(r'\r\n?|\n')
+
 def itemize(kvs, sort_keys=False):
     if isinstance(kvs, Mapping):
         items = ((k, kvs[k]) for k in kvs)
@@ -18,7 +22,7 @@ def itemize(kvs, sort_keys=False):
 def ascii_splitlines(s):
     lines = []
     lastend = 0
-    for m in re.finditer(r'\r\n?|\n', s):
+    for m in EOL_RGX.finditer(s):
         lines.append(s[lastend:m.end()])
         lastend = m.end()
     if lastend < len(s):

@@ -76,6 +76,10 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
          sort_keys=sort_keys)
     return s.getvalue()
 
+NON_LATIN1_RGX = re.compile(r'[^\x00-\xFF]')
+NEWLINE_OLD_COMMENT_RGX = re.compile(r'\n(?![#!])')
+NON_N_EOL_RGX = re.compile(r'\r\n?')
+
 def to_comment(comment):
     """
     Convert a string to a ``.properties`` file comment.  All non-Latin-1
@@ -92,9 +96,10 @@ def to_comment(comment):
     :type comment: text string
     :rtype: text string
     """
-    return '#' + re.sub(r'[^\x00-\xFF]', _esc,
-                        re.sub(r'\n(?![#!])', '\n#',
-                               re.sub(r'\r\n?', '\n', comment)))
+    comment = NON_N_EOL_RGX.sub('\n', comment)
+    comment = NEWLINE_OLD_COMMENT_RGX.sub('\n#', comment)
+    comment = NON_LATIN1_RGX.sub(_esc, comment)
+    return '#' + comment
 
 def join_key_value(key, value, separator='='):
     r"""
@@ -115,9 +120,10 @@ def join_key_value(key, value, separator='='):
     :rtype: text string
     """
     # Escapes `key` and `value` the same way as java.util.Properties.store()
-    return escape(key) \
-        + separator \
-        + re.sub(r'^ +', lambda m: r'\ ' * m.end(), _base_escape(value))
+    value = _base_escape(value)
+    if value.startswith(' '):
+        value = '\\' + value
+    return escape(key) + separator + value
 
 _escapes = {
     '\t': r'\t',
@@ -149,8 +155,10 @@ def _esc(m):
         else:
             return '\\u{0:04x}'.format(c)
 
+NEEDS_ESCAPE_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
+
 def _base_escape(field):
-    return re.sub(r'[^\x20-\x7E]|[\\#!=:]', _esc, field)
+    return NEEDS_ESCAPE_RGX.sub(_esc, field)
 
 def escape(field):
     """

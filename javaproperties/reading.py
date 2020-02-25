@@ -1,7 +1,7 @@
 from   __future__ import unicode_literals
 import re
 from   six        import binary_type, StringIO, BytesIO, unichr
-from   .util      import ascii_splitlines
+from   .util      import CONTINUED_RGX, ascii_splitlines
 
 def load(fp, object_pairs_hook=dict):
     """
@@ -65,6 +65,9 @@ def loads(s, object_pairs_hook=dict):
     fp = BytesIO(s) if isinstance(s, binary_type) else StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
 
+COMMENT_OR_BLANK_RGX = re.compile(r'^[ \t\f]*(?:[#!]|\r?\n?$)')
+SEPARATOR_RGX = re.compile(r'(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*')
+
 def parse(fp):
     """
     Parse the contents of the `~io.IOBase.readline`-supporting file-like object
@@ -104,11 +107,11 @@ def parse(fp):
     liter = lineiter()
     for source in liter:
         line = source
-        if re.match(r'^[ \t\f]*(?:[#!]|\r?\n?$)', line):
+        if COMMENT_OR_BLANK_RGX.match(line):
             yield (None, None, source)
             continue
         line = line.lstrip(' \t\f').rstrip('\r\n')
-        while re.search(r'(?<!\\)(?:\\\\)*\\$', line):
+        while CONTINUED_RGX.search(line):
             line = line[:-1]
             nextline = next(liter, '')
             source += nextline
@@ -116,11 +119,15 @@ def parse(fp):
         if line == '':  # series of otherwise-blank lines with continuations
             yield (None, None, source)
             continue
-        m = re.search(r'(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*', line)
+        m = SEPARATOR_RGX.search(line)
         if m:
             yield (unescape(line[:m.start(1)]),unescape(line[m.end():]),source)
         else:
             yield (unescape(line), '', source)
+
+SURROGATE_PAIR_RGX = re.compile(r'[\uD800-\uDBFF][\uDC00-\uDFFF]')
+ESCAPE_RGX = re.compile(r'\\(u.{0,4}|.)')
+U_ESCAPE_RGX = re.compile(r'^u[0-9A-Fa-f]{4}\Z')
 
 def unescape(field):
     """
@@ -146,15 +153,14 @@ def unescape(field):
     :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
         occurs in the input
     """
-    return re.sub(r'[\uD800-\uDBFF][\uDC00-\uDFFF]', _unsurrogate,
-                  re.sub(r'\\(u.{0,4}|.)', _unesc, field))
+    return SURROGATE_PAIR_RGX.sub(_unsurrogate, ESCAPE_RGX.sub(_unesc, field))
 
 _unescapes = {'t': '\t', 'n': '\n', 'f': '\f', 'r': '\r'}
 
 def _unesc(m):
     esc = m.group(1)
     if esc[0] == 'u':
-        if not re.match(r'^u[0-9A-Fa-f]{4}\Z', esc):
+        if not U_ESCAPE_RGX.match(esc):
             # We can't rely on `int` failing, because it succeeds when `esc`
             # has trailing whitespace or a leading minus.
             raise InvalidUEscapeError('\\' + esc)
