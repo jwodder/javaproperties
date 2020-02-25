@@ -39,6 +39,14 @@ from   javaproperties import InvalidUEscapeError, loads
     ('key=value\r', {"key": "value"}),
     ('key:value', {"key": "value"}),
     ('key value', {"key": "value"}),
+    ('\\ key\\  = \\ value ', {" key ": " value "}),
+    ('\\ key\\  : \\ value ', {" key ": " value "}),
+    ('\\ key\\  \t \\ value ', {" key ": " value "}),
+    ('\\ key\\    \\ value ', {" key ": " value "}),
+    ('\\ key\\ =\\ value ', {" key ": " value "}),
+    ('\\ key\\ :\\ value ', {" key ": " value "}),
+    ('\\ key\\  \\ value ', {" key ": " value "}),
+    ('\\ key\\ \t\\ value ', {" key ": " value "}),
     ('goat = \\uD83D\\uDC10', {"goat": "\U0001F410"}),
     ('taog = \\uDC10\\uD83D', {"taog": "\uDC10\uD83D"}),
     ('goat = \uD83D\uDC10', {"goat": "\U0001F410"}),
@@ -110,6 +118,8 @@ from   javaproperties import InvalidUEscapeError, loads
     ('key\\\tvalue=pair', {"key\tvalue": "pair"}),
     ('key\fvalue=pair', {"key": "value=pair"}),
     ('key\\\fvalue=pair', {"key\fvalue": "pair"}),
+    ('key\0value', {"key\0value": ""}),
+    ('key\\\0value', {"key\0value": ""}),
     ('the = \\u00f0e', {"the": "\xF0e"}),
     ('\\u00f0e = the', {"\xF0e": "the"}),
     ('goat = \\U0001F410', {"goat": "U0001F410"}),
@@ -118,7 +128,6 @@ from   javaproperties import InvalidUEscapeError, loads
     ('key\\u0020value', {"key value": ""}),
     ('key=\\\\u2603', {"key": "\\u2603"}),
     ('key=\\\\u260x', {"key": "\\u260x"}),
-
 ])
 def test_loads(s,d):
     assert loads(s) == d
