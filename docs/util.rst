@@ -11,6 +11,10 @@ Low-Level Utilities
 .. autoexception:: InvalidUEscapeError
     :show-inheritance:
 
+
+.. index::
+    single: javapropertiesreplace
+
 Custom Encoding Error Handler
 -----------------------------
 .. versionadded:: 0.6.0
