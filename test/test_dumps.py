@@ -82,6 +82,33 @@ def test_dumps_sorted(d,s):
 def test_dump_timestamp(ts, s):
     assert dumps({"key": "value"}, timestamp=ts) == s
 
+@pytest.mark.parametrize('d,s', [
+    ({"US": "\x1F"}, 'US=\\u001f\n'),
+    ({"delete": "\x7F"}, 'delete=\\u007f\n'),
+    ({"padding": "\x80"}, 'padding=\x80\n'),
+    ({"nbsp": "\xA0"}, 'nbsp=\xA0\n'),
+    ({"edh": "\xF0"}, 'edh=\xF0\n'),
+    ({"snowman": "\u2603"}, 'snowman=\u2603\n'),
+    ({"goat": "\U0001F410"}, 'goat=\U0001F410\n'),
+    ({"taog": "\uDC10\uD83D"}, 'taog=\uDC10\uD83D\n'),
+    ({"newline": "\n"}, 'newline=\\n\n'),
+    ({"carriage-return": "\r"}, 'carriage-return=\\r\n'),
+    ({"tab": "\t"}, 'tab=\\t\n'),
+    ({"form-feed": "\f"}, 'form-feed=\\f\n'),
+    ({"bell": "\a"}, 'bell=\\u0007\n'),
+    ({"escape": "\x1B"}, 'escape=\\u001b\n'),
+    ({"vertical-tab": "\v"}, 'vertical-tab=\\u000b\n'),
+    ({"backslash": "\\"}, 'backslash=\\\\\n'),
+    ({"equals": "="}, 'equals=\\=\n'),
+    ({"colon": ":"}, 'colon=\\:\n'),
+    ({"hash": "#"}, 'hash=\\#\n'),
+    ({"exclamation": "!"}, 'exclamation=\\!\n'),
+    ({"null": "\0"}, 'null=\\u0000\n'),
+    ({"backspace": "\b"}, 'backspace=\\u0008\n'),
+])
+def test_dumps_no_ensure_ascii(d,s):
+    assert dumps(d, timestamp=False, ensure_ascii=False) == s
+
 def test_dumps_comment():
     assert dumps(
         {"key": "value"},

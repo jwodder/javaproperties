@@ -8,16 +8,19 @@ from   six        import StringIO
 from   .util      import itemize
 
 def dump(props, fp, separator='=', comments=None, timestamp=True,
-         sort_keys=False):
+         sort_keys=False, ensure_ascii=True):
     """
     Write a series of key-value pairs to a file in simple line-oriented
     ``.properties`` format.
+
+    .. versionchanged:: 0.6.0
+        ``ensure_ascii`` parameter added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be text strings.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: A file-like object to write the values of ``props`` to.  It must
-        have been opened as a text file with a Latin-1-compatible encoding.
+        have been opened as a text file.
     :param separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
@@ -35,6 +38,9 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
+    :param bool ensure_ascii: if true, all non-ASCII characters will be
+        replaced with ``\\uXXXX`` escape sequences in the output; if false,
+        non-ASCII characters will be passed through as-is
     :return: `None`
     """
     if comments is not None:
@@ -42,12 +48,19 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     if timestamp is not None and timestamp is not False:
         print(to_comment(java_timestamp(timestamp)), file=fp)
     for k,v in itemize(props, sort_keys=sort_keys):
-        print(join_key_value(k, v, separator), file=fp)
+        print(
+            join_key_value(k, v, separator, ensure_ascii=ensure_ascii),
+            file=fp,
+        )
 
-def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
+def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
+          ensure_ascii=True):
     """
     Convert a series of key-value pairs to a text string in simple
     line-oriented ``.properties`` format.
+
+    .. versionchanged:: 0.6.0
+        ``ensure_ascii`` parameter added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
         All keys and values in ``props`` must be text strings.  If
@@ -69,11 +82,14 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False):
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
+    :param bool ensure_ascii: if true, all non-ASCII characters will be
+        replaced with ``\\uXXXX`` escape sequences in the output; if false,
+        non-ASCII characters will be passed through as-is
     :rtype: text string
     """
     s = StringIO()
     dump(props, s, separator=separator, comments=comments, timestamp=timestamp,
-         sort_keys=sort_keys)
+         sort_keys=sort_keys, ensure_ascii=ensure_ascii)
     return s.getvalue()
 
 NON_LATIN1_RGX = re.compile(r'[^\x00-\xFF]')
@@ -101,13 +117,16 @@ def to_comment(comment):
     comment = NON_LATIN1_RGX.sub(_esc, comment)
     return '#' + comment
 
-def join_key_value(key, value, separator='='):
+def join_key_value(key, value, separator='=', ensure_ascii=True):
     r"""
     Join a key and value together into a single line suitable for adding to a
     simple line-oriented ``.properties`` file.  No trailing newline is added.
 
     >>> join_key_value('possible separators', '= : space')
     'possible\\ separators=\\= \\: space'
+
+    .. versionchanged:: 0.6.0
+        ``ensure_ascii`` parameter added
 
     :param key: the key
     :type key: text string
@@ -117,13 +136,16 @@ def join_key_value(key, value, separator='='):
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
     :type separator: text string
+    :param bool ensure_ascii: if true, all non-ASCII characters will be
+        replaced with ``\\uXXXX`` escape sequences in the output; if false,
+        non-ASCII characters will be passed through as-is
     :rtype: text string
     """
     # Escapes `key` and `value` the same way as java.util.Properties.store()
-    value = _base_escape(value)
+    value = _base_escape(value, ensure_ascii=ensure_ascii)
     if value.startswith(' '):
         value = '\\' + value
-    return escape(key) + separator + value
+    return escape(key, ensure_ascii=ensure_ascii) + separator + value
 
 _escapes = {
     '\t': r'\t',
@@ -155,12 +177,14 @@ def _esc(m):
         else:
             return '\\u{0:04x}'.format(c)
 
-NEEDS_ESCAPE_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
+NEEDS_ESCAPE_ASCII_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
+NEEDS_ESCAPE_UNICODE_RGX = re.compile(r'[\x00-\x1F\x7F]|[\\#!=:]')
 
-def _base_escape(field):
-    return NEEDS_ESCAPE_RGX.sub(_esc, field)
+def _base_escape(field, ensure_ascii=True):
+    rgx = NEEDS_ESCAPE_ASCII_RGX if ensure_ascii else NEEDS_ESCAPE_UNICODE_RGX
+    return rgx.sub(_esc, field)
 
-def escape(field):
+def escape(field, ensure_ascii=True):
     """
     Escape a string so that it can be safely used as either a key or value in a
     ``.properties`` file.  All non-ASCII characters, all nonprintable or space
@@ -169,11 +193,17 @@ def escape(field):
     ``\\uXXXX`` escapes (after converting non-BMP characters to surrogate
     pairs).
 
+    .. versionchanged:: 0.6.0
+        ``ensure_ascii`` parameter added
+
     :param field: the string to escape
     :type field: text string
+    :param bool ensure_ascii: if true, all non-ASCII characters will be
+        replaced with ``\\uXXXX`` escape sequences in the output; if false,
+        non-ASCII characters will be passed through as-is
     :rtype: text string
     """
-    return _base_escape(field).replace(' ', r'\ ')
+    return _base_escape(field, ensure_ascii=ensure_ascii).replace(' ', r'\ ')
 
 DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 

@@ -58,6 +58,7 @@ An example simple line-oriented ``.properties`` file:
     gnusto cleesh
     snowman = \u2603
     goat = \ud83d\udc10
+    novalue
     host\:port=127.0.0.1\:80
 
 This corresponds to the Python `dict`:
@@ -70,6 +71,7 @@ This corresponds to the Python `dict`:
         "gnusto": "cleesh",
         "snowman": "☃",
         "goat": "🐐",
+        "novalue": "",
         "host:port": "127.0.0.1:80",
     }
 

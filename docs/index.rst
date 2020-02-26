@@ -118,6 +118,15 @@ Dump as XML::
     <entry key="snowman">☃</entry>
     </properties>
 
+New in v0.6.0: Dump Unicode characters as-is instead of escaping them::
+
+    >>> print(javaproperties.dumps(properties, ensure_ascii=False))
+    #Tue Feb 25 19:13:27 EST 2020
+    key=value
+    goat=🐐
+    host\:port=127.0.0.1\:80
+    snowman=☃
+
 
 Indices and tables
 ==================

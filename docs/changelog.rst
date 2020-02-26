@@ -9,6 +9,9 @@ v0.6.0 (in development)
 - Support Python 3.8
 - When dumping a value that begins with more than one space, only escape the
   first space in order to better match Java's behavior
+- Gave `dump()`, `dumps()`, `escape()`, and `join_key_value()` an
+  ``ensure_ascii`` parameter for optionally not escaping non-ASCII characters
+  in output
 
 v0.5.2 (2019-04-08)
 -------------------
