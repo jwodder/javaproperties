@@ -40,13 +40,12 @@ recognized::
 
     \t \n \f \r \uXXXX \\
 
-If a backslash is followed by any other character, the backslash is dropped.
+Unicode characters outside the Basic Multilingual Plane can be represented by a
+pair of ``\uXXXX`` escape sequences encoding the corresponding UTF-16 surrogate
+pair.
 
-By default, keys & values in ``.properties`` files are encoded in ASCII, and
-comments are encoded in Latin-1; characters outside these ranges, along with
-any unprintable characters, are escaped with the escape sequences listed above.
-Unicode characters outside the Basic Multilingual Plane are first converted to
-UTF-16 surrogate pairs before escaping with ``\uXXXX`` escapes.
+If a backslash is followed by character other than those listed above, the
+backslash is discarded.
 
 An example simple line-oriented ``.properties`` file:
 
@@ -74,6 +73,42 @@ This corresponds to the Python `dict`:
         "novalue": "",
         "host:port": "127.0.0.1:80",
     }
+
+File Encoding
+-------------
+
+Although the `load()` and `loads()` functions accept arbitrary Unicode
+characters in their input, by default the `dump()` and `dumps()` functions
+limit the characters in their output as follows:
+
+- When ``ensure_ascii`` is `True` (the default), `dump()` and `dumps()` output
+  keys & values in pure ASCII; non-ASCII and unprintable characters are escaped
+  with the escape sequences listed above.  When ``ensure_ascii`` is `False`,
+  the functions instead pass all non-ASCII characters through as-is;
+  unprintable characters are still escaped.
+
+- When ``ensure_ascii_comments`` is `None` (the default), `dump()` and
+  `dumps()` output the ``comments`` argument (if set) using only Latin-1
+  (ISO-8859-1) characters; all other characters are escaped.  When
+  ``ensure_ascii_comments`` is `True`, the functions instead escape all
+  non-ASCII characters in ``comments``.  When ``ensure_ascii_comments`` is
+  `False`, the functions instead pass all characters in ``comments`` through
+  as-is.
+
+  - Note that, in order to match the behavior of Java's ``Properties`` class,
+    unprintable ASCII characters in ``comments`` are always passed through
+    as-is rather than escaped.
+
+  - Newlines inside ``comments`` are not escaped, but a ``#`` is inserted
+    after every one not already followed by a ``#`` or ``!``.
+
+When writing properties to a file, you must either (a) open the file using an
+encoding that supports all of the characters in the formatted output or else
+(b) open the file using the :ref:`'javapropertiesreplace' error handler
+<javapropertiesreplace>` defined by this module.  The latter option allows one
+to write valid simple-format properties files in any encoding without having to
+worry about whether the properties or comment contain any characters not
+representable in the encoding.
 
 Functions
 ---------

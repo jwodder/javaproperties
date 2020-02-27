@@ -12,6 +12,7 @@ Low-Level Utilities
     :show-inheritance:
 
 
+.. _javapropertiesreplace:
 .. index::
     single: javapropertiesreplace
 
