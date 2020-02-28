@@ -1,35 +1,37 @@
 - Write tests
     - Test reading & writing bytes in both Python 2 and Python 3
-    - Test utility functions in isolation
     - Run doctest on the README examples somehow?
-    - Test `parse` (primarily handling of comments/blanks, repeated keys, and
+    - Test `parse()` (primarily handling of comments/blanks, repeated keys, and
       backslash at EOF)
+    - Test `dump()` and `load()`
 - Documentation:
     - Add docstrings for the private functions
-- Handle "narrow" Python builds (only for Python versions < 3.3)
 - Try to include the line number (and column number and filename?) in
   `InvalidUEscapeError`s
-- Update `Properties` to match Java 10: <https://docs.oracle.com/javase/10/docs/api/java/util/Properties.html>
+- Update `Properties` to match the latest Java version?
 
 New Features
 ------------
-- `dump`: Support writing `str`s in Python 2
+- `dump()`: Support `str`s as input in Python 2
     - Use `unicode_literals` less?
-- Give the dump functions `charset` and `comment_charset` arguments for
-  specifying what characters to convert to `\uXXXX` escapes and what not;
-  possible values: `ASCII = 'ascii'`, `LATIN_1 = 'latin-1'`, `UNICODE_BMP =
-  'unicode_bmp'`, `UNICODE = 'unicode'`
 - Give `load` and `loads` a `timestamp_hook` argument for specifying a callable
   to pass the file's timestamp (if any) to
     - The timestamp is passed as an unparsed string with leading `#` and
       trailing newline (and other whitespace?) removed
-- Add a variant of `join_key_value` that escapes as few characters as possible?
-- Add a string-reading equivalent of `parse`?
-- Add an equivalent of `parse` for XML that can extract the comment?
+- Make `parse()` accept strings as input
+- Add an equivalent of `parse()` for XML that can extract the comment?
 - Export `getproperties` and `setproperties` from `javaproperties-cli`?
 - Make `parse` return a generator of `KeyValue`, `Whitespace`, and `Comment`
   objects?
     - Give `Comment` an `is_timestamp()` method
+    - All objects have a `source: str` attribute (including trailing newline)
+    - Give `Comment` an attribute for getting the text without the leading `#`
+      or `!` (and with escapes unescaped?) ?
+    - `KeyValue` objects have `key` and `value` attributes storing the
+      unescaped values
+    - Give `KeyValue` objects an attribute for whether they end with a trailing
+      line continuation? / an attribute for the `source` without any trailing
+      continuations (and also without trailing newline?) ?
 - `PropertiesFile`:
     - Support getting, setting (including in `dump`), & deleting the timestamp
         - Use the last timestamp-like line as the value of the timestamp when
@@ -43,3 +45,6 @@ New Features
       overwriting a key-value pair?
     - Should instances stringify to their `dump` representations?
 - Should `Properties` instances stringify to their `dump` representations?
+- Give `escape()` an option (named `is_value`? `escape_spaces`?) for
+  controlling whether to perform the more minimal escaping used for values
+  rather than keys
