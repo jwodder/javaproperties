@@ -8,13 +8,13 @@ from   six        import StringIO
 from   .util      import itemize
 
 def dump(props, fp, separator='=', comments=None, timestamp=True,
-         sort_keys=False, ensure_ascii=True):
+         sort_keys=False, ensure_ascii=True, ensure_ascii_comments=None):
     """
     Write a series of key-value pairs to a file in simple line-oriented
     ``.properties`` format.
 
     .. versionchanged:: 0.6.0
-        ``ensure_ascii`` parameter added
+        ``ensure_ascii`` and ``ensure_ascii_comments`` parameters added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be text strings.  If
@@ -41,10 +41,14 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
+    :param ensure_ascii_comments: if true, all non-ASCII characters in
+        ``comments`` will be replaced with ``\\uXXXX`` escape sequences in the
+        output; if `None`, only non-Latin-1 characters will be escaped; if
+        false, no characters will be escaped
     :return: `None`
     """
     if comments is not None:
-        print(to_comment(comments), file=fp)
+        print(to_comment(comments, ensure_ascii=ensure_ascii_comments), file=fp)
     if timestamp is not None and timestamp is not False:
         print(to_comment(java_timestamp(timestamp)), file=fp)
     for k,v in itemize(props, sort_keys=sort_keys):
@@ -54,13 +58,13 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
         )
 
 def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
-          ensure_ascii=True):
+          ensure_ascii=True, ensure_ascii_comments=None):
     """
     Convert a series of key-value pairs to a text string in simple
     line-oriented ``.properties`` format.
 
     .. versionchanged:: 0.6.0
-        ``ensure_ascii`` parameter added
+        ``ensure_ascii`` and ``ensure_ascii_comments`` parameters added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
         All keys and values in ``props`` must be text strings.  If
@@ -85,36 +89,52 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
+    :param ensure_ascii_comments: if true, all non-ASCII characters in
+        ``comments`` will be replaced with ``\\uXXXX`` escape sequences in the
+        output; if `None`, only non-Latin-1 characters will be escaped; if
+        false, no characters will be escaped
     :rtype: text string
     """
     s = StringIO()
     dump(props, s, separator=separator, comments=comments, timestamp=timestamp,
-         sort_keys=sort_keys, ensure_ascii=ensure_ascii)
+         sort_keys=sort_keys, ensure_ascii=ensure_ascii,
+         ensure_ascii_comments=ensure_ascii_comments)
     return s.getvalue()
 
+NON_ASCII_RGX = re.compile(r'[^\x00-\x7F]')
 NON_LATIN1_RGX = re.compile(r'[^\x00-\xFF]')
 NEWLINE_OLD_COMMENT_RGX = re.compile(r'\n(?![#!])')
 NON_N_EOL_RGX = re.compile(r'\r\n?')
 
-def to_comment(comment):
+def to_comment(comment, ensure_ascii=None):
     """
-    Convert a string to a ``.properties`` file comment.  All non-Latin-1
-    characters in the string are escaped using ``\\uXXXX`` escapes (after
-    converting non-BMP characters to surrogate pairs), a ``#`` is prepended to
-    the string, any CR LF or CR line breaks in the string are converted to LF,
-    and a ``#`` is inserted after any line break not already followed by a
-    ``#`` or ``!``.  No trailing newline is added.
+    Convert a string to a ``.properties`` file comment.  Non-Latin-1 or
+    non-ASCII characters in the string may be escaped using ``\\uXXXX`` escapes
+    (depending on the value of ``ensure_ascii``), a ``#`` is prepended to the
+    string, any CR LF or CR line breaks in the string are converted to LF, and
+    a ``#`` is inserted after any line break not already followed by a ``#`` or
+    ``!``.  No trailing newline is added.
 
     >>> to_comment('They say foo=bar,\\r\\nbut does bar=foo?')
     '#They say foo=bar,\\n#but does bar=foo?'
 
+    .. versionchanged:: 0.6.0
+        ``ensure_ascii`` parameter added
+
     :param comment: the string to convert to a comment
     :type comment: text string
+    :param ensure_ascii: if true, all non-ASCII characters will be replaced
+        with ``\\uXXXX`` escape sequences in the output; if `None`, only
+        non-Latin-1 characters will be escaped; if false, no characters will be
+        escaped
     :rtype: text string
     """
     comment = NON_N_EOL_RGX.sub('\n', comment)
     comment = NEWLINE_OLD_COMMENT_RGX.sub('\n#', comment)
-    comment = NON_LATIN1_RGX.sub(_esc, comment)
+    if ensure_ascii is None:
+        comment = NON_LATIN1_RGX.sub(_esc, comment)
+    elif ensure_ascii:
+        comment = NON_ASCII_RGX.sub(_esc, comment)
     return '#' + comment
 
 def join_key_value(key, value, separator='=', ensure_ascii=True):

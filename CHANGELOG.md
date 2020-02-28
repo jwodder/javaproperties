@@ -7,6 +7,10 @@ v0.6.0 (in development)
 - Gave `dump()`, `dumps()`, `escape()`, and `join_key_value()` an
   `ensure_ascii` parameter for optionally not escaping non-ASCII characters in
   output
+- Gave `dump()` and `dumps()` an `ensure_ascii_comments` parameter for
+  controlling what characters in the `comments` parameter are escaped
+- Gave `to_comment()` an `ensure_ascii` parameter for controlling what
+  characters are escaped
 
 v0.5.2 (2019-04-08)
 -------------------

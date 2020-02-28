@@ -3,7 +3,8 @@ from   collections    import OrderedDict
 from   datetime       import datetime
 from   dateutil.tz    import tzoffset
 import pytest
-from   javaproperties import dumps
+from   six            import unichr
+from   javaproperties import dumps, to_comment
 
 @pytest.mark.parametrize('d,s', [
     ({}, ''),
@@ -109,12 +110,61 @@ def test_dump_timestamp(ts, s):
 def test_dumps_no_ensure_ascii(d,s):
     assert dumps(d, timestamp=False, ensure_ascii=False) == s
 
-def test_dumps_comment():
-    assert dumps(
+@pytest.mark.parametrize('c', [
+    ''
+    'foobar',
+    ' leading',
+    'trailing ',
+    '   ',
+    'This is a comment.',
+    '#This is a double comment.',
+    'trailing newline\n',
+    'trailing CRLF\r\n',
+    'trailing carriage return\r',
+    'line one\nline two',
+    'line one\n#line two',
+    'line one\n!line two',
+    '\0',
+    '\a',
+    '\b',
+    '\t',
+    '\n',
+    '\v',
+    '\f',
+    '\r',
+    '\x1B',
+    '\x1F',
+    '!',
+    '#',
+    ':',
+    '=',
+    '\\',
+    '\\u2603',
+    '~',
+    '\x7F',
+    '\x80',
+    '\xA0',
+    '\xF0',
+    '\xFF',
+    '\u0100',
+    '\u2603',
+    '\U0001F410',
+    '\uDC10\uD83D',
+    ''.join(unichr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
+                      if i not in (10, 13)),
+])
+@pytest.mark.parametrize('ensure_ascii_comments', [None, True, False])
+def test_dumps_comments(c, ensure_ascii_comments):
+    s = dumps(
         {"key": "value"},
-        comments='This is a comment.',
-        timestamp=False,
-    ) == '#This is a comment.\nkey=value\n'
+        timestamp             = False,
+        comments              = c,
+        ensure_ascii_comments = ensure_ascii_comments,
+    )
+    assert s == to_comment(c, ensure_ascii=ensure_ascii_comments) \
+                + '\nkey=value\n'
+    if ensure_ascii_comments is None:
+        assert s == dumps({"key": "value"}, timestamp=False, comments=c)
 
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) \
