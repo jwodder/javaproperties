@@ -166,6 +166,24 @@ def test_dumps_comments(c, ensure_ascii_comments):
     if ensure_ascii_comments is None:
         assert s == dumps({"key": "value"}, timestamp=False, comments=c)
 
+@pytest.mark.parametrize('pout,ea', [
+    ("x\\u00f0=\\u2603\\ud83d\\udc10\n", True),
+    ("x\xF0=\u2603\U0001F410\n", False),
+])
+@pytest.mark.parametrize('cout,eac', [
+    ("#x\\u00f0\\u2603\\ud83d\\udc10\n", True),
+    ("#x\xF0\\u2603\\ud83d\\udc10\n", None),
+    ("#x\xF0\u2603\U0001F410\n", False),
+])
+def test_dumps_ensure_ascii_cross_ensure_ascii_comments(pout, ea, cout, eac):
+    assert dumps(
+        {"x\xF0": "\u2603\U0001F410"},
+        timestamp             = False,
+        comments              = "x\xF0\u2603\U0001F410",
+        ensure_ascii          = ea,
+        ensure_ascii_comments = eac,
+    ) == cout + pout
+
 def test_dumps_tab_separator():
     assert dumps({"key": "value"}, separator='\t', timestamp=False) \
         == 'key\tvalue\n'
