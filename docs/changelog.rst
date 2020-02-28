@@ -3,8 +3,8 @@
 Changelog
 =========
 
-v0.6.0 (in development)
------------------------
+v0.6.0 (2020-02-28)
+-------------------
 - Include changelog in the Read the Docs site
 - Support Python 3.8
 - When dumping a value that begins with more than one space, only escape the
