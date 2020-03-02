@@ -14,22 +14,28 @@ Visit <https://github.com/jwodder/javaproperties> or
 
 from .propclass import Properties
 from .propfile  import PropertiesFile
-from .reading   import InvalidUEscapeError, load, loads, parse, unescape
+from .reading   import Comment, InvalidUEscapeError, KeyValue, \
+                        PropertiesElement, Whitespace, load, loads, parse, \
+                        unescape
 from .writing   import dump, dumps, java_timestamp, \
                         javapropertiesreplace_errors, join_key_value, escape, \
                         to_comment
 from .xmlprops  import load_xml, loads_xml, dump_xml, dumps_xml
 
-__version__      = '0.6.0'
+__version__      = '0.7.0.dev1'
 __author__       = 'John Thorvald Wodder II'
 __author_email__ = 'javaproperties@varonathe.org'
 __license__      = 'MIT'
 __url__          = 'https://github.com/jwodder/javaproperties'
 
 __all__ = [
+    'Comment',
     'InvalidUEscapeError',
+    'KeyValue',
     'Properties',
+    'PropertiesElement',
     'PropertiesFile',
+    'Whitespace',
     'dump',
     'dump_xml',
     'dumps',

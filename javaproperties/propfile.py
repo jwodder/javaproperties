@@ -1,7 +1,7 @@
 from   __future__  import print_function
-from   collections import OrderedDict, namedtuple
+from   collections import OrderedDict
 import six
-from   .reading    import loads, parse
+from   .reading    import KeyValue, loads, parse
 from   .util       import CONTINUED_RGX
 from   .writing    import join_key_value
 
@@ -11,8 +11,6 @@ else:
     from collections.abc import Mapping, MutableMapping
 
 _type_err = 'Keys & values of PropertiesFile instances must be strings'
-
-PropertyLine = namedtuple('PropertyLine', 'key value source')
 
 class PropertiesFile(MutableMapping):
     """
@@ -55,7 +53,7 @@ class PropertiesFile(MutableMapping):
     def __init__(self, mapping=None, **kwargs):
         #: mapping from keys to list of line numbers
         self._indices = OrderedDict()
-        #: mapping from line numbers to (key, value, source) tuples
+        #: mapping from line numbers to Comment/Whitespace/KeyValue objects
         self._lines = OrderedDict()
         if mapping is not None:
             self.update(mapping)
@@ -72,15 +70,14 @@ class PropertiesFile(MutableMapping):
             assert ix == sorted(ix), "Key's indices are not in order"
             for i in ix:
                 assert i in self._lines, 'Key index does not map to line'
-                assert self._lines[i].key is not None, 'Key maps to comment'
+                assert isinstance(self._lines[i], KeyValue), 'Key maps to comment'
                 assert self._lines[i].key == k, 'Key does not map to itself'
                 assert self._lines[i].value is not None, 'Key has null value'
         prev = None
         for i, line in six.iteritems(self._lines):
             assert prev is None or prev < i, 'Line indices out of order'
             prev = i
-            if line.key is None:
-                assert line.value is None, 'Comment/blank has value'
+            if not isinstance(line, KeyValue):
                 assert line.source is not None, 'Comment source not stored'
                 assert loads(line.source) == {}, 'Comment source is not comment'
             else:
@@ -116,7 +113,7 @@ class PropertiesFile(MutableMapping):
                 lastline = self._lines[lasti]
                 if lastline.source is not None:
                     lastsrc = lastline.source
-                    if lastline.key is not None:
+                    if isinstance(lastline, KeyValue):
                         lastsrc = CONTINUED_RGX.sub(r'\1', lastsrc)
                     if not lastsrc.endswith(('\r', '\n')):
                         lastsrc += '\n'
@@ -129,7 +126,7 @@ class PropertiesFile(MutableMapping):
             for i in ixes:
                 del self._lines[i]
         self._indices[key] = [ix]
-        self._lines[ix] = PropertyLine(key, value, None)
+        self._lines[ix] = KeyValue(key, value, None)
 
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
@@ -148,10 +145,12 @@ class PropertiesFile(MutableMapping):
 
     def _comparable(self):
         return [
-            (None, line.source) if line.key is None else (line.key, line.value)
+            (line.key, line.value)
+                if isinstance(line, KeyValue)
+                else (None, line.source)
             for i, line in six.iteritems(self._lines)
             ### TODO: Also include non-final repeated keys???
-            if line.key is None or self._indices[line.key][-1] == i
+            if not isinstance(line, KeyValue) or self._indices[line.key][-1]==i
         ]
 
     def __eq__(self, other):
@@ -188,10 +187,10 @@ class PropertiesFile(MutableMapping):
             occurs in the input
         """
         obj = cls()
-        for i, (k, v, src) in enumerate(parse(fp)):
-            if k is not None:
-                obj._indices.setdefault(k, []).append(i)
-            obj._lines[i] = PropertyLine(k, v, src)
+        for i, kv in enumerate(parse(fp)):
+            if isinstance(kv, KeyValue):
+                obj._indices.setdefault(kv.key, []).append(i)
+            obj._lines[i] = kv
         return obj
 
     @classmethod

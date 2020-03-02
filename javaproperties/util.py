@@ -6,7 +6,7 @@ if PY2:
 else:
     from collections.abc import Mapping
 
-CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\$')
+CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\\r?\n?\Z')
 
 EOL_RGX = re.compile(r'\r\n?|\n')
 
