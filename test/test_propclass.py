@@ -603,4 +603,26 @@ def test_propclass_storeToXML_defaults():
 def test_propclass_dumps_function():
     assert dumps(Properties({"key": "value"}), timestamp=False) == 'key=value\n'
 
+@pytest.mark.parametrize('data', [
+    {},
+    {"foo": "bar"},
+    {"foo": "bar", "key": "value"},
+])
+@pytest.mark.parametrize('defaults', [
+    None,
+    Properties(),
+    Properties({"zebra": "apple"}),
+])
+def test_propclass_repr(data, defaults):
+    p = Properties(data, defaults=defaults)
+    assert repr(p) \
+        == 'javaproperties.propclass.Properties({!r}, defaults={!r})'\
+            .format(data, defaults)
+
+def test_propclass_repr_noinit():
+    p = Properties()
+    assert repr(p) \
+        == 'javaproperties.propclass.Properties({!r}, defaults={!r})'\
+            .format({}, None)
+
 # defaults with defaults

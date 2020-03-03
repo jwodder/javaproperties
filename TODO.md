@@ -34,6 +34,7 @@ New Features
     - When setting a key's value, add a way to specify whether to take the
       place of the first occurrence of the key or the last
     - Add a method for reformatting in-place?
+    - Add a method for deleting all but a given set of keys?
 - Should `Properties` instances stringify to their `dump` representations?
 - Give `escape()` an option (named `is_value`? `escape_spaces`?) for
   controlling whether to perform the more minimal escaping used for values

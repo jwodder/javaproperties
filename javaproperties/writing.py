@@ -318,4 +318,4 @@ def javapropertiesreplace_errors(e):
     if isinstance(e, UnicodeEncodeError):
         return (''.join(map(_to_u_escape, e.object[e.start:e.end])), e.end)
     else:
-        raise e
+        raise e  # pragma: no cover

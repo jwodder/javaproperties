@@ -31,8 +31,9 @@ def test_propfile_empty():
     assert list(reversed(pf)) == []
     assert pf.dumps() == ''
 
-def test_propfile_loads():
-    pf = PropertiesFile.loads(INPUT)
+@pytest.mark.parametrize('src', [INPUT, INPUT.encode('iso-8859-1')])
+def test_propfile_loads(src):
+    pf = PropertiesFile.loads(src)
     pf._check()
     assert len(pf) == 4
     assert bool(pf)

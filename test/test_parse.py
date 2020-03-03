@@ -161,6 +161,7 @@ def test_whitespace_source_stripped(s, ss):
     ('#\tcomment\n', 'comment'),
     ('\t#\tcomment\n', 'comment'),
     ('#comment value \n', 'comment value '),
+    ('  weird edge # case', 'weird edge # case'),
 ])
 def test_comment_value(s,v):
     assert Comment(s).value == v
