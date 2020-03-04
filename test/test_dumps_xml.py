@@ -37,7 +37,6 @@ from   javaproperties import dumps_xml
         '</properties>\n'
     ),
 
-
     (
         OrderedDict([("key","value"), ("zebra","apple")]),
         '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
@@ -53,6 +52,38 @@ from   javaproperties import dumps_xml
         '<properties>\n'
         '<entry key="zebra">apple</entry>\n'
         '<entry key="key">value</entry>\n'
+        '</properties>\n'
+    ),
+
+    (
+        [
+            ('key', 'value'),
+            ('edh', '\xF0'),
+            ('snowman', '\u2603'),
+            ('goat', '\U0001F410'),
+        ],
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="edh">\xF0</entry>\n'
+        '<entry key="snowman">\u2603</entry>\n'
+        '<entry key="goat">\U0001F410</entry>\n'
+        '</properties>\n'
+    ),
+
+    (
+        [
+            ('key', 'value'),
+            ('\xF0', 'edh'),
+            ('\u2603', 'snowman'),
+            ('\U0001F410', 'goat'),
+        ],
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        '<properties>\n'
+        '<entry key="key">value</entry>\n'
+        '<entry key="\xF0">edh</entry>\n'
+        '<entry key="\u2603">snowman</entry>\n'
+        '<entry key="\U0001F410">goat</entry>\n'
         '</properties>\n'
     ),
 ])
