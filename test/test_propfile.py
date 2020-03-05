@@ -666,7 +666,7 @@ def test_propfile_to_ordereddict():
     (INPUT, 'Thu Mar 16 17:06:52 EDT 2017'),
     (
         '# comment 1\n!comment 2\n# Thu Mar 16 17:06:52 EDT 2017\n',
-        'Thu Mar 16 17:06:52 EDT 2017',
+        ' Thu Mar 16 17:06:52 EDT 2017',
     ),
     ('key=value\n#Thu Mar 16 17:06:52 EDT 2017\n', None),
     (

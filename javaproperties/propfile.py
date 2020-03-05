@@ -295,12 +295,12 @@ class PropertiesFile(MutableMapping):
         """
         .. versionadded:: 0.7.0
 
-        The value of the timestamp comment, with leading whitespace, comment
-        marker, and trailing newline removed.  The timestamp comment is the
-        first comment that appears to be a valid timestamp as produced by Java
-        8's ``Date.toString()`` and that does not come after any key-value
-        pairs; if there is no such comment, the value of this property is
-        `None`.
+        The value of the timestamp comment, with the comment marker, any
+        whitespace leading up to it, and the trailing newline removed.  The
+        timestamp comment is the first comment that appears to be a valid
+        timestamp as produced by Java 8's ``Date.toString()`` and that does not
+        come after any key-value pairs; if there is no such comment, the value
+        of this property is `None`.
 
         The timestamp can be changed by assigning to this property.  Assigning
         a string ``s`` replaces the timestamp comment with the output of

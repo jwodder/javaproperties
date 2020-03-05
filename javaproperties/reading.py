@@ -104,12 +104,12 @@ class Comment(PropertiesElement, namedtuple('Comment', 'source')):
     @property
     def value(self):
         """
-        Returns the contents of the comment, with leading whitespace, the
-        comment marker, and trailing newline removed
+        Returns the contents of the comment, with the comment marker, any
+        whitespace leading up to it, and the trailing newline removed
         """
         s = self.source.lstrip(' \t\f')
         if s.startswith(('#', '!')):
-            s = s[1:].lstrip(' \t\f')
+            s = s[1:]
         return s.rstrip('\r\n')
 
     @property
