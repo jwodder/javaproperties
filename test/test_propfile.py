@@ -925,4 +925,79 @@ def test_propfile_delete_timestamp(src, ts2, result):
     assert pf.timestamp == ts2
     assert pf.dumps() == result
 
+@pytest.mark.parametrize('src,c', [
+    ('', None),
+    ('#\n', ''),
+    ('#\n#comment\n', '\ncomment'),
+    ('#comment\n#\n', 'comment\n'),
+    (INPUT, ' A comment before the timestamp'),
+    (
+        '# comment 1\n!comment 2\n# Thu Mar 16 17:06:52 EDT 2017\n',
+        ' comment 1\ncomment 2',
+    ),
+    ('# comment 1\n!comment 2\nkey=value\n', ' comment 1\ncomment 2'),
+    ('# comment 1\r\n!comment 2\nkey=value\n', ' comment 1\ncomment 2'),
+    ('# comment 1\r!comment 2\nkey=value\n', ' comment 1\ncomment 2'),
+    ('# comment 1\n\t\r\n !comment 2\nkey=value\n', ' comment 1\ncomment 2'),
+    ('# Thu Mar 16 17:06:52 EDT 2017\n# Comment\n', None),
+    ('key=value\n# Comment\n', None),
+])
+def test_propfile_get_header_comment(src, c):
+    pf = PropertiesFile.loads(src)
+    pf._check()
+    assert pf.header_comment == c
+
+@pytest.mark.parametrize('c,c2,csrc', [
+    (None, None, ''),
+    ('', '', '#\n'),
+    ('This is test text.', 'This is test text.', '#This is test text.\n'),
+    ('Line 1\n', 'Line 1\n', '#Line 1\n#\n'),
+    ('Line 1\nLine 2', 'Line 1\nLine 2', '#Line 1\n#Line 2\n'),
+    ('Line 1\n#Line 2', 'Line 1\nLine 2', '#Line 1\n#Line 2\n'),
+    ('Line 1\n!Line 2', 'Line 1\nLine 2', '#Line 1\n!Line 2\n'),
+])
+@pytest.mark.parametrize('part1', [
+    '',
+    '#This comment will be deleted.\n',
+    '#This will be deleted.\n!This, too\n',
+    '#This will be deleted.\n    \r\n#And also that blank line in between.\n',
+    '\n\n#This and the blank lines above will be deleted.\n',
+    '#This and the blank lines below will be deleted.\n\n\n',
+])
+@pytest.mark.parametrize('part2', [
+    '',
+    'key=value\n',
+    '#Thu Mar 16 17:06:52 EDT 2017\nkey=value\n'
+    'key=value\n#Post-entry comment\n',
+])
+def test_propfile_set_header_comment(part1, part2, c, c2, csrc):
+    pf = PropertiesFile.loads(part1 + part2)
+    pf._check()
+    pf.header_comment = c
+    pf._check()
+    assert pf.header_comment == c2
+    assert pf.dumps() == csrc + part2
+
+@pytest.mark.parametrize('part1', [
+    '',
+    '#This comment will be deleted.\n',
+    '#This will be deleted.\n!This, too\n',
+    '#This will be deleted.\n    \r\n#And also that blank line in between.\n',
+    '\n\n#This and the blank lines above will be deleted.\n',
+    '#This and the blank lines below will be deleted.\n\n\n',
+])
+@pytest.mark.parametrize('part2', [
+    '',
+    'key=value\n',
+    '#Thu Mar 16 17:06:52 EDT 2017\nkey=value\n'
+    'key=value\n#Post-entry comment\n',
+])
+def test_propfile_delete_header_comment(part1, part2):
+    pf = PropertiesFile.loads(part1 + part2)
+    pf._check()
+    del pf.header_comment
+    pf._check()
+    assert pf.header_comment is None
+    assert pf.dumps() == part2
+
 # preserving mixtures of line endings

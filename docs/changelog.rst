@@ -9,6 +9,7 @@ v0.7.0 (in development)
 - `parse()` now returns a generator of custom objects instead of triples of
   strings
 - Gave `PropertiesFile` a settable `~PropertiesFile.timestamp` property
+- Gave `PropertiesFile` a settable `~PropertiesFile.header_comment` property
 
 v0.6.0 (2020-02-28)
 -------------------

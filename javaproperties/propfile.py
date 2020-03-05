@@ -1,7 +1,7 @@
 from   __future__  import print_function
 from   collections import OrderedDict
 import six
-from   .reading    import Comment, KeyValue, loads, parse
+from   .reading    import Comment, KeyValue, Whitespace, loads, parse
 from   .util       import CONTINUED_RGX, LinkedList, ascii_splitlines
 from   .writing    import java_timestamp, join_key_value, to_comment
 
@@ -376,3 +376,95 @@ class PropertiesFile(MutableMapping):
                 return
             elif isinstance(n.value, KeyValue):
                 return
+
+    @property
+    def header_comment(self):
+        """
+        .. versionadded:: 0.7.0
+
+        The concatenated values of all comments at the top of the file, up to
+        (but not including) the first key-value pair or timestamp comment,
+        whichever comes first.  The comments are returned with comment markers
+        and the whitespace leading up to them removed, with line endings
+        changed to ``\\n``, and with the line ending on the final comment (if
+        any) removed.  Blank/all-whitespace lines among the comments are
+        ignored.
+
+        The header comment can be changed by assigning to this property.
+        Assigning a string ``s`` causes everything before the first key-value
+        pair or timestamp comment to be replaced by the output of
+        ``to_comment(s)``.  Assigning `None` causes the header comment to be
+        deleted (also achievable with ``del pf.header_comment``).
+
+
+        >>> pf = PropertiesFile.loads('''\\
+        ... #This is a comment.
+        ...   ! This is also a comment.
+        ... #Tue Feb 25 19:13:27 EST 2020
+        ... key = value
+        ... zebra: apple
+        ... ''')
+        >>> pf.header_comment
+        'This is a comment.\\n This is also a comment.'
+        >>> pf.header_comment = 'New comment'
+        >>> print(pf.dumps(), end='')
+        #New comment
+        #Tue Feb 25 19:13:27 EST 2020
+        key = value
+        zebra: apple
+        >>> del pf.header_comment
+        >>> pf.header_comment is None
+        True
+        >>> print(pf.dumps(), end='')
+        #Tue Feb 25 19:13:27 EST 2020
+        key = value
+        zebra: apple
+        """
+        comments = []
+        for elem in self._lines:
+            if isinstance(elem, Whitespace):
+                pass
+            elif isinstance(elem, KeyValue):
+                break
+            else:
+                assert isinstance(elem, Comment)
+                if elem.is_timestamp():
+                    break
+                comments.append(elem.value)
+        if comments:
+            return '\n'.join(comments)
+        else:
+            return None
+
+    @header_comment.setter
+    def header_comment(self, value):
+        if value is None:
+            comments = []
+        else:
+            comments = [
+                Comment(c) for c in ascii_splitlines(to_comment(value) + '\n')
+            ]
+        while self._lines.start is not None:
+            n = self._lines.start
+            if isinstance(n.value, KeyValue) or \
+                    (isinstance(n.value, Comment) and n.value.is_timestamp()):
+                break
+            else:
+                n.unlink()
+        if self._lines.start is None:
+            for c in comments:
+                self._lines.append(c)
+        else:
+            n = self._lines.start
+            for c in comments:
+                n.insert_before(c)
+
+    @header_comment.deleter
+    def header_comment(self):
+        while self._lines.start is not None:
+            n = self._lines.start
+            if isinstance(n.value, KeyValue) or \
+                    (isinstance(n.value, Comment) and n.value.is_timestamp()):
+                break
+            else:
+                n.unlink()
