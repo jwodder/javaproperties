@@ -1,6 +1,7 @@
 from   __future__  import unicode_literals
 from   collections import namedtuple
 import re
+from   struct      import pack
 from   six         import binary_type, StringIO, BytesIO, text_type, unichr
 from   .util       import CONTINUED_RGX, ascii_splitlines
 
@@ -309,7 +310,12 @@ def _unesc(m):
 
 def _unsurrogate(m):
     c,d = map(ord, m.group())
-    return unichr(((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000)
+    uord = ((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000
+    try:
+        return unichr(uord)
+    except ValueError:
+        # Narrow Python build (only a thing pre-3.3)
+        return pack('i', uord).decode('utf-32')
 
 
 class InvalidUEscapeError(ValueError):

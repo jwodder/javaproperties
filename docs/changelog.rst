@@ -10,6 +10,7 @@ v0.7.0 (in development)
   strings
 - Gave `PropertiesFile` a settable `~PropertiesFile.timestamp` property
 - Gave `PropertiesFile` a settable `~PropertiesFile.header_comment` property
+- Handle unescaping surrogate pairs on narrow Python builds
 
 v0.6.0 (2020-02-28)
 -------------------
