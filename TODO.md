@@ -18,10 +18,6 @@ New Features
 - Add an equivalent of `parse()` for XML that can extract the comment?
 - Export `getproperties` and `setproperties` from `javaproperties-cli`?
 - `PropertiesFile`:
-    - Support getting, setting (including in `dump`), & deleting the timestamp
-        - Use the last timestamp-like line as the value of the timestamp when
-          getting but the first timestamp-like line for the location when
-          setting, like is done for repeated keys?
     - Support XML
     - Support getting, setting, & deleting individual comments
     - Support getting, setting, & deleting "header" (pre-timestamp,
@@ -30,12 +26,13 @@ New Features
     - Support concatenating two `PropertiesFile`s?
     - Add an option for preserving the separator used in the input when
       overwriting a key-value pair?
-    - Should instances stringify to their `dump` representations?
     - When setting a key's value, add a way to specify whether to take the
       place of the first occurrence of the key or the last
     - Add a method for reformatting in-place?
     - Add a method for deleting all but a given set of keys?
-- Should `Properties` instances stringify to their `dump` representations?
+    - Support setting the separator and `ensure_ascii` on a per-entry basis?
+    - Give `dump()` and `dumps()` an `ensure_ascii` argument for controlling
+      the charset of new key-value pairs?
 - Give `escape()` an option (named `is_value`? `escape_spaces`?) for
   controlling whether to perform the more minimal escaping used for values
   rather than keys

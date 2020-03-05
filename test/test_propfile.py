@@ -1,5 +1,7 @@
 from   __future__     import unicode_literals
 from   collections    import OrderedDict
+from   datetime       import datetime
+from   dateutil.tz    import tzstr
 import pytest
 from   javaproperties import PropertiesFile, dumps
 
@@ -655,5 +657,272 @@ def test_propfile_to_ordereddict():
         ("key", "value"),
         ("zebra", "apple"),
     ])
+
+@pytest.mark.parametrize('src,ts', [
+    ('', None),
+    ('#Thu Mar 16 17:06:52 EDT 2017\n', 'Thu Mar 16 17:06:52 EDT 2017'),
+    ('!Thu Mar 16 17:06:52 EDT 2017\n', 'Thu Mar 16 17:06:52 EDT 2017'),
+    ('\n \r#Thu Mar 16 17:06:52 EDT 2017\n', 'Thu Mar 16 17:06:52 EDT 2017'),
+    (INPUT, 'Thu Mar 16 17:06:52 EDT 2017'),
+    (
+        '# comment 1\n!comment 2\n# Thu Mar 16 17:06:52 EDT 2017\n',
+        'Thu Mar 16 17:06:52 EDT 2017',
+    ),
+    ('key=value\n#Thu Mar 16 17:06:52 EDT 2017\n', None),
+    (
+        '#Thu Mar 16 17:06:52 EDT 2017\n#Tue Feb 25 19:13:27 EST 2020\n',
+        'Thu Mar 16 17:06:52 EDT 2017',
+    ),
+])
+def test_propfile_get_timestamp(src, ts):
+    pf = PropertiesFile.loads(src)
+    pf._check()
+    assert pf.timestamp == ts
+
+@pytest.mark.parametrize('src,ts,ts2,result', [
+    (
+        '',
+        'Thu Mar 16 17:06:52 EDT 2017',
+        'Thu Mar 16 17:06:52 EDT 2017',
+        '#Thu Mar 16 17:06:52 EDT 2017\n',
+    ),
+    ('', None, None, ''),
+    ('', False, None, ''),
+    ('', '', None, '#\n'),
+    (
+        'key=value\n',
+        0,
+        'Wed Dec 31 19:00:00 EST 1969',
+        '#Wed Dec 31 19:00:00 EST 1969\nkey=value\n',
+    ),
+    (
+        'key=value\n',
+        1234567890,
+        'Fri Feb 13 18:31:30 EST 2009',
+        '#Fri Feb 13 18:31:30 EST 2009\nkey=value\n',
+    ),
+    (
+        'key=value\n',
+        datetime(2020, 3, 4, 15, 57, 41),
+        'Wed Mar 04 15:57:41 EST 2020',
+        '#Wed Mar 04 15:57:41 EST 2020\nkey=value\n',
+    ),
+    (
+        'key=value\n',
+        datetime(2020, 3, 4, 12, 57, 41,tzinfo=tzstr('PST8PDT,M4.1.0,M10.5.0')),
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Wed Mar 04 12:57:41 PST 2020\nkey=value\n',
+    ),
+    ('key=value\n', None, None, 'key=value\n'),
+    ('key=value\n', False, None, 'key=value\n'),
+    ('key=value\n', '', None, '#\nkey=value\n'),
+    ('key=value\n', 'Not a timestamp', None, '#Not a timestamp\nkey=value\n'),
+    ('key=value\n', 'Line 1\n', None, '#Line 1\n#\nkey=value\n'),
+    ('key=value\n', 'Line 1\nLine 2', None, '#Line 1\n#Line 2\nkey=value\n'),
+    ('key=value\n', 'Line 1\n#Line 2', None, '#Line 1\n#Line 2\nkey=value\n'),
+    ('key=value\n', 'Line 1\n!Line 2', None, '#Line 1\n!Line 2\nkey=value\n'),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        1234567890,
+        'Fri Feb 13 18:31:30 EST 2009',
+        '#Comment\n'
+        '#Fri Feb 13 18:31:30 EST 2009\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        None,
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        False,
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        '',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        'Not a timestamp',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Not a timestamp\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        'Line 1\n',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Line 1\n'
+        '#\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        'Line 1\nLine 2',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Line 1\n'
+        '#Line 2\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        'Line 1\n#Line 2',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Line 1\n'
+        '#Line 2\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '#Thu Mar 16 17:06:52 EDT 2017\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+        'Line 1\n!Line 2',
+        'Wed Mar 04 12:57:41 PST 2020',
+        '#Comment\n'
+        '#Line 1\n'
+        '!Line 2\n'
+        '#Comment 2\n'
+        '#Wed Mar 04 12:57:41 PST 2020\n'
+        'key=value\n',
+    ),
+    (
+        '#Comment\n'
+        '\n'
+        '#Comment 2\n'
+        'key=value\n',
+        1234567890,
+        'Fri Feb 13 18:31:30 EST 2009',
+        '#Comment\n'
+        '\n'
+        '#Comment 2\n'
+        '#Fri Feb 13 18:31:30 EST 2009\n'
+        'key=value\n',
+    ),
+])
+def test_propfile_set_timestamp(src, ts, ts2, result):
+    pf = PropertiesFile.loads(src)
+    pf._check()
+    pf.timestamp = ts
+    pf._check()
+    assert pf.timestamp == ts2
+    assert pf.dumps() == result
+
+def test_propfile_set_timestamp_now(fixed_timestamp):
+    pf = PropertiesFile.loads('key=value\n')
+    pf._check()
+    pf.timestamp = True
+    pf._check()
+    assert pf.timestamp == fixed_timestamp
+    assert pf.dumps() == '#' + fixed_timestamp + '\nkey=value\n'
+
+@pytest.mark.parametrize('src,ts2,result', [
+    ('', None, ''),
+    ('#Thu Mar 16 17:06:52 EDT 2017\n', None, ''),
+    ('\n \r#Thu Mar 16 17:06:52 EDT 2017\n', None, '\n \r'),
+    (
+        INPUT,
+        None,
+        '# A comment before the timestamp\n'
+        '# A comment after the timestamp\n'
+        'foo: first definition\n'
+        'bar=only definition\n'
+        '\n'
+        '# Comment between values\n'
+        '\n'
+        'key = value\n'
+        '\n'
+        'zebra \\\n'
+        '    apple\n'
+        'foo : second definition\n'
+        '\n'
+        '# Comment at end of file\n'
+    ),
+    (
+        '# comment 1\n!comment 2\n# Thu Mar 16 17:06:52 EDT 2017\n',
+        None,
+        '# comment 1\n!comment 2\n',
+    ),
+    (
+        'key=value\n#Thu Mar 16 17:06:52 EDT 2017\n',
+        None,
+        'key=value\n#Thu Mar 16 17:06:52 EDT 2017\n',
+    ),
+    (
+        '#Thu Mar 16 17:06:52 EDT 2017\n#Tue Feb 25 19:13:27 EST 2020\n',
+        'Tue Feb 25 19:13:27 EST 2020',
+        '#Tue Feb 25 19:13:27 EST 2020\n',
+    ),
+])
+def test_propfile_delete_timestamp(src, ts2, result):
+    pf = PropertiesFile.loads(src)
+    pf._check()
+    del pf.timestamp
+    pf._check()
+    assert pf.timestamp == ts2
+    assert pf.dumps() == result
 
 # preserving mixtures of line endings

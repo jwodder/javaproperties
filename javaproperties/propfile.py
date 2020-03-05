@@ -1,9 +1,9 @@
 from   __future__  import print_function
 from   collections import OrderedDict
 import six
-from   .reading    import KeyValue, loads, parse
-from   .util       import CONTINUED_RGX
-from   .writing    import join_key_value
+from   .reading    import Comment, KeyValue, loads, parse
+from   .util       import CONTINUED_RGX, LinkedList, ascii_splitlines
+from   .writing    import java_timestamp, join_key_value, to_comment
 
 if six.PY2:
     from collections     import Mapping, MutableMapping
@@ -51,10 +51,10 @@ class PropertiesFile(MutableMapping):
     """
 
     def __init__(self, mapping=None, **kwargs):
-        #: mapping from keys to list of line numbers
-        self._indices = OrderedDict()
-        #: mapping from line numbers to Comment/Whitespace/KeyValue objects
-        self._lines = OrderedDict()
+        #: mapping from keys to list of LinkedListNode's
+        self._key2nodes = OrderedDict()
+        #: linked list of PropertiesElement's in order of appearance in file
+        self._lines = LinkedList()
         if mapping is not None:
             self.update(mapping)
         self.update(kwargs)
@@ -64,19 +64,19 @@ class PropertiesFile(MutableMapping):
         Assert the internal consistency of the instance's data structures.
         This method is for debugging only.
         """
-        for k,ix in six.iteritems(self._indices):
+        for k,ns in six.iteritems(self._key2nodes):
             assert k is not None, 'null key'
-            assert ix, 'Key does not map to any indices'
-            assert ix == sorted(ix), "Key's indices are not in order"
-            for i in ix:
-                assert i in self._lines, 'Key index does not map to line'
-                assert isinstance(self._lines[i], KeyValue), 'Key maps to comment'
-                assert self._lines[i].key == k, 'Key does not map to itself'
-                assert self._lines[i].value is not None, 'Key has null value'
-        prev = None
-        for i, line in six.iteritems(self._lines):
-            assert prev is None or prev < i, 'Line indices out of order'
-            prev = i
+            assert ns, 'Key does not map to any nodes'
+            indices = []
+            for n in ns:
+                ix = self._lines.find_node(n)
+                assert ix is not None, 'Key has node not in line list'
+                indices.append(ix)
+                assert isinstance(n.value, KeyValue), 'Key maps to comment'
+                assert n.value.key == k, 'Key does not map to itself'
+                assert n.value.value is not None, 'Key has null value'
+            assert indices == sorted(indices), "Key's nodes are not in order"
+        for line in self._lines:
             if not isinstance(line, KeyValue):
                 assert line.source is not None, 'Comment source not stored'
                 assert loads(line.source) == {}, 'Comment source is not comment'
@@ -85,72 +85,69 @@ class PropertiesFile(MutableMapping):
                 if line.source is not None:
                     assert loads(line.source) == {line.key: line.value}, \
                         'Key source does not deserialize to itself'
-                assert line.key in self._indices, 'Key is missing from map'
-                assert i in self._indices[line.key], \
-                    'Key does not map to itself'
+                assert line.key in self._key2nodes, 'Key is missing from map'
+                assert any(line == n.value for n in self._key2nodes[line.key]),\
+                    'Key does not map to itself'  # pragma: no cover
 
     def __getitem__(self, key):
         if not isinstance(key, six.string_types):
             raise TypeError(_type_err)
-        return self._lines[self._indices[key][-1]].value
+        return self._key2nodes[key][-1].value.value
 
     def __setitem__(self, key, value):
         if not isinstance(key, six.string_types) or \
                 not isinstance(value, six.string_types):
             raise TypeError(_type_err)
         try:
-            ixes = self._indices[key]
+            nodes = self._key2nodes[key]
         except KeyError:
-            try:
-                lasti = next(reversed(self._lines))
-            except StopIteration:
-                ix = 0
-            else:
-                ix = lasti + 1
+            if self._lines.end is not None:
                 # We're adding a line to the end of the file, so make sure the
                 # line before it ends with a newline and (if it's not a
                 # comment) doesn't end with a trailing line continuation.
-                lastline = self._lines[lasti]
+                lastline = self._lines.end.value
                 if lastline.source is not None:
                     lastsrc = lastline.source
                     if isinstance(lastline, KeyValue):
                         lastsrc = CONTINUED_RGX.sub(r'\1', lastsrc)
                     if not lastsrc.endswith(('\r', '\n')):
                         lastsrc += '\n'
-                    self._lines[lasti] = lastline._replace(source=lastsrc)
+                    self._lines.end.value = lastline._replace(source=lastsrc)
+            n = self._lines.append(None)
         else:
             # Update the first occurrence of the key and discard the rest.
             # This way, the order in which the keys are listed in the file and
             # dict will be preserved.
-            ix = ixes.pop(0)
-            for i in ixes:
-                del self._lines[i]
-        self._indices[key] = [ix]
-        self._lines[ix] = KeyValue(key, value, None)
+            n = nodes.pop(0)
+            for n2 in nodes:
+                n2.unlink()
+        self._key2nodes[key] = [n]
+        n.value = KeyValue(key, value, None)
 
     def __delitem__(self, key):
         if not isinstance(key, six.string_types):
             raise TypeError(_type_err)
-        for i in self._indices.pop(key):
-            del self._lines[i]
+        for n in self._key2nodes.pop(key):
+            n.unlink()
 
     def __iter__(self):
-        return iter(self._indices)
+        return iter(self._key2nodes)
 
     def __reversed__(self):
-        return reversed(self._indices)
+        return reversed(self._key2nodes)
 
     def __len__(self):
-        return len(self._indices)
+        return len(self._key2nodes)
 
     def _comparable(self):
         return [
-            (line.key, line.value)
-                if isinstance(line, KeyValue)
-                else (None, line.source)
-            for i, line in six.iteritems(self._lines)
+            (n.value.key, n.value.value)
+                if isinstance(n.value, KeyValue)
+                else (None, n.value.source)
+            for n in self._lines.iternodes()
             ### TODO: Also include non-final repeated keys???
-            if not isinstance(line, KeyValue) or self._indices[line.key][-1]==i
+            if not isinstance(n.value, KeyValue)
+                or n is self._key2nodes[n.value.key][-1]
         ]
 
     def __eq__(self, other):
@@ -187,10 +184,10 @@ class PropertiesFile(MutableMapping):
             occurs in the input
         """
         obj = cls()
-        for i, kv in enumerate(parse(fp)):
-            if isinstance(kv, KeyValue):
-                obj._indices.setdefault(kv.key, []).append(i)
-            obj._lines[i] = kv
+        for elem in parse(fp):
+            n = obj._lines.append(elem)
+            if isinstance(elem, KeyValue):
+                obj._key2nodes.setdefault(elem.key, []).append(n)
         return obj
 
     @classmethod
@@ -247,8 +244,7 @@ class PropertiesFile(MutableMapping):
         :type separator: text string
         :return: `None`
         """
-        ### TODO: Support setting the timestamp
-        for line in six.itervalues(self._lines):
+        for line in self._lines:
             if line.source is None:
                 print(join_key_value(line.key, line.value, separator), file=fp)
             else:
@@ -288,8 +284,95 @@ class PropertiesFile(MutableMapping):
     def copy(self):
         """ Create a copy of the mapping, including formatting information """
         dup = type(self)()
-        dup._indices = OrderedDict(
-            (k, list(v)) for k,v in six.iteritems(self._indices)
-        )
-        dup._lines = self._lines.copy()
+        for elem in self._lines:
+            n = dup._lines.append(elem)
+            if isinstance(elem, KeyValue):
+                dup._key2nodes.setdefault(elem.key, []).append(n)
         return dup
+
+    @property
+    def timestamp(self):
+        """
+        .. versionadded:: 0.7.0
+
+        The value of the timestamp comment, with leading whitespace, comment
+        marker, and trailing newline removed.  The timestamp comment is the
+        first comment that appears to be a valid timestamp as produced by Java
+        8's ``Date.toString()`` and that does not come after any key-value
+        pairs; if there is no such comment, the value of this property is
+        `None`.
+
+        The timestamp can be changed by assigning to this property.  Assigning
+        a string ``s`` replaces the timestamp comment with the output of
+        ``to_comment(s)``; no check is made as to whether the result is a valid
+        timestamp comment.  Assigning `None` or `False` causes the timestamp
+        comment to be deleted (also achievable with ``del pf.timestamp``).
+        Assigning any other value ``x`` replaces the timestamp comment with the
+        output of ``to_comment(java_timestamp(x))``.
+
+        >>> pf = PropertiesFile.loads('''\\
+        ... #This is a comment.
+        ... #Tue Feb 25 19:13:27 EST 2020
+        ... key = value
+        ... zebra: apple
+        ... ''')
+        >>> pf.timestamp
+        'Tue Feb 25 19:13:27 EST 2020'
+        >>> pf.timestamp = 1234567890
+        >>> pf.timestamp
+        'Fri Feb 13 18:31:30 EST 2009'
+        >>> print(pf.dumps(), end='')
+        #This is a comment.
+        #Fri Feb 13 18:31:30 EST 2009
+        key = value
+        zebra: apple
+        >>> del pf.timestamp
+        >>> pf.timestamp is None
+        True
+        >>> print(pf.dumps(), end='')
+        #This is a comment.
+        key = value
+        zebra: apple
+        """
+        for elem in self._lines:
+            if isinstance(elem, Comment) and elem.is_timestamp():
+                return elem.value
+            elif isinstance(elem, KeyValue):
+                return None
+        return None
+
+    @timestamp.setter
+    def timestamp(self, value):
+        if value is not None and value is not False:
+            if not isinstance(value, six.string_types):
+                value = java_timestamp(value)
+            comments = [
+                Comment(c) for c in ascii_splitlines(to_comment(value) + '\n')
+            ]
+        else:
+            comments = []
+        for n in self._lines.iternodes():
+            if isinstance(n.value, Comment) and n.value.is_timestamp():
+                if comments:
+                    n.value = comments[0]
+                    for c in comments[1:]:
+                        n = n.insert_after(c)
+                else:
+                    n.unlink()
+                return
+            elif isinstance(n.value, KeyValue):
+                for c in comments:
+                    n.insert_before(c)
+                return
+        else:
+            for c in comments:
+                self._lines.append(c)
+
+    @timestamp.deleter
+    def timestamp(self):
+        for n in self._lines.iternodes():
+            if isinstance(n.value, Comment) and n.value.is_timestamp():
+                n.unlink()
+                return
+            elif isinstance(n.value, KeyValue):
+                return

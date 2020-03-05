@@ -122,10 +122,7 @@ class Comment(PropertiesElement, namedtuple('Comment', 'source')):
     def is_timestamp(self):
         """
         Returns `True` iff the comment's value appears to be a valid timestamp
-        as produced by |date_tostring2|_
-
-        .. |date_tostring2| replace:: Java 8's ``Date.toString()``
-        .. _date_tostring2: https://docs.oracle.com/javase/8/docs/api/java/util/Date.html#toString--
+        as produced by Java 8's ``Date.toString()``
         """
         return bool(TIMESTAMP_RGX.match(self.source))
 

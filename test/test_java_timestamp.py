@@ -2,7 +2,6 @@ from   __future__     import unicode_literals
 from   datetime       import datetime
 import platform
 import sys
-import time
 from   dateutil.tz    import tzstr
 import pytest
 from   javaproperties import java_timestamp
@@ -137,10 +136,8 @@ def test_java_timestamp(ts, s):
 def test_java_timestamp_fold(ts, fold, s):
     assert java_timestamp(ts.replace(fold=fold)) == s
 
-def test_java_timestamp_now(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
-    assert java_timestamp() == 'Mon Nov 07 15:29:40 EST 2016'
-    time.localtime.assert_called_once_with(None)
+def test_java_timestamp_now(fixed_timestamp):
+    assert java_timestamp() == fixed_timestamp
 
 def test_java_timestamp_dogfood_type_error():
     with pytest.raises(TypeError) as excinfo:

@@ -1,5 +1,4 @@
 from   __future__     import unicode_literals
-import time
 import pytest
 from   six            import PY2, BytesIO, StringIO
 from   javaproperties import Properties, dumps
@@ -42,16 +41,14 @@ XML_INPUT = '''\
 </properties>
 '''
 
-def test_propclass_empty(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
+def test_propclass_empty(fixed_timestamp):
     p = Properties()
     assert len(p) == 0
     assert not bool(p)
     assert dict(p) == {}
     s = StringIO()
     p.store(s)
-    assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\n'
-    time.localtime.assert_called_once_with(None)
+    assert s.getvalue() == '#' + fixed_timestamp + '\n'
 
 def test_propclass_load():
     p = Properties()
@@ -524,8 +521,7 @@ def test_propclass_defaults_setitem_new_override():
     assert dict(p) == {"key": "value", "apple": "zebra", "horse": "pony"}
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
-def test_propclass_empty_setitem(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
+def test_propclass_empty_setitem(fixed_timestamp):
     p = Properties()
     p["key"] = "value"
     assert len(p) == 1
@@ -533,34 +529,27 @@ def test_propclass_empty_setitem(mocker):
     assert dict(p) == {"key": "value"}
     s = StringIO()
     p.store(s)
-    assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
-    time.localtime.assert_called_once_with(None)
+    assert s.getvalue() == '#' + fixed_timestamp + '\nkey=value\n'
 
-def test_propclass_store(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
+def test_propclass_store(fixed_timestamp):
     p = Properties({"key": "value"})
     s = StringIO()
     p.store(s)
-    assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
-    time.localtime.assert_called_once_with(None)
+    assert s.getvalue() == '#' + fixed_timestamp + '\nkey=value\n'
 
-def test_propclass_store_comment(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
+def test_propclass_store_comment(fixed_timestamp):
     p = Properties({"key": "value"})
     s = StringIO()
     p.store(s, comments='Testing')
     assert s.getvalue() == \
-        '#Testing\n#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
-    time.localtime.assert_called_once_with(None)
+        '#Testing\n#' + fixed_timestamp + '\nkey=value\n'
 
-def test_propclass_store_defaults(mocker):
-    mocker.patch('time.localtime', return_value=time.localtime(1478550580))
+def test_propclass_store_defaults(fixed_timestamp):
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value"}, defaults=defs)
     s = StringIO()
     p.store(s)
-    assert s.getvalue() == '#Mon Nov 07 15:29:40 EST 2016\nkey=value\n'
-    time.localtime.assert_called_once_with(None)
+    assert s.getvalue() == '#' + fixed_timestamp + '\nkey=value\n'
 
 def test_propclass_storeToXML():
     p = Properties({"key": "value"})
