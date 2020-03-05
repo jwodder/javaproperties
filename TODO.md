@@ -20,8 +20,6 @@ New Features
 - `PropertiesFile`:
     - Support XML
     - Support getting, setting, & deleting individual comments
-    - Support getting, setting, & deleting "header" (pre-timestamp,
-      pre-entries) comments
     - Support inserting key-value pairs at specific locations?
     - Support concatenating two `PropertiesFile`s?
     - Add an option for preserving the separator used in the input when

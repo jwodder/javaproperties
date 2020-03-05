@@ -98,6 +98,10 @@ def itemize(kvs, sort_keys=False):
     return items
 
 def ascii_splitlines(s):
+    """
+    Like `str.splitlines(True)`, except it only treats LF, CR LF, and CR as
+    line endings
+    """
     lines = []
     lastend = 0
     for m in EOL_RGX.finditer(s):

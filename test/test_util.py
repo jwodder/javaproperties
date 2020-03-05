@@ -1,4 +1,5 @@
-from javaproperties.util import LinkedList
+import pytest
+from   javaproperties.util import ascii_splitlines, LinkedList
 
 def test_linkedlist_empty():
     ll = LinkedList()
@@ -253,3 +254,22 @@ def test_linked_list_insert_after_last():
     assert n3.next is nx
     assert nx.prev is n3
     assert nx.next is None
+
+@pytest.mark.parametrize('s,lines', [
+    ('', []),
+    ('foobar', ['foobar']),
+    ('foo\n', ['foo\n']),
+    ('foo\r', ['foo\r']),
+    ('foo\r\n', ['foo\r\n']),
+    ('foo\n\r', ['foo\n', '\r']),
+    ('foo\nbar', ['foo\n', 'bar']),
+    ('foo\rbar', ['foo\r', 'bar']),
+    ('foo\r\nbar', ['foo\r\n', 'bar']),
+    ('foo\n\rbar', ['foo\n', '\r', 'bar']),
+    (
+        'Why\vare\fthere\x1Cso\x1Ddang\x1Emany\x85line\u2028separator\u2029characters?',
+        ['Why\vare\fthere\x1Cso\x1Ddang\x1Emany\x85line\u2028separator\u2029characters?'],
+    ),
+])
+def test_ascii_splitlines(s, lines):
+    assert ascii_splitlines(s) == lines
