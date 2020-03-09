@@ -3,8 +3,8 @@
 Changelog
 =========
 
-v0.7.0 (in development)
------------------------
+v0.7.0 (2020-03-09)
+-------------------
 - `parse()` now accepts strings as input
 - **Breaking**: `parse()` now returns a generator of custom objects instead of
   triples of strings
