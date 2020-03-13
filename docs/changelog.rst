@@ -3,6 +3,10 @@
 Changelog
 =========
 
+v0.8.0 (in development)
+-----------------------
+- Drop support for Python 3.4
+
 v0.7.0 (2020-03-09)
 -------------------
 - `parse()` now accepts strings as input
