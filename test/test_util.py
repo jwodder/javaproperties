@@ -1,5 +1,5 @@
 import pytest
-from   javaproperties.util import ascii_splitlines, LinkedList
+from   javaproperties.util import LinkedList, ascii_splitlines
 
 def test_linkedlist_empty():
     ll = LinkedList()

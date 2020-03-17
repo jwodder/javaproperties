@@ -2,7 +2,7 @@
 from   six       import PY2, string_types
 from   .reading  import load
 from   .writing  import dump
-from   .xmlprops import load_xml, dump_xml
+from   .xmlprops import dump_xml, load_xml
 
 if PY2:
     from collections     import Mapping, MutableMapping

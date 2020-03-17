@@ -2,7 +2,7 @@ from   __future__  import unicode_literals
 from   collections import namedtuple
 import re
 from   struct      import pack
-from   six         import binary_type, StringIO, BytesIO, text_type, unichr
+from   six         import BytesIO, StringIO, binary_type, text_type, unichr
 from   .util       import CONTINUED_RGX, ascii_splitlines
 
 def load(fp, object_pairs_hook=dict):

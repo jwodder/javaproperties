@@ -1,6 +1,6 @@
 from   __future__     import unicode_literals
 import pytest
-from   six            import PY2, BytesIO, StringIO
+from   six            import BytesIO, PY2, StringIO
 from   javaproperties import Properties, dumps
 
 if PY2:
