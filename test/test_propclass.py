@@ -1,4 +1,5 @@
 from   __future__     import unicode_literals
+import sys
 import pytest
 from   six            import BytesIO, PY2, StringIO
 from   javaproperties import Properties, dumps
@@ -595,7 +596,13 @@ def test_propclass_dumps_function():
 @pytest.mark.parametrize('data', [
     {},
     {"foo": "bar"},
-    {"foo": "bar", "key": "value"},
+    pytest.param(
+        {"foo": "bar", "key": "value"},
+        marks=pytest.mark.skipif(
+            sys.version_info[:2] < (3,6),
+            reason='dict reprs appear to be completely unstable pre-3.6',
+        ),
+    ),
 ])
 @pytest.mark.parametrize('defaults', [
     None,
