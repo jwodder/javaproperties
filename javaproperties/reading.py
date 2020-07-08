@@ -230,13 +230,13 @@ def parse(src):
     else:
         def lineiter():
             while True:
-                ln = src.readline()
-                if isinstance(ln, binary_type):
-                    ln = ln.decode('iso-8859-1')
-                if ln == '':
+                line = src.readline()
+                if isinstance(line, binary_type):
+                    line = line.decode('iso-8859-1')
+                if line == '':
                     return
-                for l in ascii_splitlines(ln):
-                    yield l
+                for ln in ascii_splitlines(line):
+                    yield ln
         liter = lineiter()
     for source in liter:
         line = source
