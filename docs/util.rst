@@ -43,13 +43,13 @@ sequences instead of raising an error.
 
 Note that the hexadecimal value used in a ``\uXXXX`` escape sequences is always
 based on the source character's codepoint value in Unicode regardless of the
-target encoding::
+target encoding:
 
-    >>> # Here we see one character encoded to the byte 0x00f0 (because that's
-    >>> # how the target encoding represents it) and a completely different
-    >>> # character encoded as the escape sequence \u00f0 (because that's its
-    >>> # value in Unicode):
-    >>> 'apple: \uF8FF; edh: \xF0'.encode('mac_roman', 'javapropertiesreplace')
-    b'apple: \xf0; edh: \\u00f0'
+>>> # Here we see one character encoded to the byte 0x00f0 (because that's
+>>> # how the target encoding represents it) and a completely different
+>>> # character encoded as the escape sequence \u00f0 (because that's its
+>>> # value in Unicode):
+>>> 'apple: \uF8FF; edh: \xF0'.encode('mac_roman', 'javapropertiesreplace')
+b'apple: \xf0; edh: \\u00f0'
 
 .. autofunction:: javapropertiesreplace_errors
