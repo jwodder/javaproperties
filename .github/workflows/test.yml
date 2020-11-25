@@ -33,10 +33,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
-          python -m pip install --upgrade --upgrade-strategy=eager tox
+          python -m pip install --upgrade --upgrade-strategy=eager coverage tox
 
       - name: Run tests
-        run: tox -e py -- --cov-report=xml
+        run: tox -e py
+
+      - name: Generate XML coverage report
+        run: coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
