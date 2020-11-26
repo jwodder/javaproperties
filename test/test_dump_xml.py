@@ -1,6 +1,5 @@
-from   __future__     import unicode_literals
+from   io             import BytesIO
 import pytest
-from   six            import BytesIO
 from   javaproperties import dump_xml
 
 # The only thing special about `dump_xml` compared to `dumps_xml` is encoding,

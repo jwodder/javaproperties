@@ -1,16 +1,11 @@
+from   collections.abc import Mapping
 import re
-from   six import PY2
-
-if PY2:
-    from collections     import Mapping
-else:
-    from collections.abc import Mapping
 
 CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\\r?\n?\Z')
 
 EOL_RGX = re.compile(r'\r\n?|\n')
 
-class LinkedList(object):
+class LinkedList:
     def __init__(self):
         self.start = None
         self.end = None
@@ -42,7 +37,7 @@ class LinkedList(object):
         return None
 
 
-class LinkedListNode(object):
+class LinkedListNode:
     def __init__(self, value, lst):
         self.value = value
         self.lst = lst

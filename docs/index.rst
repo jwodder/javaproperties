@@ -31,12 +31,6 @@ Previous versions of `javaproperties` included command-line programs for
 basic manipulation of ``.properties`` files.  As of version 0.4.0, these
 programs have been split off into a separate package, |clipkg|_.
 
-.. note::
-
-    Throughout the documentation, "text string" means a Unicode character
-    string — |unicode|_ in Python 2, `str` in Python 3.
-
-
 Installation
 ============
 

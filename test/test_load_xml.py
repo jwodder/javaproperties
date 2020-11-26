@@ -1,6 +1,5 @@
-from   __future__     import unicode_literals
+from   io             import BytesIO
 import pytest
-from   six            import BytesIO
 from   javaproperties import load_xml
 
 # The only thing special about `load_xml` compared to `loads_xml` is encoding,

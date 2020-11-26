@@ -1,8 +1,6 @@
-from   __future__  import unicode_literals
 from   collections import namedtuple
+from   io          import BytesIO, StringIO
 import re
-from   struct      import pack
-from   six         import BytesIO, StringIO, binary_type, text_type, unichr
 from   .util       import CONTINUED_RGX, ascii_splitlines
 
 def load(fp, object_pairs_hook=dict):
@@ -66,7 +64,7 @@ def loads(s, object_pairs_hook=dict):
     :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
         occurs in the input
     """
-    fp = BytesIO(s) if isinstance(s, binary_type) else StringIO(s)
+    fp = BytesIO(s) if isinstance(s, bytes) else StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
 
 TIMESTAMP_RGX = re.compile(
@@ -80,7 +78,7 @@ TIMESTAMP_RGX = re.compile(
     r'[ \t\f]*\r?\n?\Z'
 )
 
-class PropertiesElement(object):
+class PropertiesElement:
     """
     .. versionadded:: 0.7.0
 
@@ -208,7 +206,6 @@ def parse(src):
     (with or without universal newlines enabled).  Bytes input is decoded as
     Latin-1.
 
-
     .. versionchanged:: 0.5.0
         Invalid ``\\uXXXX`` escape sequences will now cause an
         `InvalidUEscapeError` to be raised
@@ -223,15 +220,15 @@ def parse(src):
     :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
         occurs in the input
     """
-    if isinstance(src, binary_type):
+    if isinstance(src, bytes):
         liter = iter(ascii_splitlines(src.decode('iso-8859-1')))
-    elif isinstance(src, text_type):
+    elif isinstance(src, str):
         liter = iter(ascii_splitlines(src))
     else:
         def lineiter():
             while True:
                 line = src.readline()
-                if isinstance(line, binary_type):
+                if isinstance(line, bytes):
                     line = line.decode('iso-8859-1')
                 if line == '':
                     return
@@ -287,9 +284,8 @@ def unescape(field):
         Invalid ``\\uXXXX`` escape sequences will now cause an
         `InvalidUEscapeError` to be raised
 
-    :param field: the string to decode
-    :type field: text string
-    :rtype: text string
+    :param str field: the string to decode
+    :rtype: str
     :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
         occurs in the input
     """
@@ -304,18 +300,14 @@ def _unesc(m):
             # We can't rely on `int` failing, because it succeeds when `esc`
             # has trailing whitespace or a leading minus.
             raise InvalidUEscapeError('\\' + esc)
-        return unichr(int(esc[1:], 16))
+        return chr(int(esc[1:], 16))
     else:
         return _unescapes.get(esc, esc)
 
 def _unsurrogate(m):
     c,d = map(ord, m.group())
     uord = ((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000
-    try:
-        return unichr(uord)
-    except ValueError:
-        # Narrow Python build (only a thing pre-3.3)
-        return pack('i', uord).decode('utf-32')
+    return chr(uord)
 
 
 class InvalidUEscapeError(ValueError):
@@ -330,7 +322,6 @@ class InvalidUEscapeError(ValueError):
     def __init__(self, escape):
         #: The invalid ``\uXXXX`` escape sequence encountered
         self.escape = escape
-        super(InvalidUEscapeError, self).__init__(escape)
 
     def __str__(self):
         return 'Invalid \\u escape sequence: ' + self.escape

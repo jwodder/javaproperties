@@ -1,9 +1,7 @@
-from   __future__     import unicode_literals
 from   collections    import OrderedDict
 from   datetime       import datetime
 from   dateutil.tz    import tzoffset
 import pytest
-from   six            import unichr
 from   javaproperties import dumps, to_comment
 
 @pytest.mark.parametrize('d,s', [
@@ -150,8 +148,8 @@ def test_dumps_no_ensure_ascii(d,s):
     '\u2603',
     '\U0001F410',
     '\uDC10\uD83D',
-    ''.join(unichr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
-                      if i not in (10, 13)),
+    ''.join(chr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
+                   if i not in (10, 13)),
 ])
 @pytest.mark.parametrize('ensure_ascii_comments', [None, True, False])
 def test_dumps_comments(c, ensure_ascii_comments):

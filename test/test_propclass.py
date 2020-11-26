@@ -1,13 +1,8 @@
-from   __future__     import unicode_literals
+from   collections.abc import Iterator
+from   io              import BytesIO, StringIO
 import sys
 import pytest
-from   six            import BytesIO, PY2, StringIO
-from   javaproperties import Properties, dumps
-
-if PY2:
-    from collections     import Iterator
-else:
-    from collections.abc import Iterator
+from   javaproperties  import Properties, dumps
 
 # Making the global INPUT object a StringIO would cause it be exhausted after
 # the first test and thereafter appear to be empty.  Thus, a new StringIO must

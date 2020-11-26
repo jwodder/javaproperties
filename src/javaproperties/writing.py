@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-from   __future__ import print_function, unicode_literals
-from   datetime   import datetime
+from   datetime import datetime
+from   io       import StringIO
 import numbers
 import re
 import time
-from   six        import StringIO
-from   .util      import itemize
+from   .util    import itemize
 
 def dump(props, fp, separator='=', comments=None, timestamp=True,
          sort_keys=False, ensure_ascii=True, ensure_ascii_comments=None):
@@ -17,17 +15,16 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
         ``ensure_ascii`` and ``ensure_ascii_comments`` parameters added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
-        ``fp``.  All keys and values in ``props`` must be text strings.  If
+        ``fp``.  All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: A file-like object to write the values of ``props`` to.  It must
         have been opened as a text file.
-    :param separator: The string to use for separating keys & values.  Only
+    :param str separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
-    :type separator: text string
     :param comments: if non-`None`, ``comments`` will be written to ``fp`` as a
         comment before any other content
-    :type comments: text string or `None`
+    :type comments: str or None
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 02 14:00:54 EDT 2016`` is written as a comment to ``fp``
         after ``comments`` (if any) and before the key-value pairs.  If
@@ -60,22 +57,21 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
 def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
           ensure_ascii=True, ensure_ascii_comments=None):
     """
-    Convert a series of key-value pairs to a text string in simple
-    line-oriented ``.properties`` format.
+    Convert a series of key-value pairs to a `str` in simple line-oriented
+    ``.properties`` format.
 
     .. versionchanged:: 0.6.0
         ``ensure_ascii`` and ``ensure_ascii_comments`` parameters added
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
-        All keys and values in ``props`` must be text strings.  If
+        All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
-    :param separator: The string to use for separating keys & values.  Only
+    :param str separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
-    :type separator: text string
     :param comments: if non-`None`, ``comments`` will be output as a comment
         before any other content
-    :type comments: text string or `None`
+    :type comments: str or None
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 02 14:00:54 EDT 2016`` is output as a comment after
         ``comments`` (if any) and before the key-value pairs.  If ``timestamp``
@@ -121,13 +117,12 @@ def to_comment(comment, ensure_ascii=None):
     .. versionchanged:: 0.6.0
         ``ensure_ascii`` parameter added
 
-    :param comment: the string to convert to a comment
-    :type comment: text string
+    :param str comment: the string to convert to a comment
     :param ensure_ascii: if true, all non-ASCII characters will be replaced
         with ``\\uXXXX`` escape sequences in the output; if `None`, only
         non-Latin-1 characters will be escaped; if false, no characters will be
         escaped
-    :rtype: text string
+    :rtype: str
     """
     comment = NON_N_EOL_RGX.sub('\n', comment)
     comment = NEWLINE_OLD_COMMENT_RGX.sub('\n#', comment)
@@ -148,14 +143,11 @@ def join_key_value(key, value, separator='=', ensure_ascii=True):
     .. versionchanged:: 0.6.0
         ``ensure_ascii`` parameter added
 
-    :param key: the key
-    :type key: text string
-    :param value: the value
-    :type value: text string
-    :param separator: the string to use for separating the key & value.  Only
-        ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
-        ever be used as the separator.
-    :type separator: text string
+    :param str key: the key
+    :param str value: the value
+    :param str separator: the string to use for separating the key & value.
+        Only ``" "``, ``"="``, and ``":"`` (possibly with added whitespace)
+        should ever be used as the separator.
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
@@ -198,7 +190,7 @@ def _to_u_escape(c):
             0xDC00 + (c & 0x3FF)
         )
     else:
-        return '\\u{0:04x}'.format(c)
+        return f'\\u{c:04x}'
 
 NEEDS_ESCAPE_ASCII_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
 NEEDS_ESCAPE_UNICODE_RGX = re.compile(r'[\x00-\x1F\x7F]|[\\#!=:]')
@@ -219,12 +211,11 @@ def escape(field, ensure_ascii=True):
     .. versionchanged:: 0.6.0
         ``ensure_ascii`` parameter added
 
-    :param field: the string to escape
-    :type field: text string
+    :param str field: the string to escape
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
-    :rtype: text string
+    :rtype: str
     """
     return _base_escape(field, ensure_ascii=ensure_ascii).replace(' ', r'\ ')
 
@@ -258,7 +249,7 @@ def java_timestamp(timestamp=True):
 
     :param timestamp: the date & time to display
     :type timestamp: `None`, `bool`, number, or `datetime.datetime`
-    :rtype: text string
+    :rtype: str
 
     .. |date_tostring| replace:: Java 8's ``Date.toString()``
     .. _date_tostring: https://docs.oracle.com/javase/8/docs/api/java/util/Date.html#toString--
@@ -273,29 +264,13 @@ def java_timestamp(timestamp=True):
         if timestamp is True:
             timestamp = None
         elif isinstance(timestamp, datetime):
-            try:
-                # Use `datetime.timestamp()` if it's available, as it (unlike
-                # `datetime.timetuple()`) takes `fold` into account for naïve
-                # datetimes
-                timestamp = timestamp.timestamp()
-            except AttributeError:  # Pre-Python 3.3
-                # Mapping `timetuple` through `mktime` and `localtime` is
-                # necessary for determining whether DST is in effect (which, in
-                # turn, is necessary for determining which timezone name to
-                # use).  The only downside to using standard functions instead
-                # of `python-dateutil` is that `mktime`, apparently, handles
-                # times duplicated by DST non-deterministically (cf.
-                # <https://git.io/vixsE>), but there's no right way to deal
-                # with those anyway, so...
-                timestamp = time.mktime(timestamp.timetuple())
+            # Use `datetime.timestamp()`, as it (unlike `datetime.timetuple()`)
+            # takes `fold` into account for naïve datetimes.
+            timestamp = timestamp.timestamp()
         elif not isinstance(timestamp, numbers.Number):
             raise TypeError('Timestamp must be number or datetime.datetime')
         timebits = time.localtime(timestamp)
-        try:
-            tzname = timebits.tm_zone
-        except AttributeError:
-            # This assumes that `time.tzname` is meaningful/useful.
-            tzname = time.tzname[timebits.tm_isdst > 0]
+        tzname = timebits.tm_zone
     assert 1 <= timebits.tm_mon <= 12, 'invalid month'
     assert 0 <= timebits.tm_wday <= 6, 'invalid day of week'
     return '{wday} {mon} {t.tm_mday:02d}' \

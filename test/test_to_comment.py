@@ -1,11 +1,9 @@
-from   __future__     import unicode_literals
 import pytest
-from   six            import unichr
 from   javaproperties import to_comment
 
 # All C0 and C1 control characters other than \n and \r:
-s = ''.join(unichr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
-                      if i not in (10, 13))
+s = ''.join(chr(i) for i in list(range(0x20)) + list(range(0x7F, 0xA0))
+                   if i not in (10, 13))
 
 @pytest.mark.parametrize('cin,cout', [
     ('', '#'),
@@ -140,7 +138,7 @@ def test_to_comment_no_ensure_ascii(cin, cout):
     ('\uDC10\uD83D', '#\\udc10\\ud83d'),
     (
         s,
-        '#' + ''.join(unichr(i) for i in list(range(0x20)) + [0x7F]
+        '#' + ''.join(chr(i) for i in list(range(0x20)) + [0x7F]
                       if i not in (10, 13))
             + ''.join('\\u{0:04x}'.format(i) for i in range(0x80, 0xA0)),
     ),

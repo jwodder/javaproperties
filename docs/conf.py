@@ -33,14 +33,6 @@ default_role = 'py:obj'
 pygments_style = 'sphinx'
 todo_include_todos = True
 
-rst_epilog = '''
-.. |py2str| replace:: `!str`
-.. _py2str: https://docs.python.org/2/library/functions.html#str
-
-.. |unicode| replace:: `unicode`
-.. _unicode: https://docs.python.org/2/library/functions.html#unicode
-'''
-
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     "collapse_navigation": False,

@@ -1,4 +1,3 @@
-from   __future__            import print_function, unicode_literals
 import codecs
 import xml.etree.ElementTree as ET
 from   xml.sax.saxutils      import escape, quoteattr
@@ -12,7 +11,7 @@ def load_xml(fp, object_pairs_hook=dict):
     Beyond basic XML well-formedness, `load_xml` only checks that the root
     element is named "``properties``" and that all of its ``<entry>`` children
     have ``key`` attributes.  No further validation is performed; if any
-    ``<entry>``\ s happen to contain nested tags, the behavior is undefined.
+    ``<entry>``\s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``fp`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of
@@ -21,13 +20,6 @@ def load_xml(fp, object_pairs_hook=dict):
     generator of ``(key, value)`` pairs representing the key-value entries in
     ``fp`` (including duplicates) in order of occurrence.  `load_xml` will then
     return the value returned by ``object_pairs_hook``.
-
-    .. note::
-
-        This uses `xml.etree.ElementTree` for parsing, which does not have
-        decent support for |unicode|_ input in Python 2.  Files containing
-        non-ASCII characters need to be opened in binary mode in Python 2,
-        while Python 3 accepts both binary and text input.
 
     :param fp: the file from which to read the XML properties document
     :type fp: file-like object
@@ -48,7 +40,7 @@ def loads_xml(s, object_pairs_hook=dict):
     Beyond basic XML well-formedness, `loads_xml` only checks that the root
     element is named "``properties``" and that all of its ``<entry>`` children
     have ``key`` attributes.  No further validation is performed; if any
-    ``<entry>``\ s happen to contain nested tags, the behavior is undefined.
+    ``<entry>``\s happen to contain nested tags, the behavior is undefined.
 
     By default, the key-value pairs extracted from ``s`` are combined into a
     `dict` with later occurrences of a key overriding previous occurrences of
@@ -58,15 +50,8 @@ def loads_xml(s, object_pairs_hook=dict):
     ``s`` (including duplicates) in order of occurrence.  `loads_xml` will then
     return the value returned by ``object_pairs_hook``.
 
-    .. note::
-
-        This uses `xml.etree.ElementTree` for parsing, which does not have
-        decent support for |unicode|_ input in Python 2.  Strings containing
-        non-ASCII characters need to be encoded as bytes in Python 2 (Use
-        either UTF-8 or UTF-16 if the XML document does not contain an encoding
-        declaration), while Python 3 accepts both binary and text input.
-
-    :param string s: the string from which to read the XML properties document
+    :param s: the string from which to read the XML properties document
+    :type s: str or bytes
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` or the return value of ``object_pairs_hook``
@@ -92,15 +77,15 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     declaration and a doctype declaration.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
-        ``fp``.  All keys and values in ``props`` must be text strings.  If
+        ``fp``.  All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
     :param fp: a file-like object to write the values of ``props`` to
     :type fp: binary file-like object
     :param comment: if non-`None`, ``comment`` will be output as a
         ``<comment>`` element before the ``<entry>`` elements
-    :type comment: text string or `None`
-    :param string encoding: the name of the encoding to use for the XML
-        document (also included in the XML declaration)
+    :type comment: str or None
+    :param str encoding: the name of the encoding to use for the XML document
+        (also included in the XML declaration)
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
     :return: `None`
@@ -113,19 +98,19 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
 
 def dumps_xml(props, comment=None, sort_keys=False):
     """
-    Convert a series ``props`` of key-value pairs to a text string containing
-    an XML properties document.  The document will include a doctype
-    declaration but not an XML declaration.
+    Convert a series ``props`` of key-value pairs to a `str` containing an XML
+    properties document.  The document will include a doctype declaration but
+    not an XML declaration.
 
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
-        All keys and values in ``props`` must be text strings.  If
+        All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
     :param comment: if non-`None`, ``comment`` will be output as a
         ``<comment>`` element before the ``<entry>`` elements
-    :type comment: text string or `None`
+    :type comment: str or None
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
-    :rtype: text string
+    :rtype: str
     """
     return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
 

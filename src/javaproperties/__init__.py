@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Read & write Java .properties files
 

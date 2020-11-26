@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-from   six       import PY2, string_types
-from   .reading  import load
-from   .writing  import dump
-from   .xmlprops import dump_xml, load_xml
+from collections.abc import Mapping, MutableMapping
+from .reading        import load
+from .writing        import dump
+from .xmlprops       import dump_xml, load_xml
 
-if PY2:
-    from collections     import Mapping, MutableMapping
-else:
-    from collections.abc import Mapping, MutableMapping
 
 _type_err = 'Keys & values of Properties instances must be strings'
 
@@ -16,9 +11,9 @@ class Properties(MutableMapping):
     A port of |java8properties|_ that tries to match its behavior as much as is
     Pythonically possible.  `Properties` behaves like a normal
     `~collections.abc.MutableMapping` class (i.e., you can do ``props[key] =
-    value`` and so forth), except that it may only be used to store strings
-    (|py2str|_ and |unicode|_ in Python 2; just `str` in Python 3).  Attempts
-    to use a non-string object as a key or value will produce a `TypeError`.
+    value`` and so forth), except that it may only be used to store `str`
+    values.  Attempts to use a non-string object as a key or value will produce
+    a `TypeError`.
 
     Two `Properties` instances compare equal iff both their key-value pairs and
     :attr:`defaults` attributes are equal.  When comparing a `Properties`
@@ -26,7 +21,7 @@ class Properties(MutableMapping):
     considered.
 
     .. versionchanged:: 0.5.0
-         `Properties` instances can now compare equal to `dict`\\ s and other
+         `Properties` instances can now compare equal to `dict`\\s and other
          mapping types
 
     :param data: A mapping or iterable of ``(key, value)`` pairs with which to
@@ -52,18 +47,17 @@ class Properties(MutableMapping):
             self.update(data)
 
     def __getitem__(self, key):
-        if not isinstance(key, string_types):
+        if not isinstance(key, str):
             raise TypeError(_type_err)
         return self.data[key]
 
     def __setitem__(self, key, value):
-        if not isinstance(key, string_types) or \
-                not isinstance(value, string_types):
+        if not isinstance(key, str) or not isinstance(value, str):
             raise TypeError(_type_err)
         self.data[key] = value
 
     def __delitem__(self, key):
-        if not isinstance(key, string_types):
+        if not isinstance(key, str):
             raise TypeError(_type_err)
         del self.data[key]
 
@@ -85,9 +79,6 @@ class Properties(MutableMapping):
         else:
             return NotImplemented
 
-    def __ne__(self, other):
-        return not (self == other)
-
     def getProperty(self, key, defaultValue=None):
         """
         Fetch the value associated with the key ``key`` in the `Properties`
@@ -96,11 +87,10 @@ class Properties(MutableMapping):
         the next `defaults` is `None`, in which case `defaultValue` is
         returned.
 
-        :param key: the key to look up the value of
-        :type key: text string
+        :param str key: the key to look up the value of
         :param defaultValue: the value to return if ``key`` is not found in the
             `Properties` instance
-        :rtype: text string (if ``key`` was found)
+        :rtype: str (if ``key`` was found)
         :raises TypeError: if ``key`` is not a string
         """
         try:
@@ -136,7 +126,7 @@ class Properties(MutableMapping):
     def propertyNames(self):
         r"""
         Returns a generator of all distinct keys in the `Properties` instance
-        and its `defaults` (and its `defaults`\ ’s `defaults`, etc.) in
+        and its `defaults` (and its `defaults`\’s `defaults`, etc.) in
         unspecified order
 
         :rtype: generator of text strings
@@ -161,7 +151,7 @@ class Properties(MutableMapping):
             have been opened as a text file with a Latin-1-compatible encoding.
         :param comments: If non-`None`, ``comments`` will be written to ``out``
             as a comment before any other content
-        :type comments: text string or `None`
+        :type comments: str or None
         :return: `None`
         """
         dump(self.data, out, comments=comments)
@@ -171,7 +161,7 @@ class Properties(MutableMapping):
         Returns a `set` of all keys in the `Properties` instance and its
         `defaults` (and its `defaults`\ ’s `defaults`, etc.)
 
-        :rtype: `set` of text strings
+        :rtype: `set` of str
         """
         names = set(self.data)
         if self.defaults is not None:
@@ -186,13 +176,6 @@ class Properties(MutableMapping):
         Beyond basic XML well-formedness, `loadFromXML` only checks that the
         root element is named ``properties`` and that all of its ``entry``
         children have ``key`` attributes; no further validation is performed.
-
-        .. note::
-
-            This uses `xml.etree.ElementTree` for parsing, which does not have
-            decent support for |unicode|_ input in Python 2.  Files containing
-            non-ASCII characters need to be opened in binary mode in Python 2,
-            while Python 3 accepts both binary and text input.
 
         :param inStream: the file from which to read the XML properties document
         :type inStream: file-like object
@@ -212,8 +195,8 @@ class Properties(MutableMapping):
         :type out: binary file-like object
         :param comment: if non-`None`, ``comment`` will be output as a
             ``<comment>`` element before the ``<entry>`` elements
-        :type comment: text string or `None`
-        :param string encoding: the name of the encoding to use for the XML
+        :type comment: str or None
+        :param str encoding: the name of the encoding to use for the XML
             document (also included in the XML declaration)
         :return: `None`
         """

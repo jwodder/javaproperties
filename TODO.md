@@ -1,17 +1,14 @@
 - Write tests
-    - Test reading & writing bytes in both Python 2 and Python 3
+    - Test reading & writing bytes
     - Run doctest on the README examples somehow?
     - Test `dump()` and `load()`
 - Add docstrings for the private functions
 - Try to include the line number (and column number and filename?) in
   `InvalidUEscapeError`s
 - Update `Properties` to match the latest Java version?
-- Set up tests against narrow Python 2.7 builds on Travis
 
 New Features
 ------------
-- `dump()`: Support `str`s as input in Python 2
-    - Use `unicode_literals` less?
 - Give `load` and `loads` a `timestamp_hook` argument for specifying a callable
   to pass the file's timestamp (if any) to
     - The timestamp is passed as an unparsed string with leading `#` and
@@ -35,3 +32,5 @@ New Features
 - Give `escape()` an option (named `is_value`? `escape_spaces`?) for
   controlling whether to perform the more minimal escaping used for values
   rather than keys
+- Instead of accepting file-like objects with `readline()` methods, accept
+  iterables of `str`/`bytes`?

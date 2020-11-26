@@ -1,4 +1,3 @@
-from   __future__     import unicode_literals
 from   collections    import OrderedDict
 import pytest
 from   javaproperties import dumps_xml

@@ -1,14 +1,9 @@
-from   __future__  import print_function
-from   collections import OrderedDict
-import six
-from   .reading    import Comment, KeyValue, Whitespace, loads, parse
-from   .util       import CONTINUED_RGX, LinkedList, ascii_splitlines
-from   .writing    import java_timestamp, join_key_value, to_comment
-
-if six.PY2:
-    from collections     import Mapping, MutableMapping
-else:
-    from collections.abc import Mapping, MutableMapping
+from collections     import OrderedDict
+from collections.abc import Mapping, MutableMapping
+from io              import BytesIO, StringIO
+from .reading        import Comment, KeyValue, Whitespace, loads, parse
+from .util           import CONTINUED_RGX, LinkedList, ascii_splitlines
+from .writing        import java_timestamp, join_key_value, to_comment
 
 _type_err = 'Keys & values of PropertiesFile instances must be strings'
 
@@ -64,7 +59,7 @@ class PropertiesFile(MutableMapping):
         Assert the internal consistency of the instance's data structures.
         This method is for debugging only.
         """
-        for k,ns in six.iteritems(self._key2nodes):
+        for k,ns in self._key2nodes.items():
             assert k is not None, 'null key'
             assert ns, 'Key does not map to any nodes'
             indices = []
@@ -90,13 +85,12 @@ class PropertiesFile(MutableMapping):
                     'Key does not map to itself'  # pragma: no cover
 
     def __getitem__(self, key):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError(_type_err)
         return self._key2nodes[key][-1].value.value
 
     def __setitem__(self, key, value):
-        if not isinstance(key, six.string_types) or \
-                not isinstance(value, six.string_types):
+        if not isinstance(key, str) or not isinstance(value, str):
             raise TypeError(_type_err)
         try:
             nodes = self._key2nodes[key]
@@ -125,7 +119,7 @@ class PropertiesFile(MutableMapping):
         n.value = KeyValue(key, value, None)
 
     def __delitem__(self, key):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError(_type_err)
         for n in self._key2nodes.pop(key):
             n.unlink()
@@ -158,9 +152,6 @@ class PropertiesFile(MutableMapping):
             return dict(self) == other
         else:
             return NotImplemented
-
-    def __ne__(self, other):
-        return not (self == other)
 
     @classmethod
     def load(cls, fp):
@@ -203,16 +194,16 @@ class PropertiesFile(MutableMapping):
             Invalid ``\\uXXXX`` escape sequences will now cause an
             `InvalidUEscapeError` to be raised
 
-        :param string s: the string from which to read the ``.properties``
-            document
+        :param s: the string from which to read the ``.properties`` document
+        :type s: str or bytes
         :rtype: PropertiesFile
         :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
             occurs in the input
         """
-        if isinstance(s, six.binary_type):
-            fp = six.BytesIO(s)
+        if isinstance(s, bytes):
+            fp = BytesIO(s)
         else:
-            fp = six.StringIO(s)
+            fp = StringIO(s)
         return cls.load(fp)
 
     def dump(self, fp, separator='='):
@@ -238,10 +229,9 @@ class PropertiesFile(MutableMapping):
 
         :param fp: A file-like object to write the mapping to.  It must have
             been opened as a text file with a Latin-1-compatible encoding.
-        :param separator: The string to use for separating new or modified keys
-            & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with added
-            whitespace) should ever be used as the separator.
-        :type separator: text string
+        :param str separator: The string to use for separating new or modified
+            keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
+            added whitespace) should ever be used as the separator.
         :return: `None`
         """
         for line in self._lines:
@@ -252,8 +242,8 @@ class PropertiesFile(MutableMapping):
 
     def dumps(self, separator='='):
         """
-        Convert the mapping to a text string in simple line-oriented
-        ``.properties`` format.
+        Convert the mapping to a `str` in simple line-oriented ``.properties``
+        format.
 
         If the instance was originally created from a file or string with
         `PropertiesFile.load()` or `PropertiesFile.loads()`, then the output
@@ -271,13 +261,12 @@ class PropertiesFile(MutableMapping):
             ignored, as :func:`dumps()` will treat the instance like a normal
             mapping.
 
-        :param separator: The string to use for separating new or modified keys
-            & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with added
-            whitespace) should ever be used as the separator.
-        :type separator: text string
-        :rtype: text string
+        :param str separator: The string to use for separating new or modified
+            keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
+            added whitespace) should ever be used as the separator.
+        :rtype: str
         """
-        s = six.StringIO()
+        s = StringIO()
         self.dump(s, separator=separator)
         return s.getvalue()
 
@@ -344,7 +333,7 @@ class PropertiesFile(MutableMapping):
     @timestamp.setter
     def timestamp(self, value):
         if value is not None and value is not False:
-            if not isinstance(value, six.string_types):
+            if not isinstance(value, str):
                 value = java_timestamp(value)
             comments = [
                 Comment(c) for c in ascii_splitlines(to_comment(value) + '\n')
@@ -395,7 +384,6 @@ class PropertiesFile(MutableMapping):
         pair or timestamp comment to be replaced by the output of
         ``to_comment(s)``.  Assigning `None` causes the header comment to be
         deleted (also achievable with ``del pf.header_comment``).
-
 
         >>> pf = PropertiesFile.loads('''\\
         ... #This is a comment.
