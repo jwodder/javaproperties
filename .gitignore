@@ -2,7 +2,7 @@
 *.egg-info/
 *.pyc
 .cache/
-.coverage
+.coverage*
 .eggs/
 .pytest_cache/
 .tox/
