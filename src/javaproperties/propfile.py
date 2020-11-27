@@ -206,7 +206,7 @@ class PropertiesFile(MutableMapping):
             fp = StringIO(s)
         return cls.load(fp)
 
-    def dump(self, fp, separator='='):
+    def dump(self, fp, separator='=', ensure_ascii=True):
         """
         Write the mapping to a file in simple line-oriented ``.properties``
         format.
@@ -232,11 +232,15 @@ class PropertiesFile(MutableMapping):
         :param str separator: The string to use for separating new or modified
             keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
             added whitespace) should ever be used as the separator.
+        :param bool ensure_ascii: if true, all non-ASCII characters will be
+            replaced with ``\\uXXXX`` escape sequences in the output; if false,
+            non-ASCII characters will be passed through as-is
         :return: `None`
         """
         for line in self._lines:
             if line.source is None:
-                print(join_key_value(line.key, line.value, separator), file=fp)
+                print(join_key_value(line.key, line.value, separator, 
+                                     ensure_ascii=None), file=fp)
             else:
                 fp.write(line.source)
 
