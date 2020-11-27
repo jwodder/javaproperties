@@ -239,7 +239,7 @@ class PropertiesFile(MutableMapping):
         """
         for line in self._lines:
             if line.source is None:
-                print(join_key_value(line.key, line.value, separator, 
+                print(join_key_value(line.key, line.value, separator,
                                      ensure_ascii=None), file=fp)
             else:
                 fp.write(line.source)
