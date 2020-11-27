@@ -6,8 +6,8 @@ from   javaproperties import Comment, KeyValue, Whitespace, parse
     ('\n', [Whitespace('\n')]),
     (' \n\t\n', [Whitespace(' \n'), Whitespace('\t\n')]),
     ('key=value\n', [KeyValue('key', 'value', 'key=value\n')]),
-    (u'\xF0=\u2603\n', [KeyValue(u'\xF0', u'\u2603', u'\xF0=\u2603\n')]),
-    ('\\u00F0=\\u2603\n', [KeyValue(u'\xF0', u'\u2603', '\\u00F0=\\u2603\n')]),
+    ('\xF0=\u2603\n', [KeyValue('\xF0', '\u2603', '\xF0=\u2603\n')]),
+    ('\\u00F0=\\u2603\n', [KeyValue('\xF0', '\u2603', '\\u00F0=\\u2603\n')]),
     (' key :\t value \n', [KeyValue('key', 'value ', ' key :\t value \n')]),
     (
         '#This is a comment.\n'
@@ -101,7 +101,7 @@ def test_whitespace_attributes():
     ('#Sat Jan 09 05:00:62 EST 2016\n', False),
     ('#Sat Jan 09 24:00:00 EST 2016\n', False),
     ('#Sat Jan 09 05:60:00 EST 2016\n', False),
-    (u'#Mo  M\xE4r 02 13:59:03 EST 2020\n', False),
+    ('#Mo  Mär 02 13:59:03 EST 2020\n', False),
 ])
 def test_comment_is_timestamp(c, is_t):
     assert Comment(c).is_timestamp() == is_t

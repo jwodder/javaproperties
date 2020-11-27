@@ -1,4 +1,3 @@
-import platform
 import sys
 import pytest
 import javaproperties  # noqa
@@ -53,20 +52,10 @@ def test_javapropertiesreplace(s, enc, b):
 @pytest.mark.parametrize('enc', [
     'us-ascii',
     'iso-8859-1',
-    pytest.param(
-        'utf-8',
-        marks=pytest.mark.skipif(
-            sys.version_info[0] == 2,
-            reason='Python 3 only',
-        ),
-    ),
+    'utf-8',
     pytest.param(
         'utf-16be',
         marks=[
-            pytest.mark.skipif(
-                sys.version_info[0] == 2,
-                reason='Python 3 only',
-            ),
             # Certain versions of pypy3.6 (including the one on Travis as of
             # 2020-02-23) have a bug in their handling of encoding errors when
             # the target encoding is UTF-16.  The latest known version to
@@ -75,8 +64,8 @@ def test_javapropertiesreplace(s, enc, b):
             # (Python version 3.6.9); I don't *think* there were any releases
             # in between those two versions, but it isn't entirely clear.
             pytest.mark.xfail(
-                platform.python_implementation().lower() == 'pypy'
-                    and sys.version_info[:3] < (3,6,9),
+                hasattr(sys, "pypy_version_info")
+                    and sys.pypy_version_info[:3] < (7,2,0),
                 reason='Broken on this version of PyPy',
             )
         ],

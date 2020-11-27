@@ -1,6 +1,5 @@
 from   collections.abc import Iterator
 from   io              import BytesIO, StringIO
-import sys
 import pytest
 from   javaproperties  import Properties, dumps
 
@@ -591,13 +590,7 @@ def test_propclass_dumps_function():
 @pytest.mark.parametrize('data', [
     {},
     {"foo": "bar"},
-    pytest.param(
-        {"foo": "bar", "key": "value"},
-        marks=pytest.mark.skipif(
-            sys.version_info[:2] < (3,6),
-            reason='dict reprs appear to be completely unstable pre-3.6',
-        ),
-    ),
+    {"foo": "bar", "key": "value"},
 ])
 @pytest.mark.parametrize('defaults', [
     None,
@@ -606,14 +599,12 @@ def test_propclass_dumps_function():
 ])
 def test_propclass_repr(data, defaults):
     p = Properties(data, defaults=defaults)
-    assert repr(p) \
-        == 'javaproperties.propclass.Properties({!r}, defaults={!r})'\
-            .format(data, defaults)
+    assert repr(p) == (
+        f'javaproperties.propclass.Properties({data!r}, defaults={defaults!r})'
+    )
 
 def test_propclass_repr_noinit():
     p = Properties()
-    assert repr(p) \
-        == 'javaproperties.propclass.Properties({!r}, defaults={!r})'\
-            .format({}, None)
+    assert repr(p) == 'javaproperties.propclass.Properties({}, defaults=None)'
 
 # defaults with defaults

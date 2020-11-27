@@ -140,7 +140,7 @@ def test_to_comment_no_ensure_ascii(cin, cout):
         s,
         '#' + ''.join(chr(i) for i in list(range(0x20)) + [0x7F]
                       if i not in (10, 13))
-            + ''.join('\\u{0:04x}'.format(i) for i in range(0x80, 0xA0)),
+            + ''.join(f'\\u{i:04x}' for i in range(0x80, 0xA0)),
     ),
 ])
 def test_to_comment_ensure_ascii(cin, cout):
