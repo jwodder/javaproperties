@@ -27,8 +27,6 @@ New Features
     - Add a method for reformatting in-place?
     - Add a method for deleting all but a given set of keys?
     - Support setting the separator and `ensure_ascii` on a per-entry basis?
-    - Give `dump()` and `dumps()` an `ensure_ascii` argument for controlling
-      the charset of new key-value pairs?
 - Give `escape()` an option (named `is_value`? `escape_spaces`?) for
   controlling whether to perform the more minimal escaping used for values
   rather than keys

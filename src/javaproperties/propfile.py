@@ -206,7 +206,7 @@ class PropertiesFile(MutableMapping):
             fp = StringIO(s)
         return cls.load(fp)
 
-    def dump(self, fp, separator='='):
+    def dump(self, fp, separator='=', ensure_ascii=True):
         """
         Write the mapping to a file in simple line-oriented ``.properties``
         format.
@@ -217,8 +217,12 @@ class PropertiesFile(MutableMapping):
         any keys that haven't been deleted or reassigned will retain their
         original formatting and multiplicity.  Key-value pairs that have been
         modified or added to the mapping will be reformatted with
-        `join_key_value()` using the given separator.  All key-value pairs are
-        output in the order they were defined, with new keys added to the end.
+        `join_key_value()` using the given separator and ``ensure_ascii``
+        setting.  All key-value pairs are output in the order they were
+        defined, with new keys added to the end.
+
+        .. versionchanged:: 0.8.0
+            ``ensure_ascii`` parameter added
 
         .. note::
 
@@ -232,15 +236,27 @@ class PropertiesFile(MutableMapping):
         :param str separator: The string to use for separating new or modified
             keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
             added whitespace) should ever be used as the separator.
+        :param bool ensure_ascii: if true, all non-ASCII characters in new or
+            modified key-value pairs will be replaced with ``\\uXXXX`` escape
+            sequences in the output; if false, non-ASCII characters will be
+            passed through as-is
         :return: `None`
         """
         for line in self._lines:
             if line.source is None:
-                print(join_key_value(line.key, line.value, separator), file=fp)
+                print(
+                    join_key_value(
+                        line.key,
+                        line.value,
+                        separator=separator,
+                        ensure_ascii=ensure_ascii,
+                    ),
+                    file=fp,
+                )
             else:
                 fp.write(line.source)
 
-    def dumps(self, separator='='):
+    def dumps(self, separator='=', ensure_ascii=True):
         """
         Convert the mapping to a `str` in simple line-oriented ``.properties``
         format.
@@ -251,8 +267,12 @@ class PropertiesFile(MutableMapping):
         any keys that haven't been deleted or reassigned will retain their
         original formatting and multiplicity.  Key-value pairs that have been
         modified or added to the mapping will be reformatted with
-        `join_key_value()` using the given separator.  All key-value pairs are
-        output in the order they were defined, with new keys added to the end.
+        `join_key_value()` using the given separator and ``ensure_ascii``
+        setting.  All key-value pairs are output in the order they were
+        defined, with new keys added to the end.
+
+        .. versionchanged:: 0.8.0
+            ``ensure_ascii`` parameter added
 
         .. note::
 
@@ -264,10 +284,14 @@ class PropertiesFile(MutableMapping):
         :param str separator: The string to use for separating new or modified
             keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
             added whitespace) should ever be used as the separator.
+        :param bool ensure_ascii: if true, all non-ASCII characters in new or
+            modified key-value pairs will be replaced with ``\\uXXXX`` escape
+            sequences in the output; if false, non-ASCII characters will be
+            passed through as-is
         :rtype: str
         """
         s = StringIO()
-        self.dump(s, separator=separator)
+        self.dump(s, separator=separator, ensure_ascii=ensure_ascii)
         return s.getvalue()
 
     def copy(self):

@@ -372,6 +372,27 @@ foo : second definition
 # Comment at end of file
 '''
 
+@pytest.mark.parametrize('ensure_ascii', [False, True])
+def test_propfile_dumps_ensure_ascii(ensure_ascii):
+    txt = INPUT + 'ð=edh\n'
+    pf = PropertiesFile.loads(txt)
+    pf._check()
+    assert pf.dumps(ensure_ascii=ensure_ascii) == txt
+
+def test_propfile_set_dumps_ensure_ascii():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    pf["ð"] = "edh"
+    pf._check()
+    assert pf.dumps(ensure_ascii=True) == INPUT + '\\u00f0=edh\n'
+
+def test_propfile_set_dumps_no_ensure_ascii():
+    pf = PropertiesFile.loads(INPUT)
+    pf._check()
+    pf["ð"] = "edh"
+    pf._check()
+    assert pf.dumps(ensure_ascii=False) == INPUT + 'ð=edh\n'
+
 def test_propfile_copy():
     pf = PropertiesFile({"Foo": "bar"})
     pf2 = pf.copy()
