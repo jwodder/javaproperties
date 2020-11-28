@@ -18,6 +18,10 @@ jobs:
           - '3.8'
           - '3.9'
           - 'pypy3'
+        toxenv: [py]
+        include:
+          - python-version: '3.6'
+            toxenv: typing
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -33,12 +37,14 @@ jobs:
           python -m pip install --upgrade --upgrade-strategy=eager coverage tox
 
       - name: Run tests
-        run: tox -e py
+        run: tox -e ${{ matrix.toxenv }}
 
       - name: Generate XML coverage report
+        if: matrix.toxenv == 'py'
         run: coverage xml
 
       - name: Upload coverage to Codecov
+        if: matrix.toxenv == 'py'
         uses: codecov/codecov-action@v1
         with:
           fail_ci_if_error: false

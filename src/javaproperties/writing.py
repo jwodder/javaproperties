@@ -1,12 +1,28 @@
 from   datetime import datetime
 from   io       import StringIO
-import numbers
 import re
+import sys
 import time
+from   typing   import Optional, TextIO, Union
 from   .util    import itemize
 
-def dump(props, fp, separator='=', comments=None, timestamp=True,
-         sort_keys=False, ensure_ascii=True, ensure_ascii_comments=None):
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Mapping
+    from re import Match
+    Tuple = tuple
+else:
+    from typing import Iterable, Mapping, Match, Tuple
+
+def dump(
+    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    fp: TextIO,
+    separator: str = '=',
+    comments: Optional[str] = None,
+    timestamp: Union[None, bool, float, datetime] = True,
+    sort_keys: bool = False,
+    ensure_ascii: bool = True,
+    ensure_ascii_comments: Optional[bool] = None,
+) -> None:
     """
     Write a series of key-value pairs to a file in simple line-oriented
     ``.properties`` format.
@@ -17,14 +33,13 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
-    :param fp: A file-like object to write the values of ``props`` to.  It must
-        have been opened as a text file.
+    :param TextIO fp: A file-like object to write the values of ``props`` to.
+        It must have been opened as a text file.
     :param str separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
-    :param comments: if non-`None`, ``comments`` will be written to ``fp`` as a
-        comment before any other content
-    :type comments: str or None
+    :param Optional[str] comments: if non-`None`, ``comments`` will be written
+        to ``fp`` as a comment before any other content
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 02 14:00:54 EDT 2016`` is written as a comment to ``fp``
         after ``comments`` (if any) and before the key-value pairs.  If
@@ -38,10 +53,10 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
-    :param ensure_ascii_comments: if true, all non-ASCII characters in
-        ``comments`` will be replaced with ``\\uXXXX`` escape sequences in the
-        output; if `None`, only non-Latin-1 characters will be escaped; if
-        false, no characters will be escaped
+    :param Optional[bool] ensure_ascii_comments: if true, all non-ASCII
+        characters in ``comments`` will be replaced with ``\\uXXXX`` escape
+        sequences in the output; if `None`, only non-Latin-1 characters will be
+        escaped; if false, no characters will be escaped
     :return: `None`
     """
     if comments is not None:
@@ -54,8 +69,15 @@ def dump(props, fp, separator='=', comments=None, timestamp=True,
             file=fp,
         )
 
-def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
-          ensure_ascii=True, ensure_ascii_comments=None):
+def dumps(
+    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    separator: str = '=',
+    comments: Optional[str] = None,
+    timestamp: Union[None, bool, float, datetime] = True,
+    sort_keys: bool = False,
+    ensure_ascii: bool = True,
+    ensure_ascii_comments: Optional[bool] = None,
+) -> str:
     """
     Convert a series of key-value pairs to a `str` in simple line-oriented
     ``.properties`` format.
@@ -69,9 +91,8 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
     :param str separator: The string to use for separating keys & values.  Only
         ``" "``, ``"="``, and ``":"`` (possibly with added whitespace) should
         ever be used as the separator.
-    :param comments: if non-`None`, ``comments`` will be output as a comment
-        before any other content
-    :type comments: str or None
+    :param Optional[str] comments: if non-`None`, ``comments`` will be output
+        as a comment before any other content
     :param timestamp: If neither `None` nor `False`, a timestamp in the form of
         ``Mon Sep 02 14:00:54 EDT 2016`` is output as a comment after
         ``comments`` (if any) and before the key-value pairs.  If ``timestamp``
@@ -85,10 +106,10 @@ def dumps(props, separator='=', comments=None, timestamp=True, sort_keys=False,
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
-    :param ensure_ascii_comments: if true, all non-ASCII characters in
-        ``comments`` will be replaced with ``\\uXXXX`` escape sequences in the
-        output; if `None`, only non-Latin-1 characters will be escaped; if
-        false, no characters will be escaped
+    :param Optional[bool] ensure_ascii_comments: if true, all non-ASCII
+        characters in ``comments`` will be replaced with ``\\uXXXX`` escape
+        sequences in the output; if `None`, only non-Latin-1 characters will be
+        escaped; if false, no characters will be escaped
     :rtype: text string
     """
     s = StringIO()
@@ -102,7 +123,7 @@ NON_LATIN1_RGX = re.compile(r'[^\x00-\xFF]')
 NEWLINE_OLD_COMMENT_RGX = re.compile(r'\n(?![#!])')
 NON_N_EOL_RGX = re.compile(r'\r\n?')
 
-def to_comment(comment, ensure_ascii=None):
+def to_comment(comment: str, ensure_ascii: Optional[bool] = None) -> str:
     """
     Convert a string to a ``.properties`` file comment.  Non-Latin-1 or
     non-ASCII characters in the string may be escaped using ``\\uXXXX`` escapes
@@ -118,10 +139,10 @@ def to_comment(comment, ensure_ascii=None):
         ``ensure_ascii`` parameter added
 
     :param str comment: the string to convert to a comment
-    :param ensure_ascii: if true, all non-ASCII characters will be replaced
-        with ``\\uXXXX`` escape sequences in the output; if `None`, only
-        non-Latin-1 characters will be escaped; if false, no characters will be
-        escaped
+    :param Optional[bool] ensure_ascii: if true, all non-ASCII characters will
+        be replaced with ``\\uXXXX`` escape sequences in the output; if `None`,
+        only non-Latin-1 characters will be escaped; if false, no characters
+        will be escaped
     :rtype: str
     """
     comment = NON_N_EOL_RGX.sub('\n', comment)
@@ -132,7 +153,12 @@ def to_comment(comment, ensure_ascii=None):
         comment = NON_ASCII_RGX.sub(_esc, comment)
     return '#' + comment
 
-def join_key_value(key, value, separator='=', ensure_ascii=True):
+def join_key_value(
+    key: str,
+    value: str,
+    separator: str = '=',
+    ensure_ascii: bool = True,
+) -> str:
     r"""
     Join a key and value together into a single line suitable for adding to a
     simple line-oriented ``.properties`` file.  No trailing newline is added.
@@ -151,7 +177,7 @@ def join_key_value(key, value, separator='=', ensure_ascii=True):
     :param bool ensure_ascii: if true, all non-ASCII characters will be
         replaced with ``\\uXXXX`` escape sequences in the output; if false,
         non-ASCII characters will be passed through as-is
-    :rtype: text string
+    :rtype: str
     """
     # Escapes `key` and `value` the same way as java.util.Properties.store()
     value = _base_escape(value, ensure_ascii=ensure_ascii)
@@ -171,35 +197,35 @@ _escapes = {
     '\\': r'\\',
 }
 
-def _esc(m):
+def _esc(m: Match[str]) -> str:
     c = m.group()
     try:
         return _escapes[c]
     except KeyError:
         return _to_u_escape(c)
 
-def _to_u_escape(c):
-    c = ord(c)
-    if c > 0xFFFF:
+def _to_u_escape(c: str) -> str:
+    co = ord(c)
+    if co > 0xFFFF:
         # Does Python really not have a decent builtin way to calculate
         # surrogate pairs?
-        assert c <= 0x10FFFF
-        c -= 0x10000
+        assert co <= 0x10FFFF
+        co -= 0x10000
         return '\\u{0:04x}\\u{1:04x}'.format(
-            0xD800 + (c >> 10),
-            0xDC00 + (c & 0x3FF)
+            0xD800 + (co >> 10),
+            0xDC00 + (co & 0x3FF)
         )
     else:
-        return f'\\u{c:04x}'
+        return f'\\u{co:04x}'
 
 NEEDS_ESCAPE_ASCII_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
 NEEDS_ESCAPE_UNICODE_RGX = re.compile(r'[\x00-\x1F\x7F]|[\\#!=:]')
 
-def _base_escape(field, ensure_ascii=True):
+def _base_escape(field: str, ensure_ascii: bool = True) -> str:
     rgx = NEEDS_ESCAPE_ASCII_RGX if ensure_ascii else NEEDS_ESCAPE_UNICODE_RGX
     return rgx.sub(_esc, field)
 
-def escape(field, ensure_ascii=True):
+def escape(field: str, ensure_ascii: bool = True) -> str:
     """
     Escape a string so that it can be safely used as either a key or value in a
     ``.properties`` file.  All non-ASCII characters, all nonprintable or space
@@ -226,7 +252,7 @@ MONTHS = [
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
 ]
 
-def java_timestamp(timestamp=True):
+def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
     """
     .. versionadded:: 0.2.0
 
@@ -261,15 +287,19 @@ def java_timestamp(timestamp=True):
         # Assumes `timestamp.tzinfo.tzname()` is meaningful/useful
         tzname = timestamp.tzname()
     else:
+        ### TODO: Reimplement this using datetime.astimezone() to convert
+        ### everything to an aware datetime?
+        ts: Optional[float]
         if timestamp is True:
-            timestamp = None
+            ts = None
         elif isinstance(timestamp, datetime):
             # Use `datetime.timestamp()`, as it (unlike `datetime.timetuple()`)
             # takes `fold` into account for naïve datetimes.
-            timestamp = timestamp.timestamp()
-        elif not isinstance(timestamp, numbers.Number):
-            raise TypeError('Timestamp must be number or datetime.datetime')
-        timebits = time.localtime(timestamp)
+            ts = timestamp.timestamp()
+        else:
+            # If it's not a number, it's localtime()'s problem now.
+            ts = timestamp
+        timebits = time.localtime(ts)
         tzname = timebits.tm_zone
     assert 1 <= timebits.tm_mon <= 12, 'invalid month'
     assert 0 <= timebits.tm_wday <= 6, 'invalid day of week'
@@ -282,7 +312,7 @@ def java_timestamp(timestamp=True):
                 wday=DAYS_OF_WEEK[timebits.tm_wday]
             )
 
-def javapropertiesreplace_errors(e):
+def javapropertiesreplace_errors(e: Union[UnicodeError]) -> Tuple[str, int]:
     """
     .. versionadded:: 0.6.0
 

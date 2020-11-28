@@ -616,46 +616,6 @@ def test_propfile_add_after_trailing_comment_escape_nl():
     assert dict(pf) == {"new": "old"}
     assert pf.dumps() == '#key = value\\\nnew=old\n'
 
-def test_propfile_get_nonstring_key():
-    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        pf[42]
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
-def test_propfile_set_nonstring_key():
-    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        pf[42] = 'forty-two'
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
-def test_propfile_set_nonstring_value():
-    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        pf['forty-two'] = 42
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
-def test_propfile_del_nonstring_key():
-    pf = PropertiesFile({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        del pf[42]
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
-def test_propfile_from_nonstring_key():
-    with pytest.raises(TypeError) as excinfo:
-        PropertiesFile({"key": "value", 42: "forty-two"})
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
-def test_propfile_from_nonstring_value():
-    with pytest.raises(TypeError) as excinfo:
-        PropertiesFile({"key": "value", "forty-two": 42})
-    assert str(excinfo.value) == \
-        'Keys & values of PropertiesFile instances must be strings'
-
 def test_propfile_empty_setitem():
     pf = PropertiesFile()
     pf._check()

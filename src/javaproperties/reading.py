@@ -1,9 +1,32 @@
-from   collections import namedtuple
-from   io          import BytesIO, StringIO
+from   io     import BytesIO, StringIO
 import re
-from   .util       import CONTINUED_RGX, ascii_splitlines
+import sys
+from   typing import Any, Callable, IO, Type, TypeVar, Union, overload
+from   .util  import CONTINUED_RGX, ascii_splitlines
 
-def load(fp, object_pairs_hook=dict):
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Iterator
+    from re import Match
+    Dict = dict
+    Tuple = tuple
+else:
+    from typing import Dict, Iterable, Iterator, Match, Tuple
+
+T = TypeVar('T')
+
+@overload
+def load(fp: IO) -> Dict[str, str]:
+    ...
+
+@overload
+def load(fp: IO, object_pairs_hook: Type[T]) -> T:
+    ...
+
+@overload
+def load(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+    ...
+
+def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     """
     Parse the contents of the `~io.IOBase.readline`-supporting file-like object
     ``fp`` as a simple line-oriented ``.properties`` file and return a `dict`
@@ -25,8 +48,7 @@ def load(fp, object_pairs_hook=dict):
         Invalid ``\\uXXXX`` escape sequences will now cause an
         `InvalidUEscapeError` to be raised
 
-    :param fp: the file from which to read the ``.properties`` document
-    :type fp: file-like object
+    :param IO fp: the file from which to read the ``.properties`` document
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
@@ -37,7 +59,19 @@ def load(fp, object_pairs_hook=dict):
         (kv.key, kv.value) for kv in parse(fp) if isinstance(kv, KeyValue)
     )
 
-def loads(s, object_pairs_hook=dict):
+@overload
+def loads(s: Union[str, bytes]) -> Dict[str, str]:
+    ...
+
+@overload
+def loads(s: Union[str, bytes], object_pairs_hook: Type[T]) -> T:
+    ...
+
+@overload
+def loads(s: Union[str, bytes], object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+    ...
+
+def loads(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     """
     Parse the contents of the string ``s`` as a simple line-oriented
     ``.properties`` file and return a `dict` of the key-value pairs.
@@ -57,7 +91,8 @@ def loads(s, object_pairs_hook=dict):
         Invalid ``\\uXXXX`` escape sequences will now cause an
         `InvalidUEscapeError` to be raised
 
-    :param string s: the string from which to read the ``.properties`` document
+    :param Union[str,bytes] s: the string from which to read the
+        ``.properties`` document
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` of text strings or the return value of ``object_pairs_hook``
@@ -78,30 +113,56 @@ TIMESTAMP_RGX = re.compile(
     r'[ \t\f]*\r?\n?\Z'
 )
 
-class PropertiesElement:
+class PropertiesElement(Iterable[str]):
     """
     .. versionadded:: 0.7.0
 
     Superclass of objects returned by `parse()`
     """
-    __slots__ = ()
+
+    def __init__(self, source: str) -> None:
+        #: The raw, unmodified input line (including trailing newlines)
+        self.source: str = source
+
+    def __iter__(self) -> Iterator[str]:
+        return iter((self.source,))
+
+    def __eq__(self, other: Any) -> bool:
+        if type(self) is type(other):
+            return tuple(self) == tuple(other)
+        else:
+            return NotImplemented
+
+    def __repr__(self) -> str:
+        return (
+            '{0.__module__}.{0.__name__}(source={1.source!r})'
+            .format(type(self), self)
+        )
+
+    @property
+    def source_stripped(self) -> str:
+        """
+        Like `source`, but with the final trailing newline and line
+        continuation (if any) removed
+        """
+        s = self.source.rstrip('\r\n')
+        if CONTINUED_RGX.search(s):
+            s = s[:-1]
+        return s
+
+    def _with_source(self, newsource: str) -> "PropertiesElement":
+        return type(self)(source=newsource)
 
 
-class Comment(PropertiesElement, namedtuple('Comment', 'source')):
+class Comment(PropertiesElement):
     """
     .. versionadded:: 0.7.0
 
     Subclass of `PropertiesElement` representing a comment
-
-    .. attribute:: source
-
-        The raw, unmodified input line (including trailing newlines)
     """
 
-    __slots__ = ()
-
     @property
-    def value(self):
+    def value(self) -> str:
         """
         Returns the contents of the comment, with the comment marker, any
         whitespace leading up to it, and the trailing newline removed
@@ -112,85 +173,62 @@ class Comment(PropertiesElement, namedtuple('Comment', 'source')):
         return s.rstrip('\r\n')
 
     @property
-    def source_stripped(self):
+    def source_stripped(self) -> str:
         """
         Like `source`, but with the final trailing newline (if any) removed
         """
         return self.source.rstrip('\r\n')
 
-    def is_timestamp(self):
+    def is_timestamp(self) -> bool:
         """
         Returns `True` iff the comment's value appears to be a valid timestamp
         as produced by Java 8's ``Date.toString()``
         """
-        return bool(TIMESTAMP_RGX.match(self.source))
+        return bool(TIMESTAMP_RGX.fullmatch(self.source))
 
 
-class Whitespace(PropertiesElement, namedtuple('Whitespace', 'source')):
+class Whitespace(PropertiesElement):
     """
     .. versionadded:: 0.7.0
 
     Subclass of `PropertiesElement` representing a line that is either empty or
     contains only whitespace (and possibly some line continuations)
-
-    .. attribute:: source
-
-        The raw, unmodified input line (including trailing newlines)
     """
 
-    __slots__ = ()
 
-    @property
-    def source_stripped(self):
-        """
-        Like `source`, but with the final trailing newline and line
-        continuation (if any) removed
-        """
-        s = self.source.rstrip('\r\n')
-        if CONTINUED_RGX.search(s):
-            s = s[:-1]
-        return s
-
-
-class KeyValue(PropertiesElement, namedtuple('KeyValue', 'key value source')):
+class KeyValue(PropertiesElement):
     """
     .. versionadded:: 0.7.0
 
     Subclass of `PropertiesElement` representing a key-value entry
-
-    .. attribute:: key
-
-        The entry's key, after processing escape sequences
-
-    .. attribute:: value
-
-        The entry's value, after processing escape sequences
-
-    .. attribute:: source
-
-        The concatenation of the raw, unmodified lines in the input (including
-        trailing newlines) from which the key and value were extracted
     """
 
-    __slots__ = ()
+    def __init__(self, key: str, value: str, source: str):
+        super().__init__(source=source)
+        #: The entry's key, after processing escape sequences
+        self.key: str = key
+        #: The entry's value, after processing escape sequences
+        self.value: str = value
 
-    @property
-    def source_stripped(self):
-        """
-        Like `source`, but with the final trailing newline and line
-        continuation (if any) removed
-        """
-        s = self.source.rstrip('\r\n')
-        if CONTINUED_RGX.search(s):
-            s = s[:-1]
-        return s
+    def __iter__(self) -> Iterator[str]:
+        return iter((self.key, self.value, self.source))
+
+    def __repr__(self) -> str:
+        return (
+            '{0.__module__}.{0.__name__}(key={1.key}, value={1.value},'
+            ' source={1.source!r})'
+            .format(type(self), self)
+        )
+
+    def _with_source(self, newsource: str) -> "KeyValue":
+        return type(self)(key=self.key, value=self.value, source=newsource)
 
 
 COMMENT_RGX = re.compile(r'^[ \t\f]*[#!]')
 BLANK_RGX = re.compile(r'^[ \t\f]*\r?\n?\Z')
 SEPARATOR_RGX = re.compile(r'(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*')
 
-def parse(src):
+def parse(src: Union[IO, str, bytes]) -> Iterator[PropertiesElement]:
     """
     Parse the given data as a simple line-oriented ``.properties`` file and
     return a generator of `PropertiesElement` objects representing the
@@ -216,23 +254,28 @@ def parse(src):
 
     :param src: the ``.properties`` document
     :type src: string or file-like object
-    :rtype: Iterable[PropertiesElement]
+    :rtype: Iterator[PropertiesElement]
     :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
         occurs in the input
     """
+    liter: Iterator[str]
     if isinstance(src, bytes):
         liter = iter(ascii_splitlines(src.decode('iso-8859-1')))
     elif isinstance(src, str):
         liter = iter(ascii_splitlines(src))
     else:
-        def lineiter():
+        fp: IO = src
+        def lineiter() -> Iterator[str]:
             while True:
-                line = src.readline()
+                line = fp.readline()
+                ll: str
                 if isinstance(line, bytes):
-                    line = line.decode('iso-8859-1')
-                if line == '':
+                    ll = line.decode('iso-8859-1')
+                else:
+                    ll = line
+                if ll == '':
                     return
-                for ln in ascii_splitlines(line):
+                for ln in ascii_splitlines(ll):
                     yield ln
         liter = lineiter()
     for source in liter:
@@ -266,7 +309,7 @@ SURROGATE_PAIR_RGX = re.compile(r'[\uD800-\uDBFF][\uDC00-\uDFFF]')
 ESCAPE_RGX = re.compile(r'\\(u.{0,4}|.)')
 U_ESCAPE_RGX = re.compile(r'^u[0-9A-Fa-f]{4}\Z')
 
-def unescape(field):
+def unescape(field: str) -> str:
     """
     Decode escape sequences in a ``.properties`` key or value.  The following
     escape sequences are recognized::
@@ -293,7 +336,7 @@ def unescape(field):
 
 _unescapes = {'t': '\t', 'n': '\n', 'f': '\f', 'r': '\r'}
 
-def _unesc(m):
+def _unesc(m: Match[str]) -> str:
     esc = m.group(1)
     if esc[0] == 'u':
         if not U_ESCAPE_RGX.match(esc):
@@ -304,7 +347,7 @@ def _unesc(m):
     else:
         return _unescapes.get(esc, esc)
 
-def _unsurrogate(m):
+def _unsurrogate(m: Match[str]) -> str:
     c,d = map(ord, m.group())
     uord = ((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000
     return chr(uord)
@@ -319,9 +362,9 @@ class InvalidUEscapeError(ValueError):
     line-oriented ``.properties`` file
     """
 
-    def __init__(self, escape):
+    def __init__(self, escape: str) -> None:
         #: The invalid ``\uXXXX`` escape sequence encountered
-        self.escape = escape
+        self.escape: str = escape
 
-    def __str__(self):
+    def __str__(self) -> str:
         return 'Invalid \\u escape sequence: ' + self.escape

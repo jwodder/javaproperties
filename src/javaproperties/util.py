@@ -1,25 +1,37 @@
-from   collections.abc import Mapping
 import re
+import sys
+from   typing import Generic, Optional, TypeVar, Union
+
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Iterator, Mapping
+    List = list
+    Tuple = tuple
+else:
+    from typing import List, Iterable, Iterator, Mapping, Tuple
 
 CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\\r?\n?\Z')
 
 EOL_RGX = re.compile(r'\r\n?|\n')
 
-class LinkedList:
-    def __init__(self):
-        self.start = None
-        self.end = None
+T = TypeVar("T")
+K = TypeVar("K")
+V = TypeVar("V")
 
-    def __iter__(self):
+class LinkedList(Generic[T]):
+    def __init__(self) -> None:
+        self.start: Optional["LinkedListNode[T]"] = None
+        self.end: Optional["LinkedListNode[T]"] = None
+
+    def __iter__(self) -> Iterator[T]:
         return (n.value for n in self.iternodes())
 
-    def iternodes(self):
+    def iternodes(self) -> Iterator["LinkedListNode[T]"]:
         n = self.start
         while n is not None:
             yield n
             n = n.next
 
-    def append(self, value):
+    def append(self, value: T) -> "LinkedListNode[T]":
         n = LinkedListNode(value, self)
         if self.start is None:
             self.start = n
@@ -30,21 +42,21 @@ class LinkedList:
         self.end = n
         return n
 
-    def find_node(self, node):
+    def find_node(self, node: "LinkedListNode[T]") -> Optional[int]:
         for i,n in enumerate(self.iternodes()):
             if n is node:
                 return i
         return None
 
 
-class LinkedListNode:
-    def __init__(self, value, lst):
-        self.value = value
-        self.lst = lst
-        self.prev = None
-        self.next = None
+class LinkedListNode(Generic[T]):
+    def __init__(self, value: T, lst: LinkedList[T]) -> None:
+        self.value: T = value
+        self.lst: LinkedList[T] = lst
+        self.prev: Optional["LinkedListNode[T]"] = None
+        self.next: Optional["LinkedListNode[T]"] = None
 
-    def unlink(self):
+    def unlink(self) -> None:
         if self.prev is not None:
             self.prev.next = self.next
         if self.next is not None:
@@ -54,7 +66,7 @@ class LinkedListNode:
         if self is self.lst.end:
             self.lst.end = self.prev
 
-    def insert_after(self, value):
+    def insert_after(self, value: T) -> "LinkedListNode[T]":
         """ Inserts a new node with value ``value`` after the node ``self`` """
         n = LinkedListNode(value, self.lst)
         n.prev = self
@@ -67,7 +79,7 @@ class LinkedListNode:
             self.lst.end = n
         return n
 
-    def insert_before(self, value):
+    def insert_before(self, value: T) -> "LinkedListNode[T]":
         """
         Inserts a new node with value ``value`` before the node ``self``
         """
@@ -83,7 +95,11 @@ class LinkedListNode:
         return n
 
 
-def itemize(kvs, sort_keys=False):
+def itemize(
+    kvs: Union[Mapping[K,V], Iterable[Tuple[K,V]]],
+    sort_keys: bool = False,
+) -> Iterable[Tuple[K,V]]:
+    items: Iterable[Tuple[K,V]]
     if isinstance(kvs, Mapping):
         items = ((k, kvs[k]) for k in kvs)
     else:
@@ -92,7 +108,7 @@ def itemize(kvs, sort_keys=False):
         items = sorted(items)
     return items
 
-def ascii_splitlines(s):
+def ascii_splitlines(s: str) -> List[str]:
     """
     Like `str.splitlines(True)`, except it only treats LF, CR LF, and CR as
     line endings

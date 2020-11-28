@@ -1,13 +1,27 @@
-from collections     import OrderedDict
-from collections.abc import Mapping, MutableMapping
-from io              import BytesIO, StringIO
-from .reading        import Comment, KeyValue, Whitespace, loads, parse
-from .util           import CONTINUED_RGX, LinkedList, ascii_splitlines
-from .writing        import java_timestamp, join_key_value, to_comment
+from   collections     import OrderedDict
+from   collections.abc import Mapping as MappingABC
+from   datetime        import datetime
+from   io              import BytesIO, StringIO
+import sys
+from   typing          import Any, AnyStr, IO, Optional, TextIO, Union, cast
+from   .reading        import Comment, KeyValue, PropertiesElement, \
+                                Whitespace, loads, parse
+from   .util           import CONTINUED_RGX, LinkedList, LinkedListNode, \
+                                ascii_splitlines
+from   .writing        import java_timestamp, join_key_value, to_comment
 
-_type_err = 'Keys & values of PropertiesFile instances must be strings'
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Iterator, Mapping, MutableMapping, \
+        Reversible
+    List = list
+    Tuple = tuple
+else:
+    from typing import Iterable, Iterator, List, Mapping, MutableMapping, \
+        Reversible, Tuple
 
-class PropertiesFile(MutableMapping):
+_NOSOURCE = ''  # .source value for new or modified KeyValue instances
+
+class PropertiesFile(MutableMapping[str, str]):
     """
     .. versionadded:: 0.3.0
 
@@ -45,16 +59,22 @@ class PropertiesFile(MutableMapping):
     line-oriented format, not XML.
     """
 
-    def __init__(self, mapping=None, **kwargs):
-        #: mapping from keys to list of LinkedListNode's
-        self._key2nodes = OrderedDict()
+    def __init__(
+        self,
+        mapping: Union[None, Mapping[str, str], Iterable[Tuple[str, str]]] = None,
+        **kwargs: str,
+    ) -> None:
+        #: mapping from keys to list of LinkedListNode's in self._lines
+        self._key2nodes: \
+            MutableMapping[str, List[LinkedListNode[PropertiesElement]]] \
+            = OrderedDict()
         #: linked list of PropertiesElement's in order of appearance in file
-        self._lines = LinkedList()
+        self._lines: LinkedList[PropertiesElement] = LinkedList()
         if mapping is not None:
             self.update(mapping)
         self.update(kwargs)
 
-    def _check(self):
+    def _check(self) -> None:
         """
         Assert the internal consistency of the instance's data structures.
         This method is for debugging only.
@@ -77,21 +97,19 @@ class PropertiesFile(MutableMapping):
                 assert loads(line.source) == {}, 'Comment source is not comment'
             else:
                 assert line.value is not None, 'Key has null value'
-                if line.source is not None:
+                if line.source != _NOSOURCE:
                     assert loads(line.source) == {line.key: line.value}, \
                         'Key source does not deserialize to itself'
                 assert line.key in self._key2nodes, 'Key is missing from map'
-                assert any(line == n.value for n in self._key2nodes[line.key]),\
+                assert any(line is n.value for n in self._key2nodes[line.key]),\
                     'Key does not map to itself'  # pragma: no cover
 
-    def __getitem__(self, key):
-        if not isinstance(key, str):
-            raise TypeError(_type_err)
-        return self._key2nodes[key][-1].value.value
+    def __getitem__(self, key: str) -> str:
+        pe = self._key2nodes[key][-1].value
+        assert isinstance(pe, KeyValue)
+        return pe.value
 
-    def __setitem__(self, key, value):
-        if not isinstance(key, str) or not isinstance(value, str):
-            raise TypeError(_type_err)
+    def __setitem__(self, key: str, value: str) -> None:
         try:
             nodes = self._key2nodes[key]
         except KeyError:
@@ -100,61 +118,61 @@ class PropertiesFile(MutableMapping):
                 # line before it ends with a newline and (if it's not a
                 # comment) doesn't end with a trailing line continuation.
                 lastline = self._lines.end.value
-                if lastline.source is not None:
+                if not (
+                    isinstance(lastline, KeyValue)
+                    and lastline.source == _NOSOURCE
+                ):
                     lastsrc = lastline.source
                     if isinstance(lastline, KeyValue):
                         lastsrc = CONTINUED_RGX.sub(r'\1', lastsrc)
                     if not lastsrc.endswith(('\r', '\n')):
                         lastsrc += '\n'
-                    self._lines.end.value = lastline._replace(source=lastsrc)
-            n = self._lines.append(None)
+                    self._lines.end.value = lastline._with_source(lastsrc)
+            n = self._lines.append(KeyValue(key, value, _NOSOURCE))
+            self._key2nodes[key] = [n]
         else:
             # Update the first occurrence of the key and discard the rest.
             # This way, the order in which the keys are listed in the file and
             # dict will be preserved.
-            n = nodes.pop(0)
+            n0 = nodes.pop(0)
             for n2 in nodes:
                 n2.unlink()
-        self._key2nodes[key] = [n]
-        n.value = KeyValue(key, value, None)
+            self._key2nodes[key] = [n0]
+            n0.value = KeyValue(key, value, _NOSOURCE)
 
-    def __delitem__(self, key):
-        if not isinstance(key, str):
-            raise TypeError(_type_err)
+    def __delitem__(self, key: str) -> None:
         for n in self._key2nodes.pop(key):
             n.unlink()
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         return iter(self._key2nodes)
 
-    def __reversed__(self):
-        return reversed(self._key2nodes)
+    def __reversed__(self) -> Iterator[str]:
+        return reversed(cast(Reversible[str], self._key2nodes))
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._key2nodes)
 
-    def _comparable(self):
+    def _comparable(self) -> List[Tuple[Optional[str], str]]:
         return [
-            (n.value.key, n.value.value)
-                if isinstance(n.value, KeyValue)
-                else (None, n.value.source)
+            (p.key, p.value) if isinstance(p, KeyValue) else (None, p.source)
             for n in self._lines.iternodes()
+            for p in [n.value]
             ### TODO: Also include non-final repeated keys???
-            if not isinstance(n.value, KeyValue)
-                or n is self._key2nodes[n.value.key][-1]
+            if not isinstance(p, KeyValue) or n is self._key2nodes[p.key][-1]
         ]
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, PropertiesFile):
             return self._comparable() == other._comparable()
         ### TODO: Special-case OrderedDict?
-        elif isinstance(other, Mapping):
+        elif isinstance(other, MappingABC):
             return dict(self) == other
         else:
             return NotImplemented
 
     @classmethod
-    def load(cls, fp):
+    def load(cls, fp: IO) -> "PropertiesFile":
         """
         Parse the contents of the `~io.IOBase.readline`-supporting file-like
         object ``fp`` as a simple line-oriented ``.properties`` file and return
@@ -168,8 +186,7 @@ class PropertiesFile(MutableMapping):
             Invalid ``\\uXXXX`` escape sequences will now cause an
             `InvalidUEscapeError` to be raised
 
-        :param fp: the file from which to read the ``.properties`` document
-        :type fp: file-like object
+        :param IO fp: the file from which to read the ``.properties`` document
         :rtype: PropertiesFile
         :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
             occurs in the input
@@ -182,7 +199,7 @@ class PropertiesFile(MutableMapping):
         return obj
 
     @classmethod
-    def loads(cls, s):
+    def loads(cls, s: AnyStr) -> "PropertiesFile":
         """
         Parse the contents of the string ``s`` as a simple line-oriented
         ``.properties`` file and return a `PropertiesFile` instance.
@@ -194,8 +211,8 @@ class PropertiesFile(MutableMapping):
             Invalid ``\\uXXXX`` escape sequences will now cause an
             `InvalidUEscapeError` to be raised
 
-        :param s: the string from which to read the ``.properties`` document
-        :type s: str or bytes
+        :param Union[str,bytes] s: the string from which to read the
+            ``.properties`` document
         :rtype: PropertiesFile
         :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
             occurs in the input
@@ -206,7 +223,7 @@ class PropertiesFile(MutableMapping):
             fp = StringIO(s)
         return cls.load(fp)
 
-    def dump(self, fp, separator='=', ensure_ascii=True):
+    def dump(self, fp: TextIO, separator: str = '=', ensure_ascii: bool = True) -> None:
         """
         Write the mapping to a file in simple line-oriented ``.properties``
         format.
@@ -231,8 +248,8 @@ class PropertiesFile(MutableMapping):
             ignored, as :func:`dump()` will treat the instance like a normal
             mapping.
 
-        :param fp: A file-like object to write the mapping to.  It must have
-            been opened as a text file with a Latin-1-compatible encoding.
+        :param TextIO fp: A file-like object to write the mapping to.  It must
+            have been opened as a text file with a Latin-1-compatible encoding.
         :param str separator: The string to use for separating new or modified
             keys & values.  Only ``" "``, ``"="``, and ``":"`` (possibly with
             added whitespace) should ever be used as the separator.
@@ -243,7 +260,7 @@ class PropertiesFile(MutableMapping):
         :return: `None`
         """
         for line in self._lines:
-            if line.source is None:
+            if isinstance(line, KeyValue) and line.source == _NOSOURCE:
                 print(
                     join_key_value(
                         line.key,
@@ -256,7 +273,7 @@ class PropertiesFile(MutableMapping):
             else:
                 fp.write(line.source)
 
-    def dumps(self, separator='=', ensure_ascii=True):
+    def dumps(self, separator: str = '=', ensure_ascii: bool = True) -> str:
         """
         Convert the mapping to a `str` in simple line-oriented ``.properties``
         format.
@@ -294,7 +311,7 @@ class PropertiesFile(MutableMapping):
         self.dump(s, separator=separator, ensure_ascii=ensure_ascii)
         return s.getvalue()
 
-    def copy(self):
+    def copy(self) -> "PropertiesFile":
         """ Create a copy of the mapping, including formatting information """
         dup = type(self)()
         for elem in self._lines:
@@ -304,7 +321,7 @@ class PropertiesFile(MutableMapping):
         return dup
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> Optional[str]:
         """
         .. versionadded:: 0.7.0
 
@@ -355,7 +372,7 @@ class PropertiesFile(MutableMapping):
         return None
 
     @timestamp.setter
-    def timestamp(self, value):
+    def timestamp(self, value: Union[str, None, bool, float, datetime]) -> None:
         if value is not None and value is not False:
             if not isinstance(value, str):
                 value = java_timestamp(value)
@@ -382,7 +399,7 @@ class PropertiesFile(MutableMapping):
                 self._lines.append(c)
 
     @timestamp.deleter
-    def timestamp(self):
+    def timestamp(self) -> None:
         for n in self._lines.iternodes():
             if isinstance(n.value, Comment) and n.value.is_timestamp():
                 n.unlink()
@@ -391,7 +408,7 @@ class PropertiesFile(MutableMapping):
                 return
 
     @property
-    def header_comment(self):
+    def header_comment(self) -> Optional[str]:
         """
         .. versionadded:: 0.7.0
 
@@ -449,7 +466,7 @@ class PropertiesFile(MutableMapping):
             return None
 
     @header_comment.setter
-    def header_comment(self, value):
+    def header_comment(self, value: Optional[str]) -> None:
         if value is None:
             comments = []
         else:
@@ -472,7 +489,7 @@ class PropertiesFile(MutableMapping):
                 n.insert_before(c)
 
     @header_comment.deleter
-    def header_comment(self):
+    def header_comment(self) -> None:
         while self._lines.start is not None:
             n = self._lines.start
             if isinstance(n.value, KeyValue) or \

@@ -357,46 +357,6 @@ def test_propclass_getProperty_missing_default():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("missing", "default") == "default"
 
-def test_propclass_get_nonstring_key():
-    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        p[42]
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
-def test_propclass_set_nonstring_key():
-    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        p[42] = 'forty-two'
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
-def test_propclass_set_nonstring_value():
-    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        p['forty-two'] = 42
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
-def test_propclass_del_nonstring_key():
-    p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    with pytest.raises(TypeError) as excinfo:
-        del p[42]
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
-def test_propclass_from_nonstring_key():
-    with pytest.raises(TypeError) as excinfo:
-        Properties({"key": "value", 42: "forty-two"})
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
-def test_propclass_from_nonstring_value():
-    with pytest.raises(TypeError) as excinfo:
-        Properties({"key": "value", "forty-two": 42})
-    assert str(excinfo.value) == \
-        'Keys & values of Properties instances must be strings'
-
 def test_propclass_defaults():
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)

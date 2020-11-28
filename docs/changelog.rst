@@ -11,6 +11,13 @@ v0.8.0 (in development)
   `PropertiesFile.dumps()`
 - **Bugfix**: When parsing XML input, empty ``<entry>`` tags now produce an
   empty string as a value, not `None`
+- Added type annotations
+- `Properties` and `PropertiesFile` no longer raise `TypeError` when given a
+  non-string key or value, as type correctness is now expected to be enforced
+  through static type checking
+- The `PropertiesElement` classes returned by `parse()` are no longer
+  subclasses of `~collections.namedtuple`, but they can still be iterated over
+  to retrieve their fields like a tuple
 
 v0.7.0 (2020-03-09)
 -------------------

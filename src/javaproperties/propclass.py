@@ -1,19 +1,29 @@
-from collections.abc import Mapping, MutableMapping
-from .reading        import load
-from .writing        import dump
-from .xmlprops       import dump_xml, load_xml
+from   collections.abc import Mapping as MappingABC
+import sys
+from   typing          import Any, BinaryIO, IO, Optional, TextIO, TypeVar, \
+                                Union
+from   .reading        import load
+from   .writing        import dump
+from   .xmlprops       import dump_xml, load_xml
 
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Iterator, Mapping, MutableMapping
+    Dict = dict
+    Set = set
+    Tuple = tuple
+else:
+    from typing import Dict, Iterable, Iterator, Mapping, MutableMapping, Set, \
+        Tuple
 
-_type_err = 'Keys & values of Properties instances must be strings'
+T = TypeVar('T')
 
-class Properties(MutableMapping):
+class Properties(MutableMapping[str, str]):
     """
     A port of |java8properties|_ that tries to match its behavior as much as is
     Pythonically possible.  `Properties` behaves like a normal
     `~collections.abc.MutableMapping` class (i.e., you can do ``props[key] =
     value`` and so forth), except that it may only be used to store `str`
-    values.  Attempts to use a non-string object as a key or value will produce
-    a `TypeError`.
+    values.
 
     Two `Properties` instances compare equal iff both their key-value pairs and
     :attr:`defaults` attributes are equal.  When comparing a `Properties`
@@ -28,16 +38,19 @@ class Properties(MutableMapping):
         initialize the `Properties` instance.  All keys and values in ``data``
         must be text strings.
     :type data: mapping or `None`
-    :param defaults: a set of default properties that will be used as fallback
-        for `getProperty`
-    :type defaults: `Properties` or `None`
+    :param Optional[Properties] defaults: a set of default properties that will
+        be used as fallback for `getProperty`
 
     .. |java8properties| replace:: Java 8's ``java.util.Properties``
     .. _java8properties: https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html
     """
 
-    def __init__(self, data=None, defaults=None):
-        self.data = {}
+    def __init__(
+        self,
+        data: Union[None, Mapping[str, str], Iterable[Tuple[str, str]]] = None,
+        defaults: Optional["Properties"] = None,
+    ) -> None:
+        self.data: Dict[str, str] = {}
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
         #: `getProperty`, `propertyNames`, `stringPropertyNames`, and `__eq__`
         #: use this attribute; all other methods (including the standard
@@ -46,40 +59,35 @@ class Properties(MutableMapping):
         if data is not None:
             self.update(data)
 
-    def __getitem__(self, key):
-        if not isinstance(key, str):
-            raise TypeError(_type_err)
+    def __getitem__(self, key: str) -> str:
         return self.data[key]
 
-    def __setitem__(self, key, value):
-        if not isinstance(key, str) or not isinstance(value, str):
-            raise TypeError(_type_err)
+    def __setitem__(self, key: str, value: str) -> None:
         self.data[key] = value
 
-    def __delitem__(self, key):
-        if not isinstance(key, str):
-            raise TypeError(_type_err)
+    def __delitem__(self, key: str) -> None:
         del self.data[key]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         return iter(self.data)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '{0.__module__}.{0.__name__}({1.data!r}, defaults={1.defaults!r})'\
                 .format(type(self), self)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, Properties):
             return self.data == other.data and self.defaults == other.defaults
-        elif isinstance(other, Mapping):
+        elif isinstance(other, MappingABC):
             return dict(self) == other
         else:
             return NotImplemented
 
-    def getProperty(self, key, defaultValue=None):
+    def getProperty(self, key: str, defaultValue: Optional[T] = None) \
+            -> Union[str, T, None]:
         """
         Fetch the value associated with the key ``key`` in the `Properties`
         instance.  If the key is not present, `defaults` is checked, and then
@@ -88,10 +96,9 @@ class Properties(MutableMapping):
         returned.
 
         :param str key: the key to look up the value of
-        :param defaultValue: the value to return if ``key`` is not found in the
-            `Properties` instance
+        :param Any defaultValue: the value to return if ``key`` is not found in
+            the `Properties` instance
         :rtype: str (if ``key`` was found)
-        :raises TypeError: if ``key`` is not a string
         """
         try:
             return self[key]
@@ -101,7 +108,7 @@ class Properties(MutableMapping):
             else:
                 return defaultValue
 
-    def load(self, inStream):
+    def load(self, inStream: IO) -> None:
         """
         Update the `Properties` instance with the entries in a ``.properties``
         file or file-like object.
@@ -114,22 +121,21 @@ class Properties(MutableMapping):
             Invalid ``\\uXXXX`` escape sequences will now cause an
             `InvalidUEscapeError` to be raised
 
-        :param inStream: the file from which to read the ``.properties``
+        :param IO inStream: the file from which to read the ``.properties``
             document
-        :type inStream: file-like object
         :return: `None`
         :raises InvalidUEscapeError: if an invalid ``\\uXXXX`` escape sequence
             occurs in the input
         """
         self.data.update(load(inStream))
 
-    def propertyNames(self):
+    def propertyNames(self) -> Iterator[str]:
         r"""
         Returns a generator of all distinct keys in the `Properties` instance
         and its `defaults` (and its `defaults`\’s `defaults`, etc.) in
         unspecified order
 
-        :rtype: generator of text strings
+        :rtype: Iterator[str]
         """
         for k in self.data:
             yield k
@@ -138,37 +144,37 @@ class Properties(MutableMapping):
                 if k not in self.data:
                     yield k
 
-    def setProperty(self, key, value):
+    def setProperty(self, key: str, value: str) -> None:
         """ Equivalent to ``self[key] = value`` """
         self[key] = value
 
-    def store(self, out, comments=None):
+    def store(self, out: TextIO, comments: Optional[str] = None) -> None:
         """
         Write the `Properties` instance's entries (in unspecified order) in
         ``.properties`` format to ``out``, including the current timestamp.
 
-        :param out: A file-like object to write the properties to.  It must
-            have been opened as a text file with a Latin-1-compatible encoding.
-        :param comments: If non-`None`, ``comments`` will be written to ``out``
-            as a comment before any other content
-        :type comments: str or None
+        :param TextIO out: A file-like object to write the properties to.  It
+            must have been opened as a text file with a Latin-1-compatible
+            encoding.
+        :param Optional[str] comments: If non-`None`, ``comments`` will be
+            written to ``out`` as a comment before any other content
         :return: `None`
         """
         dump(self.data, out, comments=comments)
 
-    def stringPropertyNames(self):
+    def stringPropertyNames(self) -> Set[str]:
         r"""
         Returns a `set` of all keys in the `Properties` instance and its
         `defaults` (and its `defaults`\ ’s `defaults`, etc.)
 
-        :rtype: `set` of str
+        :rtype: Set[str]
         """
         names = set(self.data)
         if self.defaults is not None:
             names.update(self.defaults.stringPropertyNames())
         return names
 
-    def loadFromXML(self, inStream):
+    def loadFromXML(self, inStream: IO) -> None:
         """
         Update the `Properties` instance with the entries in the XML properties
         file ``inStream``.
@@ -177,8 +183,8 @@ class Properties(MutableMapping):
         root element is named ``properties`` and that all of its ``entry``
         children have ``key`` attributes; no further validation is performed.
 
-        :param inStream: the file from which to read the XML properties document
-        :type inStream: file-like object
+        :param IO inStream: the file from which to read the XML properties
+            document
         :return: `None`
         :raises ValueError: if the root of the XML tree is not a
             ``<properties>`` tag or an ``<entry>`` element is missing a ``key``
@@ -186,23 +192,26 @@ class Properties(MutableMapping):
         """
         self.data.update(load_xml(inStream))
 
-    def storeToXML(self, out, comment=None, encoding='UTF-8'):
+    def storeToXML(
+        self,
+        out: BinaryIO,
+        comment: Optional[str] = None,
+        encoding: str = 'UTF-8',
+    ) -> None:
         """
         Write the `Properties` instance's entries (in unspecified order) in XML
         properties format to ``out``.
 
-        :param out: a file-like object to write the properties to
-        :type out: binary file-like object
-        :param comment: if non-`None`, ``comment`` will be output as a
-            ``<comment>`` element before the ``<entry>`` elements
-        :type comment: str or None
+        :param BinaryIO out: a file-like object to write the properties to
+        :param Optional[str] comment: if non-`None`, ``comment`` will be output
+            as a ``<comment>`` element before the ``<entry>`` elements
         :param str encoding: the name of the encoding to use for the XML
             document (also included in the XML declaration)
         :return: `None`
         """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
 
-    def copy(self):
+    def copy(self) -> "Properties":
         """
         .. versionadded:: 0.5.0
 

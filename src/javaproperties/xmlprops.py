@@ -1,9 +1,32 @@
-import codecs
+import sys
+from   typing                import AnyStr, BinaryIO, Callable, IO, Optional, \
+                                Type, TypeVar, Union, overload
 import xml.etree.ElementTree as ET
 from   xml.sax.saxutils      import escape, quoteattr
 from   .util                 import itemize
 
-def load_xml(fp, object_pairs_hook=dict):
+if sys.version_info[:2] >= (3,9):
+    from collections.abc import Iterable, Iterator, Mapping
+    Dict = dict
+    Tuple = tuple
+else:
+    from typing import Dict, Iterable, Iterator, Tuple, Mapping
+
+T = TypeVar('T')
+
+@overload
+def load_xml(fp: IO) -> Dict[str, str]:
+    ...
+
+@overload
+def load_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
+    ...
+
+@overload
+def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+    ...
+
+def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     r"""
     Parse the contents of the file-like object ``fp`` as an XML properties file
     and return a `dict` of the key-value pairs.
@@ -21,8 +44,7 @@ def load_xml(fp, object_pairs_hook=dict):
     ``fp`` (including duplicates) in order of occurrence.  `load_xml` will then
     return the value returned by ``object_pairs_hook``.
 
-    :param fp: the file from which to read the XML properties document
-    :type fp: file-like object
+    :param IO fp: the file from which to read the XML properties document
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` or the return value of ``object_pairs_hook``
@@ -32,7 +54,19 @@ def load_xml(fp, object_pairs_hook=dict):
     tree = ET.parse(fp)
     return object_pairs_hook(_fromXML(tree.getroot()))
 
-def loads_xml(s, object_pairs_hook=dict):
+@overload
+def loads_xml(s: AnyStr) -> Dict[str, str]:
+    ...
+
+@overload
+def loads_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
+    ...
+
+@overload
+def loads_xml(s: AnyStr, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+    ...
+
+def loads_xml(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     r"""
     Parse the contents of the string ``s`` as an XML properties document and
     return a `dict` of the key-value pairs.
@@ -50,8 +84,8 @@ def loads_xml(s, object_pairs_hook=dict):
     ``s`` (including duplicates) in order of occurrence.  `loads_xml` will then
     return the value returned by ``object_pairs_hook``.
 
-    :param s: the string from which to read the XML properties document
-    :type s: str or bytes
+    :param Union[str,bytes] s: the string from which to read the XML properties
+        document
     :param callable object_pairs_hook: class or function for combining the
         key-value pairs
     :rtype: `dict` or the return value of ``object_pairs_hook``
@@ -61,7 +95,7 @@ def loads_xml(s, object_pairs_hook=dict):
     elem = ET.fromstring(s)
     return object_pairs_hook(_fromXML(elem))
 
-def _fromXML(root):
+def _fromXML(root: ET.Element) -> Iterator[Tuple[str, str]]:
     if root.tag != 'properties':
         raise ValueError('XML tree is not rooted at <properties>')
     for entry in root.findall('entry'):
@@ -70,7 +104,13 @@ def _fromXML(root):
             raise ValueError('<entry> is missing "key" attribute')
         yield (key, entry.text or '')
 
-def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
+def dump_xml(
+    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    fp: BinaryIO,
+    comment: Optional[str] = None,
+    encoding: str = 'UTF-8',
+    sort_keys: bool = False,
+) -> None:
     """
     Write a series ``props`` of key-value pairs to a binary filehandle ``fp``
     in the format of an XML properties file.  The file will include both an XML
@@ -79,24 +119,34 @@ def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     :param props: A mapping or iterable of ``(key, value)`` pairs to write to
         ``fp``.  All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
-    :param fp: a file-like object to write the values of ``props`` to
-    :type fp: binary file-like object
-    :param comment: if non-`None`, ``comment`` will be output as a
-        ``<comment>`` element before the ``<entry>`` elements
-    :type comment: str or None
+    :param BinaryIO fp: a file-like object to write the values of ``props`` to
+    :param Optional[str] comment: if non-`None`, ``comment`` will be output as
+        a ``<comment>`` element before the ``<entry>`` elements
     :param str encoding: the name of the encoding to use for the XML document
         (also included in the XML declaration)
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
     :return: `None`
     """
-    fp = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
-    print('<?xml version="1.0" encoding={0} standalone="no"?>'
-          .format(quoteattr(encoding)), file=fp)
+    # This gives type errors <https://github.com/python/typeshed/issues/4793>:
+    #fptxt = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
+    #print('<?xml version="1.0" encoding={0} standalone="no"?>'
+    #      .format(quoteattr(encoding)), file=fptxt)
+    #for s in _stream_xml(props, comment, sort_keys):
+    #    print(s, file=fptxt)
+    fp.write(
+        '<?xml version="1.0" encoding={0} standalone="no"?>\n'
+        .format(quoteattr(encoding))
+        .encode(encoding, 'xmlcharrefreplace')
+    )
     for s in _stream_xml(props, comment, sort_keys):
-        print(s, file=fp)
+        fp.write((s + '\n').encode(encoding, 'xmlcharrefreplace'))
 
-def dumps_xml(props, comment=None, sort_keys=False):
+def dumps_xml(
+    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    comment: Optional[str] = None,
+    sort_keys: bool = False,
+) -> str:
     """
     Convert a series ``props`` of key-value pairs to a `str` containing an XML
     properties document.  The document will include a doctype declaration but
@@ -105,16 +155,19 @@ def dumps_xml(props, comment=None, sort_keys=False):
     :param props: A mapping or iterable of ``(key, value)`` pairs to serialize.
         All keys and values in ``props`` must be `str` values.  If
         ``sort_keys`` is `False`, the entries are output in iteration order.
-    :param comment: if non-`None`, ``comment`` will be output as a
-        ``<comment>`` element before the ``<entry>`` elements
-    :type comment: str or None
+    :param Optional[str] comment: if non-`None`, ``comment`` will be output as
+        a ``<comment>`` element before the ``<entry>`` elements
     :param bool sort_keys: if true, the elements of ``props`` are sorted
         lexicographically by key in the output
     :rtype: str
     """
     return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
 
-def _stream_xml(props, comment=None, sort_keys=False):
+def _stream_xml(
+    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    comment: Optional[str] = None,
+    sort_keys: bool = False,
+) -> Iterator[str]:
     yield '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">'
     yield '<properties>'
     if comment is not None:
