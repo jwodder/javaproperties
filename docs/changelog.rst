@@ -3,8 +3,8 @@
 Changelog
 =========
 
-v0.8.0 (in development)
------------------------
+v0.8.0 (2020-11-28)
+-------------------
 - Drop support for Python 2.7, 3.4, and 3.5
 - Support Python 3.9
 - ``ensure_ascii`` parameter added to `PropertiesFile.dump()` and
@@ -19,6 +19,7 @@ v0.8.0 (in development)
   subclasses of `~collections.namedtuple`, but they can still be iterated over
   to retrieve their fields like a tuple
 
+
 v0.7.0 (2020-03-09)
 -------------------
 - `parse()` now accepts strings as input
@@ -27,6 +28,7 @@ v0.7.0 (2020-03-09)
 - Gave `PropertiesFile` a settable `~PropertiesFile.timestamp` property
 - Gave `PropertiesFile` a settable `~PropertiesFile.header_comment` property
 - Handle unescaping surrogate pairs on narrow Python builds
+
 
 v0.6.0 (2020-02-28)
 -------------------
@@ -44,10 +46,12 @@ v0.6.0 (2020-02-28)
 - Added a custom encoding error handler ``'javapropertiesreplace'`` that
   encodes invalid characters as ``\uXXXX`` escape sequences
 
+
 v0.5.2 (2019-04-08)
 -------------------
 - Added an example of each format to the format descriptions in the docs
 - Fix building in non-UTF-8 environments
+
 
 v0.5.1 (2018-10-25)
 -------------------
@@ -55,6 +59,7 @@ v0.5.1 (2018-10-25)
   `~datetime.datetime` objects with ``fold=1``
 - Include installation instructions, examples, and GitHub links in the Read the
   Docs site
+
 
 v0.5.0 (2018-09-18)
 -------------------
@@ -66,6 +71,7 @@ v0.5.0 (2018-09-18)
 - Drop support for Python 2.6 and 3.3
 - Fixed a `DeprecationWarning` in Python 3.7
 
+
 v0.4.0 (2017-04-22)
 -------------------
 - Split off the command-line programs into a separate package, |clipkg|_
@@ -73,16 +79,19 @@ v0.4.0 (2017-04-22)
 .. |clipkg| replace:: ``javaproperties-cli``
 .. _clipkg: https://github.com/jwodder/javaproperties-cli
 
+
 v0.3.0 (2017-04-13)
 -------------------
 - Added the `PropertiesFile` class for preserving comments in files [#1]
 - The ``ordereddict`` package is now required under Python 2.6
+
 
 v0.2.1 (2017-03-20)
 -------------------
 - **Bugfix** to :program:`javaproperties` command: Don't die horribly on
   missing non-ASCII keys
 - PyPy now supported
+
 
 v0.2.0 (2016-11-14)
 -------------------
@@ -94,6 +103,7 @@ v0.2.0 (2016-11-14)
 - Exported the `java_timestamp()` function
 - `to_comment()` now converts CR LF and CR line endings inside comments to LF
 - Some minor documentation improvements
+
 
 v0.1.0 (2016-10-02)
 -------------------

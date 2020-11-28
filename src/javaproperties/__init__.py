@@ -22,7 +22,7 @@ from   .writing   import dump, dumps, escape, java_timestamp, \
                             to_comment
 from   .xmlprops  import dump_xml, dumps_xml, load_xml, loads_xml
 
-__version__      = '0.8.0.dev1'
+__version__      = '0.8.0'
 __author__       = 'John Thorvald Wodder II'
 __author_email__ = 'javaproperties@varonathe.org'
 __license__      = 'MIT'
