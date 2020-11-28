@@ -44,6 +44,7 @@ def test_propclass_empty(fixed_timestamp):
     s = StringIO()
     p.store(s)
     assert s.getvalue() == '#' + fixed_timestamp + '\n'
+    assert list(p.items()) == []
 
 def test_propclass_load():
     p = Properties()
@@ -56,6 +57,12 @@ def test_propclass_load():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_nonempty_load():
     p = Properties({"key": "lock", "horse": "orange"})
@@ -69,6 +76,13 @@ def test_propclass_nonempty_load():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("key", "value"),
+        ("horse", "orange"),
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_loadFromXML():
     p = Properties()
@@ -81,6 +95,12 @@ def test_propclass_loadFromXML():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_nonempty_loadFromXML():
     p = Properties({"key": "lock", "horse": "orange"})
@@ -94,6 +114,13 @@ def test_propclass_nonempty_loadFromXML():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("key", "value"),
+        ("horse", "orange"),
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_getitem():
     p = Properties()
@@ -115,6 +142,12 @@ def test_propclass_setitem():
         "key": "lock",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "lock"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_additem():
     p = Properties()
@@ -129,6 +162,13 @@ def test_propclass_additem():
         "zebra": "apple",
         "new": "old",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+        ("new", "old"),
+    ]
 
 def test_propclass_delitem():
     p = Properties()
@@ -141,6 +181,11 @@ def test_propclass_delitem():
         "bar": "only definition",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_delitem_missing():
     p = Properties()
@@ -155,18 +200,32 @@ def test_propclass_delitem_missing():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(p.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
 
 def test_propclass_from_dict():
     p = Properties({"key": "value", "apple": "zebra"})
     assert len(p) == 2
     assert bool(p)
     assert dict(p) == {"apple": "zebra", "key": "value"}
+    assert list(p.items()) == [
+        ("key", "value"),
+        ("apple", "zebra"),
+    ]
 
 def test_propclass_from_pairs_list():
     p = Properties([("key", "value"), ("apple", "zebra")])
     assert len(p) == 2
     assert bool(p)
     assert dict(p) == {"apple": "zebra", "key": "value"}
+    assert list(p.items()) == [
+        ("key", "value"),
+        ("apple", "zebra"),
+    ]
 
 def test_propclass_copy():
     p = Properties({"Foo": "bar"})
@@ -175,13 +234,18 @@ def test_propclass_copy():
     assert isinstance(p2, Properties)
     assert p == p2
     assert dict(p) == dict(p2) == {"Foo": "bar"}
+    assert list(p.items()) == list(p2.items()) == [("Foo", "bar")]
     p2["Foo"] = "gnusto"
     assert dict(p) == {"Foo": "bar"}
+    assert list(p.items()) == [("Foo", "bar")]
     assert dict(p2) == {"Foo": "gnusto"}
+    assert list(p2.items()) == [("Foo", "gnusto")]
     assert p != p2
     p2["fOO"] = "quux"
     assert dict(p) == {"Foo": "bar"}
+    assert list(p.items()) == [("Foo", "bar")]
     assert dict(p2) == {"Foo": "gnusto", "fOO": "quux"}
+    assert list(p2.items()) == [("Foo", "gnusto"), ("fOO", "quux")]
     assert p != p2
 
 def test_propclass_copy_more():

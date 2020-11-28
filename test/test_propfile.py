@@ -28,6 +28,7 @@ def test_propfile_empty():
     assert len(pf) == 0
     assert not bool(pf)
     assert dict(pf) == {}
+    assert list(pf.items()) == []
     assert list(pf) == []
     assert list(reversed(pf)) == []
     assert pf.dumps() == ''
@@ -44,6 +45,12 @@ def test_propfile_loads(src):
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
 
@@ -72,6 +79,12 @@ def test_propfile_setitem():
         "key": "lock",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "lock"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -104,6 +117,13 @@ def test_propfile_additem():
         "zebra": "apple",
         "new": "old",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+        ("new", "old"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra", "new"]
     assert list(reversed(pf)) == ["new", "zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -135,6 +155,11 @@ def test_propfile_delitem():
         "bar": "only definition",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "zebra"]
     assert list(reversed(pf)) == ["zebra", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -168,6 +193,12 @@ def test_propfile_delitem_missing():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == INPUT
@@ -185,6 +216,12 @@ def test_propfile_move_item():
         "key": "recreated",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("zebra", "apple"),
+        ("key", "recreated"),
+    ]
     assert list(pf) == ["foo", "bar", "zebra", "key"]
     assert list(reversed(pf)) == ["key", "zebra", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -217,6 +254,12 @@ def test_propfile_set_nochange():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "second definition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -256,6 +299,12 @@ def test_propfile_set_repeated_key():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("foo", "redefinition"),
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
     assert pf.dumps() == '''\
@@ -285,6 +334,11 @@ def test_propfile_delete_repeated_key():
         "key": "value",
         "zebra": "apple",
     }
+    assert list(pf.items()) == [
+        ("bar", "only definition"),
+        ("key", "value"),
+        ("zebra", "apple"),
+    ]
     assert list(pf) == ["bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar"]
     assert pf.dumps() == '''\
@@ -309,6 +363,7 @@ def test_propfile_from_ordereddict():
     assert len(pf) == 2
     assert bool(pf)
     assert dict(pf) == {"apple": "zebra", "key": "value"}
+    assert list(pf.items()) == [("key", "value"), ("apple", "zebra")]
     assert list(pf) == ["key", "apple"]
     assert list(reversed(pf)) == ["apple", "key"]
     assert pf.dumps() == 'key=value\napple=zebra\n'
@@ -319,6 +374,7 @@ def test_propfile_from_kwarg():
     assert len(pf) == 1
     assert bool(pf)
     assert dict(pf) == {"key": "value"}
+    assert list(pf.items()) == [("key", "value")]
     assert list(pf) == ["key"]
     assert list(reversed(pf)) == ["key"]
     assert pf.dumps() == 'key=value\n'
@@ -329,6 +385,7 @@ def test_propfile_from_pairs_list():
     assert len(pf) == 2
     assert bool(pf)
     assert dict(pf) == {"apple": "zebra", "key": "value"}
+    assert list(pf.items()) == [("key", "value"), ("apple", "zebra")]
     assert list(pf) == ["key", "apple"]
     assert list(reversed(pf)) == ["apple", "key"]
     assert pf.dumps() == 'key=value\napple=zebra\n'
@@ -340,6 +397,7 @@ def test_propfile_from_ordereddict_and_kwarg():
     assert len(pf) == 2
     assert bool(pf)
     assert dict(pf) == {"apple": "zebra", "key": "lock"}
+    assert list(pf.items()) == [("key", "lock"), ("apple", "zebra")]
     assert list(pf) == ["key", "apple"]
     assert list(reversed(pf)) == ["apple", "key"]
     assert pf.dumps() == 'key=lock\napple=zebra\n'
