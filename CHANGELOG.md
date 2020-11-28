@@ -4,6 +4,8 @@ v0.8.0 (in development)
 - Support Python 3.9
 - `ensure_ascii` parameter added to `PropertiesFile.dump()` and
   `PropertiesFile.dumps()`
+- **Bugfix**: When parsing XML input, empty `<entry>` tags now produce an empty
+  string as a value, not `None`
 
 v0.7.0 (2020-03-09)
 -------------------

@@ -68,7 +68,7 @@ def _fromXML(root):
         key = entry.get('key')
         if key is None:
             raise ValueError('<entry> is missing "key" attribute')
-        yield (key, entry.text)
+        yield (key, entry.text or '')
 
 def dump_xml(props, fp, comment=None, encoding='UTF-8', sort_keys=False):
     """

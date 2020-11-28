@@ -17,6 +17,14 @@ from   javaproperties import loads_xml
         {"key": "\n"},
     ),
     (
+        '<properties><entry key="key"></entry></properties>',
+        {"key": ""},
+    ),
+    (
+        '<properties><entry key="key"/></properties>',
+        {"key": ""},
+    ),
+    (
         '<properties>'
         '<entry key="key">\n</entry>'
         '<not-an-entry><entry key="foo">bar</entry></not-an-entry>'
