@@ -14,9 +14,9 @@ Low-Level Parsing
 -----------------
 .. autofunction:: parse
 .. autoclass:: PropertiesElement
-.. autoclass:: Comment(source)
-.. autoclass:: KeyValue(key, value, source)
-.. autoclass:: Whitespace(source)
+.. autoclass:: Comment
+.. autoclass:: KeyValue
+.. autoclass:: Whitespace
 
 .. _javapropertiesreplace:
 .. index::
