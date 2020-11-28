@@ -215,7 +215,7 @@ class KeyValue(PropertiesElement):
 
     def __repr__(self) -> str:
         return (
-            '{0.__module__}.{0.__name__}(key={1.key}, value={1.value},'
+            '{0.__module__}.{0.__name__}(key={1.key!r}, value={1.value!r},'
             ' source={1.source!r})'
             .format(type(self), self)
         )

@@ -56,14 +56,17 @@ def test_keyvalue_attributes():
     assert kv.key == 'a'
     assert kv.value == 'b'
     assert kv.source == 'c'
+    assert repr(kv) == "javaproperties.reading.KeyValue(key='a', value='b', source='c')"
 
 def test_comment_attributes():
     c = Comment('a')
     assert c.source == 'a'
+    assert repr(c) == "javaproperties.reading.Comment(source='a')"
 
 def test_whitespace_attributes():
     ws = Whitespace('a')
     assert ws.source == 'a'
+    assert repr(ws) == "javaproperties.reading.Whitespace(source='a')"
 
 @pytest.mark.parametrize('c,is_t', [
     ('#\n', False),
