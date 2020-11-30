@@ -37,7 +37,7 @@ Installation
 Just use `pip <https://pip.pypa.io>`_ (You have pip, right?) to install
 ``javaproperties`` and its dependencies::
 
-    pip install javaproperties
+    python3 -m pip install javaproperties
 
 
 Examples
