@@ -33,9 +33,8 @@ programs have been split off into a separate package, |clipkg|_.
 
 Installation
 ============
-
-Just use `pip <https://pip.pypa.io>`_ (You have pip, right?) to install
-``javaproperties`` and its dependencies::
+``javaproperties`` requires Python 3.6 or higher.  Just use `pip
+<https://pip.pypa.io>`_ for Python 3 (You have pip, right?) to install it::
 
     python3 -m pip install javaproperties
 
