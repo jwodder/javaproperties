@@ -1,30 +1,44 @@
 import sys
-from   typing                import AnyStr, BinaryIO, Callable, IO, Optional, \
-                                Type, TypeVar, Union, overload
+from typing import (
+    AnyStr,
+    BinaryIO,
+    Callable,
+    IO,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 import xml.etree.ElementTree as ET
-from   xml.sax.saxutils      import escape, quoteattr
-from   .util                 import itemize
+from xml.sax.saxutils import escape, quoteattr
+from .util import itemize
 
-if sys.version_info[:2] >= (3,9):
+if sys.version_info[:2] >= (3, 9):
     from collections.abc import Iterable, Iterator, Mapping
+
     Dict = dict
     Tuple = tuple
 else:
     from typing import Dict, Iterable, Iterator, Tuple, Mapping
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 @overload
 def load_xml(fp: IO) -> Dict[str, str]:
     ...
 
+
 @overload
 def load_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
     ...
 
+
 @overload
-def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]) -> T:
     ...
+
 
 def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     r"""
@@ -54,17 +68,23 @@ def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     tree = ET.parse(fp)
     return object_pairs_hook(_fromXML(tree.getroot()))
 
+
 @overload
 def loads_xml(s: AnyStr) -> Dict[str, str]:
     ...
+
 
 @overload
 def loads_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
     ...
 
+
 @overload
-def loads_xml(s: AnyStr, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+def loads_xml(
+    s: AnyStr, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]
+) -> T:
     ...
+
 
 def loads_xml(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     r"""
@@ -95,20 +115,22 @@ def loads_xml(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     elem = ET.fromstring(s)
     return object_pairs_hook(_fromXML(elem))
 
+
 def _fromXML(root: ET.Element) -> Iterator[Tuple[str, str]]:
-    if root.tag != 'properties':
-        raise ValueError('XML tree is not rooted at <properties>')
-    for entry in root.findall('entry'):
-        key = entry.get('key')
+    if root.tag != "properties":
+        raise ValueError("XML tree is not rooted at <properties>")
+    for entry in root.findall("entry"):
+        key = entry.get("key")
         if key is None:
             raise ValueError('<entry> is missing "key" attribute')
-        yield (key, entry.text or '')
+        yield (key, entry.text or "")
+
 
 def dump_xml(
-    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
     fp: BinaryIO,
     comment: Optional[str] = None,
-    encoding: str = 'UTF-8',
+    encoding: str = "UTF-8",
     sort_keys: bool = False,
 ) -> None:
     """
@@ -129,21 +151,22 @@ def dump_xml(
     :return: `None`
     """
     # This gives type errors <https://github.com/python/typeshed/issues/4793>:
-    #fptxt = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
-    #print('<?xml version="1.0" encoding={0} standalone="no"?>'
+    # fptxt = codecs.lookup(encoding).streamwriter(fp, errors='xmlcharrefreplace')
+    # print('<?xml version="1.0" encoding={0} standalone="no"?>'
     #      .format(quoteattr(encoding)), file=fptxt)
-    #for s in _stream_xml(props, comment, sort_keys):
+    # for s in _stream_xml(props, comment, sort_keys):
     #    print(s, file=fptxt)
     fp.write(
-        '<?xml version="1.0" encoding={0} standalone="no"?>\n'
-        .format(quoteattr(encoding))
-        .encode(encoding, 'xmlcharrefreplace')
+        '<?xml version="1.0" encoding={0} standalone="no"?>\n'.format(
+            quoteattr(encoding)
+        ).encode(encoding, "xmlcharrefreplace")
     )
     for s in _stream_xml(props, comment, sort_keys):
-        fp.write((s + '\n').encode(encoding, 'xmlcharrefreplace'))
+        fp.write((s + "\n").encode(encoding, "xmlcharrefreplace"))
+
 
 def dumps_xml(
-    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
     comment: Optional[str] = None,
     sort_keys: bool = False,
 ) -> str:
@@ -161,17 +184,18 @@ def dumps_xml(
         lexicographically by key in the output
     :rtype: str
     """
-    return ''.join(s + '\n' for s in _stream_xml(props, comment, sort_keys))
+    return "".join(s + "\n" for s in _stream_xml(props, comment, sort_keys))
+
 
 def _stream_xml(
-    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
     comment: Optional[str] = None,
     sort_keys: bool = False,
 ) -> Iterator[str]:
     yield '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">'
-    yield '<properties>'
+    yield "<properties>"
     if comment is not None:
-        yield '<comment>' + escape(comment) + '</comment>'
-    for k,v in itemize(props, sort_keys=sort_keys):
-        yield '<entry key={0}>{1}</entry>'.format(quoteattr(k), escape(v))
-    yield '</properties>'
+        yield "<comment>" + escape(comment) + "</comment>"
+    for k, v in itemize(props, sort_keys=sort_keys):
+        yield "<entry key={0}>{1}</entry>".format(quoteattr(k), escape(v))
+    yield "</properties>"

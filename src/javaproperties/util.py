@@ -1,21 +1,23 @@
 import re
 import sys
-from   typing import Generic, Optional, TypeVar, Union
+from typing import Generic, Optional, TypeVar, Union
 
-if sys.version_info[:2] >= (3,9):
+if sys.version_info[:2] >= (3, 9):
     from collections.abc import Iterable, Iterator, Mapping
+
     List = list
     Tuple = tuple
 else:
     from typing import List, Iterable, Iterator, Mapping, Tuple
 
-CONTINUED_RGX = re.compile(r'(?<!\\)((?:\\\\)*)\\\r?\n?\Z')
+CONTINUED_RGX = re.compile(r"(?<!\\)((?:\\\\)*)\\\r?\n?\Z")
 
-EOL_RGX = re.compile(r'\r\n?|\n')
+EOL_RGX = re.compile(r"\r\n?|\n")
 
 T = TypeVar("T")
 K = TypeVar("K")
 V = TypeVar("V")
+
 
 class LinkedList(Generic[T]):
     def __init__(self) -> None:
@@ -43,7 +45,7 @@ class LinkedList(Generic[T]):
         return n
 
     def find_node(self, node: "LinkedListNode[T]") -> Optional[int]:
-        for i,n in enumerate(self.iternodes()):
+        for i, n in enumerate(self.iternodes()):
             if n is node:
                 return i
         return None
@@ -67,7 +69,7 @@ class LinkedListNode(Generic[T]):
             self.lst.end = self.prev
 
     def insert_after(self, value: T) -> "LinkedListNode[T]":
-        """ Inserts a new node with value ``value`` after the node ``self`` """
+        """Inserts a new node with value ``value`` after the node ``self``"""
         n = LinkedListNode(value, self.lst)
         n.prev = self
         n.next = self.next
@@ -96,10 +98,10 @@ class LinkedListNode(Generic[T]):
 
 
 def itemize(
-    kvs: Union[Mapping[K,V], Iterable[Tuple[K,V]]],
+    kvs: Union[Mapping[K, V], Iterable[Tuple[K, V]]],
     sort_keys: bool = False,
-) -> Iterable[Tuple[K,V]]:
-    items: Iterable[Tuple[K,V]]
+) -> Iterable[Tuple[K, V]]:
+    items: Iterable[Tuple[K, V]]
     if isinstance(kvs, Mapping):
         items = ((k, kvs[k]) for k in kvs)
     else:
@@ -107,6 +109,7 @@ def itemize(
     if sort_keys:
         items = sorted(items)
     return items
+
 
 def ascii_splitlines(s: str) -> List[str]:
     """
@@ -116,7 +119,7 @@ def ascii_splitlines(s: str) -> List[str]:
     lines = []
     lastend = 0
     for m in EOL_RGX.finditer(s):
-        lines.append(s[lastend:m.end()])
+        lines.append(s[lastend : m.end()])
         lastend = m.end()
     if lastend < len(s):
         lines.append(s[lastend:])

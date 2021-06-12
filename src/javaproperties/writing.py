@@ -1,22 +1,24 @@
-from   datetime import datetime
-from   io       import StringIO
+from datetime import datetime
+from io import StringIO
 import re
 import sys
 import time
-from   typing   import Optional, TextIO, Union
-from   .util    import itemize
+from typing import Optional, TextIO, Union
+from .util import itemize
 
-if sys.version_info[:2] >= (3,9):
+if sys.version_info[:2] >= (3, 9):
     from collections.abc import Iterable, Mapping
     from re import Match
+
     Tuple = tuple
 else:
     from typing import Iterable, Mapping, Match, Tuple
 
+
 def dump(
-    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
+    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
     fp: TextIO,
-    separator: str = '=',
+    separator: str = "=",
     comments: Optional[str] = None,
     timestamp: Union[None, bool, float, datetime] = True,
     sort_keys: bool = False,
@@ -63,15 +65,16 @@ def dump(
         print(to_comment(comments, ensure_ascii=ensure_ascii_comments), file=fp)
     if timestamp is not None and timestamp is not False:
         print(to_comment(java_timestamp(timestamp)), file=fp)
-    for k,v in itemize(props, sort_keys=sort_keys):
+    for k, v in itemize(props, sort_keys=sort_keys):
         print(
             join_key_value(k, v, separator, ensure_ascii=ensure_ascii),
             file=fp,
         )
 
+
 def dumps(
-    props: Union[Mapping[str,str], Iterable[Tuple[str,str]]],
-    separator: str = '=',
+    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    separator: str = "=",
     comments: Optional[str] = None,
     timestamp: Union[None, bool, float, datetime] = True,
     sort_keys: bool = False,
@@ -113,15 +116,24 @@ def dumps(
     :rtype: text string
     """
     s = StringIO()
-    dump(props, s, separator=separator, comments=comments, timestamp=timestamp,
-         sort_keys=sort_keys, ensure_ascii=ensure_ascii,
-         ensure_ascii_comments=ensure_ascii_comments)
+    dump(
+        props,
+        s,
+        separator=separator,
+        comments=comments,
+        timestamp=timestamp,
+        sort_keys=sort_keys,
+        ensure_ascii=ensure_ascii,
+        ensure_ascii_comments=ensure_ascii_comments,
+    )
     return s.getvalue()
 
-NON_ASCII_RGX = re.compile(r'[^\x00-\x7F]')
-NON_LATIN1_RGX = re.compile(r'[^\x00-\xFF]')
-NEWLINE_OLD_COMMENT_RGX = re.compile(r'\n(?![#!])')
-NON_N_EOL_RGX = re.compile(r'\r\n?')
+
+NON_ASCII_RGX = re.compile(r"[^\x00-\x7F]")
+NON_LATIN1_RGX = re.compile(r"[^\x00-\xFF]")
+NEWLINE_OLD_COMMENT_RGX = re.compile(r"\n(?![#!])")
+NON_N_EOL_RGX = re.compile(r"\r\n?")
+
 
 def to_comment(comment: str, ensure_ascii: Optional[bool] = None) -> str:
     """
@@ -145,18 +157,19 @@ def to_comment(comment: str, ensure_ascii: Optional[bool] = None) -> str:
         will be escaped
     :rtype: str
     """
-    comment = NON_N_EOL_RGX.sub('\n', comment)
-    comment = NEWLINE_OLD_COMMENT_RGX.sub('\n#', comment)
+    comment = NON_N_EOL_RGX.sub("\n", comment)
+    comment = NEWLINE_OLD_COMMENT_RGX.sub("\n#", comment)
     if ensure_ascii is None:
         comment = NON_LATIN1_RGX.sub(_esc, comment)
     elif ensure_ascii:
         comment = NON_ASCII_RGX.sub(_esc, comment)
-    return '#' + comment
+    return "#" + comment
+
 
 def join_key_value(
     key: str,
     value: str,
-    separator: str = '=',
+    separator: str = "=",
     ensure_ascii: bool = True,
 ) -> str:
     r"""
@@ -181,21 +194,23 @@ def join_key_value(
     """
     # Escapes `key` and `value` the same way as java.util.Properties.store()
     value = _base_escape(value, ensure_ascii=ensure_ascii)
-    if value.startswith(' '):
-        value = '\\' + value
+    if value.startswith(" "):
+        value = "\\" + value
     return escape(key, ensure_ascii=ensure_ascii) + separator + value
 
+
 _escapes = {
-    '\t': r'\t',
-    '\n': r'\n',
-    '\f': r'\f',
-    '\r': r'\r',
-    '!': r'\!',
-    '#': r'\#',
-    ':': r'\:',
-    '=': r'\=',
-    '\\': r'\\',
+    "\t": r"\t",
+    "\n": r"\n",
+    "\f": r"\f",
+    "\r": r"\r",
+    "!": r"\!",
+    "#": r"\#",
+    ":": r"\:",
+    "=": r"\=",
+    "\\": r"\\",
 }
+
 
 def _esc(m: Match[str]) -> str:
     c = m.group()
@@ -204,6 +219,7 @@ def _esc(m: Match[str]) -> str:
     except KeyError:
         return _to_u_escape(c)
 
+
 def _to_u_escape(c: str) -> str:
     co = ord(c)
     if co > 0xFFFF:
@@ -211,19 +227,19 @@ def _to_u_escape(c: str) -> str:
         # surrogate pairs?
         assert co <= 0x10FFFF
         co -= 0x10000
-        return '\\u{0:04x}\\u{1:04x}'.format(
-            0xD800 + (co >> 10),
-            0xDC00 + (co & 0x3FF)
-        )
+        return "\\u{0:04x}\\u{1:04x}".format(0xD800 + (co >> 10), 0xDC00 + (co & 0x3FF))
     else:
-        return f'\\u{co:04x}'
+        return f"\\u{co:04x}"
 
-NEEDS_ESCAPE_ASCII_RGX = re.compile(r'[^\x20-\x7E]|[\\#!=:]')
-NEEDS_ESCAPE_UNICODE_RGX = re.compile(r'[\x00-\x1F\x7F]|[\\#!=:]')
+
+NEEDS_ESCAPE_ASCII_RGX = re.compile(r"[^\x20-\x7E]|[\\#!=:]")
+NEEDS_ESCAPE_UNICODE_RGX = re.compile(r"[\x00-\x1F\x7F]|[\\#!=:]")
+
 
 def _base_escape(field: str, ensure_ascii: bool = True) -> str:
     rgx = NEEDS_ESCAPE_ASCII_RGX if ensure_ascii else NEEDS_ESCAPE_UNICODE_RGX
     return rgx.sub(_esc, field)
+
 
 def escape(field: str, ensure_ascii: bool = True) -> str:
     """
@@ -243,14 +259,26 @@ def escape(field: str, ensure_ascii: bool = True) -> str:
         non-ASCII characters will be passed through as-is
     :rtype: str
     """
-    return _base_escape(field, ensure_ascii=ensure_ascii).replace(' ', r'\ ')
+    return _base_escape(field, ensure_ascii=ensure_ascii).replace(" ", r"\ ")
 
-DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+DAYS_OF_WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 MONTHS = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ]
+
 
 def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
     """
@@ -281,7 +309,7 @@ def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
     .. _date_tostring: https://docs.oracle.com/javase/8/docs/api/java/util/Date.html#toString--
     """
     if timestamp is None or timestamp is False:
-        return ''
+        return ""
     if isinstance(timestamp, datetime) and timestamp.tzinfo is not None:
         timebits = timestamp.timetuple()
         # Assumes `timestamp.tzinfo.tzname()` is meaningful/useful
@@ -301,16 +329,19 @@ def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
             ts = timestamp
         timebits = time.localtime(ts)
         tzname = timebits.tm_zone
-    assert 1 <= timebits.tm_mon <= 12, 'invalid month'
-    assert 0 <= timebits.tm_wday <= 6, 'invalid day of week'
-    return '{wday} {mon} {t.tm_mday:02d}' \
-           ' {t.tm_hour:02d}:{t.tm_min:02d}:{t.tm_sec:02d}' \
-           ' {tz} {t.tm_year:04d}'.format(
-                t=timebits,
-                tz=tzname,
-                mon=MONTHS[timebits.tm_mon-1],
-                wday=DAYS_OF_WEEK[timebits.tm_wday]
-            )
+    assert 1 <= timebits.tm_mon <= 12, "invalid month"
+    assert 0 <= timebits.tm_wday <= 6, "invalid day of week"
+    return (
+        "{wday} {mon} {t.tm_mday:02d}"
+        " {t.tm_hour:02d}:{t.tm_min:02d}:{t.tm_sec:02d}"
+        " {tz} {t.tm_year:04d}".format(
+            t=timebits,
+            tz=tzname,
+            mon=MONTHS[timebits.tm_mon - 1],
+            wday=DAYS_OF_WEEK[timebits.tm_wday],
+        )
+    )
+
 
 def javapropertiesreplace_errors(e: Union[UnicodeError]) -> Tuple[str, int]:
     """
@@ -321,6 +352,6 @@ def javapropertiesreplace_errors(e: Union[UnicodeError]) -> Tuple[str, int]:
     sequences (with non-BMP characters converted to surrogate pairs first)
     """
     if isinstance(e, UnicodeEncodeError):
-        return (''.join(map(_to_u_escape, e.object[e.start:e.end])), e.end)
+        return ("".join(map(_to_u_escape, e.object[e.start : e.end])), e.end)
     else:
         raise e  # pragma: no cover

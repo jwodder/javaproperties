@@ -12,45 +12,59 @@ Visit <https://github.com/jwodder/javaproperties> or
 """
 
 import codecs
-from   .propclass import Properties
-from   .propfile  import PropertiesFile
-from   .reading   import Comment, InvalidUEscapeError, KeyValue, \
-                            PropertiesElement, Whitespace, load, loads, parse, \
-                            unescape
-from   .writing   import dump, dumps, escape, java_timestamp, \
-                            javapropertiesreplace_errors, join_key_value, \
-                            to_comment
-from   .xmlprops  import dump_xml, dumps_xml, load_xml, loads_xml
+from .propclass import Properties
+from .propfile import PropertiesFile
+from .reading import (
+    Comment,
+    InvalidUEscapeError,
+    KeyValue,
+    PropertiesElement,
+    Whitespace,
+    load,
+    loads,
+    parse,
+    unescape,
+)
+from .writing import (
+    dump,
+    dumps,
+    escape,
+    java_timestamp,
+    javapropertiesreplace_errors,
+    join_key_value,
+    to_comment,
+)
+from .xmlprops import dump_xml, dumps_xml, load_xml, loads_xml
 
-__version__      = '0.8.0'
-__author__       = 'John Thorvald Wodder II'
-__author_email__ = 'javaproperties@varonathe.org'
-__license__      = 'MIT'
-__url__          = 'https://github.com/jwodder/javaproperties'
+__version__ = "0.8.0"
+__author__ = "John Thorvald Wodder II"
+__author_email__ = "javaproperties@varonathe.org"
+__license__ = "MIT"
+__url__ = "https://github.com/jwodder/javaproperties"
 
 __all__ = [
-    'Comment',
-    'InvalidUEscapeError',
-    'KeyValue',
-    'Properties',
-    'PropertiesElement',
-    'PropertiesFile',
-    'Whitespace',
-    'dump',
-    'dump_xml',
-    'dumps',
-    'dumps_xml',
-    'escape',
-    'java_timestamp',
-    'javapropertiesreplace_errors',
-    'join_key_value',
-    'load',
-    'load_xml',
-    'loads',
-    'loads_xml',
-    'parse',
-    'to_comment',
-    'unescape',
+    "Comment",
+    "InvalidUEscapeError",
+    "KeyValue",
+    "Properties",
+    "PropertiesElement",
+    "PropertiesFile",
+    "Whitespace",
+    "dump",
+    "dump_xml",
+    "dumps",
+    "dumps_xml",
+    "escape",
+    "java_timestamp",
+    "javapropertiesreplace_errors",
+    "join_key_value",
+    "load",
+    "load_xml",
+    "loads",
+    "loads_xml",
+    "parse",
+    "to_comment",
+    "unescape",
 ]
 
-codecs.register_error('javapropertiesreplace', javapropertiesreplace_errors)
+codecs.register_error("javapropertiesreplace", javapropertiesreplace_errors)

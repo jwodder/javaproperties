@@ -1,30 +1,35 @@
-from   io     import BytesIO, StringIO
+from io import BytesIO, StringIO
 import re
 import sys
-from   typing import Any, Callable, IO, Type, TypeVar, Union, overload
-from   .util  import CONTINUED_RGX, ascii_splitlines
+from typing import Any, Callable, IO, Type, TypeVar, Union, overload
+from .util import CONTINUED_RGX, ascii_splitlines
 
-if sys.version_info[:2] >= (3,9):
+if sys.version_info[:2] >= (3, 9):
     from collections.abc import Iterable, Iterator
     from re import Match
+
     Dict = dict
     Tuple = tuple
 else:
     from typing import Dict, Iterable, Iterator, Match, Tuple
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 @overload
 def load(fp: IO) -> Dict[str, str]:
     ...
 
+
 @overload
 def load(fp: IO, object_pairs_hook: Type[T]) -> T:
     ...
 
+
 @overload
-def load(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+def load(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]) -> T:
     ...
+
 
 def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     """
@@ -59,17 +64,23 @@ def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
         (kv.key, kv.value) for kv in parse(fp) if isinstance(kv, KeyValue)
     )
 
+
 @overload
 def loads(s: Union[str, bytes]) -> Dict[str, str]:
     ...
+
 
 @overload
 def loads(s: Union[str, bytes], object_pairs_hook: Type[T]) -> T:
     ...
 
+
 @overload
-def loads(s: Union[str, bytes], object_pairs_hook: Callable[[Iterator[Tuple[str,str]]], T]) -> T:
+def loads(
+    s: Union[str, bytes], object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]
+) -> T:
     ...
+
 
 def loads(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     """
@@ -102,16 +113,18 @@ def loads(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     fp = BytesIO(s) if isinstance(s, bytes) else StringIO(s)
     return load(fp, object_pairs_hook=object_pairs_hook)
 
+
 TIMESTAMP_RGX = re.compile(
-    r'\A[ \t\f]*[#!][ \t\f]*'
-    r'(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat)'
-    r' (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)'
-    r' (?:[012][0-9]|3[01])'
-    r' (?:[01][0-9]|2[0-3]):[0-5][0-9]:(?:[0-5][0-9]|6[01])'
-    r' (?:[A-Za-z_0-9]{3})?'
-    r' [0-9]{4,}'
-    r'[ \t\f]*\r?\n?\Z'
+    r"\A[ \t\f]*[#!][ \t\f]*"
+    r"(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat)"
+    r" (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+    r" (?:[012][0-9]|3[01])"
+    r" (?:[01][0-9]|2[0-3]):[0-5][0-9]:(?:[0-5][0-9]|6[01])"
+    r" (?:[A-Za-z_0-9]{3})?"
+    r" [0-9]{4,}"
+    r"[ \t\f]*\r?\n?\Z"
 )
+
 
 class PropertiesElement(Iterable[str]):
     """
@@ -134,9 +147,8 @@ class PropertiesElement(Iterable[str]):
             return NotImplemented
 
     def __repr__(self) -> str:
-        return (
-            '{0.__module__}.{0.__name__}(source={1.source!r})'
-            .format(type(self), self)
+        return "{0.__module__}.{0.__name__}(source={1.source!r})".format(
+            type(self), self
         )
 
     @property
@@ -145,7 +157,7 @@ class PropertiesElement(Iterable[str]):
         Like `source`, but with the final trailing newline and line
         continuation (if any) removed
         """
-        s = self.source.rstrip('\r\n')
+        s = self.source.rstrip("\r\n")
         if CONTINUED_RGX.search(s):
             s = s[:-1]
         return s
@@ -167,17 +179,17 @@ class Comment(PropertiesElement):
         Returns the contents of the comment, with the comment marker, any
         whitespace leading up to it, and the trailing newline removed
         """
-        s = self.source.lstrip(' \t\f')
-        if s.startswith(('#', '!')):
+        s = self.source.lstrip(" \t\f")
+        if s.startswith(("#", "!")):
             s = s[1:]
-        return s.rstrip('\r\n')
+        return s.rstrip("\r\n")
 
     @property
     def source_stripped(self) -> str:
         """
         Like `source`, but with the final trailing newline (if any) removed
         """
-        return self.source.rstrip('\r\n')
+        return self.source.rstrip("\r\n")
 
     def is_timestamp(self) -> bool:
         """
@@ -215,18 +227,18 @@ class KeyValue(PropertiesElement):
 
     def __repr__(self) -> str:
         return (
-            '{0.__module__}.{0.__name__}(key={1.key!r}, value={1.value!r},'
-            ' source={1.source!r})'
-            .format(type(self), self)
+            "{0.__module__}.{0.__name__}(key={1.key!r}, value={1.value!r},"
+            " source={1.source!r})".format(type(self), self)
         )
 
     def _with_source(self, newsource: str) -> "KeyValue":
         return type(self)(key=self.key, value=self.value, source=newsource)
 
 
-COMMENT_RGX = re.compile(r'^[ \t\f]*[#!]')
-BLANK_RGX = re.compile(r'^[ \t\f]*\r?\n?\Z')
-SEPARATOR_RGX = re.compile(r'(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*')
+COMMENT_RGX = re.compile(r"^[ \t\f]*[#!]")
+BLANK_RGX = re.compile(r"^[ \t\f]*\r?\n?\Z")
+SEPARATOR_RGX = re.compile(r"(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*")
+
 
 def parse(src: Union[IO, str, bytes]) -> Iterator[PropertiesElement]:
     """
@@ -260,23 +272,25 @@ def parse(src: Union[IO, str, bytes]) -> Iterator[PropertiesElement]:
     """
     liter: Iterator[str]
     if isinstance(src, bytes):
-        liter = iter(ascii_splitlines(src.decode('iso-8859-1')))
+        liter = iter(ascii_splitlines(src.decode("iso-8859-1")))
     elif isinstance(src, str):
         liter = iter(ascii_splitlines(src))
     else:
         fp: IO = src
+
         def lineiter() -> Iterator[str]:
             while True:
                 line = fp.readline()
                 ll: str
                 if isinstance(line, bytes):
-                    ll = line.decode('iso-8859-1')
+                    ll = line.decode("iso-8859-1")
                 else:
                     ll = line
-                if ll == '':
+                if ll == "":
                     return
                 for ln in ascii_splitlines(ll):
                     yield ln
+
         liter = lineiter()
     for source in liter:
         line = source
@@ -286,28 +300,30 @@ def parse(src: Union[IO, str, bytes]) -> Iterator[PropertiesElement]:
         elif BLANK_RGX.match(line):
             yield Whitespace(source)
             continue
-        line = line.lstrip(' \t\f').rstrip('\r\n')
+        line = line.lstrip(" \t\f").rstrip("\r\n")
         while CONTINUED_RGX.search(line):
             line = line[:-1]
-            nextline = next(liter, '')
+            nextline = next(liter, "")
             source += nextline
-            line += nextline.lstrip(' \t\f').rstrip('\r\n')
-        if line == '':  # series of otherwise-blank lines with continuations
+            line += nextline.lstrip(" \t\f").rstrip("\r\n")
+        if line == "":  # series of otherwise-blank lines with continuations
             yield Whitespace(source)
             continue
         m = SEPARATOR_RGX.search(line)
         if m:
             yield KeyValue(
-                unescape(line[:m.start(1)]),
-                unescape(line[m.end():]),
+                unescape(line[: m.start(1)]),
+                unescape(line[m.end() :]),
                 source,
             )
         else:
-            yield KeyValue(unescape(line), '', source)
+            yield KeyValue(unescape(line), "", source)
 
-SURROGATE_PAIR_RGX = re.compile(r'[\uD800-\uDBFF][\uDC00-\uDFFF]')
-ESCAPE_RGX = re.compile(r'\\(u.{0,4}|.)')
-U_ESCAPE_RGX = re.compile(r'^u[0-9A-Fa-f]{4}\Z')
+
+SURROGATE_PAIR_RGX = re.compile(r"[\uD800-\uDBFF][\uDC00-\uDFFF]")
+ESCAPE_RGX = re.compile(r"\\(u.{0,4}|.)")
+U_ESCAPE_RGX = re.compile(r"^u[0-9A-Fa-f]{4}\Z")
+
 
 def unescape(field: str) -> str:
     """
@@ -334,21 +350,24 @@ def unescape(field: str) -> str:
     """
     return SURROGATE_PAIR_RGX.sub(_unsurrogate, ESCAPE_RGX.sub(_unesc, field))
 
-_unescapes = {'t': '\t', 'n': '\n', 'f': '\f', 'r': '\r'}
+
+_unescapes = {"t": "\t", "n": "\n", "f": "\f", "r": "\r"}
+
 
 def _unesc(m: Match[str]) -> str:
     esc = m.group(1)
-    if esc[0] == 'u':
+    if esc[0] == "u":
         if not U_ESCAPE_RGX.match(esc):
             # We can't rely on `int` failing, because it succeeds when `esc`
             # has trailing whitespace or a leading minus.
-            raise InvalidUEscapeError('\\' + esc)
+            raise InvalidUEscapeError("\\" + esc)
         return chr(int(esc[1:], 16))
     else:
         return _unescapes.get(esc, esc)
 
+
 def _unsurrogate(m: Match[str]) -> str:
-    c,d = map(ord, m.group())
+    c, d = map(ord, m.group())
     uord = ((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000
     return chr(uord)
 
@@ -367,4 +386,4 @@ class InvalidUEscapeError(ValueError):
         self.escape: str = escape
 
     def __str__(self) -> str:
-        return 'Invalid \\u escape sequence: ' + self.escape
+        return "Invalid \\u escape sequence: " + self.escape

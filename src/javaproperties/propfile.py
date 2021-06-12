@@ -1,25 +1,31 @@
-from   collections     import OrderedDict
-from   collections.abc import Mapping as MappingABC
-from   datetime        import datetime
-from   io              import BytesIO, StringIO
+from collections import OrderedDict
+from collections.abc import Mapping as MappingABC
+from datetime import datetime
+from io import BytesIO, StringIO
 import sys
-from   typing          import Any, AnyStr, IO, Optional, TextIO, Union, cast
-from   .reading        import Comment, KeyValue, PropertiesElement, \
-                                Whitespace, loads, parse
-from   .util           import CONTINUED_RGX, LinkedList, LinkedListNode, \
-                                ascii_splitlines
-from   .writing        import java_timestamp, join_key_value, to_comment
+from typing import Any, AnyStr, IO, Optional, TextIO, Union, cast
+from .reading import Comment, KeyValue, PropertiesElement, Whitespace, loads, parse
+from .util import CONTINUED_RGX, LinkedList, LinkedListNode, ascii_splitlines
+from .writing import java_timestamp, join_key_value, to_comment
 
-if sys.version_info[:2] >= (3,9):
-    from collections.abc import Iterable, Iterator, Mapping, MutableMapping, \
-        Reversible
+if sys.version_info[:2] >= (3, 9):
+    from collections.abc import Iterable, Iterator, Mapping, MutableMapping, Reversible
+
     List = list
     Tuple = tuple
 else:
-    from typing import Iterable, Iterator, List, Mapping, MutableMapping, \
-        Reversible, Tuple
+    from typing import (
+        Iterable,
+        Iterator,
+        List,
+        Mapping,
+        MutableMapping,
+        Reversible,
+        Tuple,
+    )
 
-_NOSOURCE = ''  # .source value for new or modified KeyValue instances
+_NOSOURCE = ""  # .source value for new or modified KeyValue instances
+
 
 class PropertiesFile(MutableMapping[str, str]):
     """
@@ -65,9 +71,9 @@ class PropertiesFile(MutableMapping[str, str]):
         **kwargs: str,
     ) -> None:
         #: mapping from keys to list of LinkedListNode's in self._lines
-        self._key2nodes: \
-            MutableMapping[str, List[LinkedListNode[PropertiesElement]]] \
-            = OrderedDict()
+        self._key2nodes: MutableMapping[
+            str, List[LinkedListNode[PropertiesElement]]
+        ] = OrderedDict()
         #: linked list of PropertiesElement's in order of appearance in file
         self._lines: LinkedList[PropertiesElement] = LinkedList()
         if mapping is not None:
@@ -79,30 +85,32 @@ class PropertiesFile(MutableMapping[str, str]):
         Assert the internal consistency of the instance's data structures.
         This method is for debugging only.
         """
-        for k,ns in self._key2nodes.items():
-            assert k is not None, 'null key'
-            assert ns, 'Key does not map to any nodes'
+        for k, ns in self._key2nodes.items():
+            assert k is not None, "null key"
+            assert ns, "Key does not map to any nodes"
             indices = []
             for n in ns:
                 ix = self._lines.find_node(n)
-                assert ix is not None, 'Key has node not in line list'
+                assert ix is not None, "Key has node not in line list"
                 indices.append(ix)
-                assert isinstance(n.value, KeyValue), 'Key maps to comment'
-                assert n.value.key == k, 'Key does not map to itself'
-                assert n.value.value is not None, 'Key has null value'
+                assert isinstance(n.value, KeyValue), "Key maps to comment"
+                assert n.value.key == k, "Key does not map to itself"
+                assert n.value.value is not None, "Key has null value"
             assert indices == sorted(indices), "Key's nodes are not in order"
         for line in self._lines:
             if not isinstance(line, KeyValue):
-                assert line.source is not None, 'Comment source not stored'
-                assert loads(line.source) == {}, 'Comment source is not comment'
+                assert line.source is not None, "Comment source not stored"
+                assert loads(line.source) == {}, "Comment source is not comment"
             else:
-                assert line.value is not None, 'Key has null value'
+                assert line.value is not None, "Key has null value"
                 if line.source != _NOSOURCE:
-                    assert loads(line.source) == {line.key: line.value}, \
-                        'Key source does not deserialize to itself'
-                assert line.key in self._key2nodes, 'Key is missing from map'
-                assert any(line is n.value for n in self._key2nodes[line.key]),\
-                    'Key does not map to itself'  # pragma: no cover
+                    assert loads(line.source) == {
+                        line.key: line.value
+                    }, "Key source does not deserialize to itself"
+                assert line.key in self._key2nodes, "Key is missing from map"
+                assert any(
+                    line is n.value for n in self._key2nodes[line.key]
+                ), "Key does not map to itself"  # pragma: no cover
 
     def __getitem__(self, key: str) -> str:
         pe = self._key2nodes[key][-1].value
@@ -119,14 +127,13 @@ class PropertiesFile(MutableMapping[str, str]):
                 # comment) doesn't end with a trailing line continuation.
                 lastline = self._lines.end.value
                 if not (
-                    isinstance(lastline, KeyValue)
-                    and lastline.source == _NOSOURCE
+                    isinstance(lastline, KeyValue) and lastline.source == _NOSOURCE
                 ):
                     lastsrc = lastline.source
                     if isinstance(lastline, KeyValue):
-                        lastsrc = CONTINUED_RGX.sub(r'\1', lastsrc)
-                    if not lastsrc.endswith(('\r', '\n')):
-                        lastsrc += '\n'
+                        lastsrc = CONTINUED_RGX.sub(r"\1", lastsrc)
+                    if not lastsrc.endswith(("\r", "\n")):
+                        lastsrc += "\n"
                     self._lines.end.value = lastline._with_source(lastsrc)
             n = self._lines.append(KeyValue(key, value, _NOSOURCE))
             self._key2nodes[key] = [n]
@@ -223,7 +230,7 @@ class PropertiesFile(MutableMapping[str, str]):
             fp = StringIO(s)
         return cls.load(fp)
 
-    def dump(self, fp: TextIO, separator: str = '=', ensure_ascii: bool = True) -> None:
+    def dump(self, fp: TextIO, separator: str = "=", ensure_ascii: bool = True) -> None:
         """
         Write the mapping to a file in simple line-oriented ``.properties``
         format.
@@ -273,7 +280,7 @@ class PropertiesFile(MutableMapping[str, str]):
             else:
                 fp.write(line.source)
 
-    def dumps(self, separator: str = '=', ensure_ascii: bool = True) -> str:
+    def dumps(self, separator: str = "=", ensure_ascii: bool = True) -> str:
         """
         Convert the mapping to a `str` in simple line-oriented ``.properties``
         format.
@@ -312,7 +319,7 @@ class PropertiesFile(MutableMapping[str, str]):
         return s.getvalue()
 
     def copy(self) -> "PropertiesFile":
-        """ Create a copy of the mapping, including formatting information """
+        """Create a copy of the mapping, including formatting information"""
         dup = type(self)()
         for elem in self._lines:
             n = dup._lines.append(elem)
@@ -376,9 +383,7 @@ class PropertiesFile(MutableMapping[str, str]):
         if value is not None and value is not False:
             if not isinstance(value, str):
                 value = java_timestamp(value)
-            comments = [
-                Comment(c) for c in ascii_splitlines(to_comment(value) + '\n')
-            ]
+            comments = [Comment(c) for c in ascii_splitlines(to_comment(value) + "\n")]
         else:
             comments = []
         for n in self._lines.iternodes():
@@ -461,7 +466,7 @@ class PropertiesFile(MutableMapping[str, str]):
                     break
                 comments.append(elem.value)
         if comments:
-            return '\n'.join(comments)
+            return "\n".join(comments)
         else:
             return None
 
@@ -470,13 +475,12 @@ class PropertiesFile(MutableMapping[str, str]):
         if value is None:
             comments = []
         else:
-            comments = [
-                Comment(c) for c in ascii_splitlines(to_comment(value) + '\n')
-            ]
+            comments = [Comment(c) for c in ascii_splitlines(to_comment(value) + "\n")]
         while self._lines.start is not None:
             n = self._lines.start
-            if isinstance(n.value, KeyValue) or \
-                    (isinstance(n.value, Comment) and n.value.is_timestamp()):
+            if isinstance(n.value, KeyValue) or (
+                isinstance(n.value, Comment) and n.value.is_timestamp()
+            ):
                 break
             else:
                 n.unlink()
@@ -492,8 +496,9 @@ class PropertiesFile(MutableMapping[str, str]):
     def header_comment(self) -> None:
         while self._lines.start is not None:
             n = self._lines.start
-            if isinstance(n.value, KeyValue) or \
-                    (isinstance(n.value, Comment) and n.value.is_timestamp()):
+            if isinstance(n.value, KeyValue) or (
+                isinstance(n.value, Comment) and n.value.is_timestamp()
+            ):
                 break
             else:
                 n.unlink()

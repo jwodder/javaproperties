@@ -1,21 +1,21 @@
-from   collections.abc import Mapping as MappingABC
+from collections.abc import Mapping as MappingABC
 import sys
-from   typing          import Any, BinaryIO, IO, Optional, TextIO, TypeVar, \
-                                Union
-from   .reading        import load
-from   .writing        import dump
-from   .xmlprops       import dump_xml, load_xml
+from typing import Any, BinaryIO, IO, Optional, TextIO, TypeVar, Union
+from .reading import load
+from .writing import dump
+from .xmlprops import dump_xml, load_xml
 
-if sys.version_info[:2] >= (3,9):
+if sys.version_info[:2] >= (3, 9):
     from collections.abc import Iterable, Iterator, Mapping, MutableMapping
+
     Dict = dict
     Set = set
     Tuple = tuple
 else:
-    from typing import Dict, Iterable, Iterator, Mapping, MutableMapping, Set, \
-        Tuple
+    from typing import Dict, Iterable, Iterator, Mapping, MutableMapping, Set, Tuple
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class Properties(MutableMapping[str, str]):
     """
@@ -75,8 +75,11 @@ class Properties(MutableMapping[str, str]):
         return len(self.data)
 
     def __repr__(self) -> str:
-        return '{0.__module__}.{0.__name__}({1.data!r}, defaults={1.defaults!r})'\
-                .format(type(self), self)
+        return (
+            "{0.__module__}.{0.__name__}({1.data!r}, defaults={1.defaults!r})".format(
+                type(self), self
+            )
+        )
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Properties):
@@ -86,8 +89,9 @@ class Properties(MutableMapping[str, str]):
         else:
             return NotImplemented
 
-    def getProperty(self, key: str, defaultValue: Optional[T] = None) \
-            -> Union[str, T, None]:
+    def getProperty(
+        self, key: str, defaultValue: Optional[T] = None
+    ) -> Union[str, T, None]:
         """
         Fetch the value associated with the key ``key`` in the `Properties`
         instance.  If the key is not present, `defaults` is checked, and then
@@ -145,7 +149,7 @@ class Properties(MutableMapping[str, str]):
                     yield k
 
     def setProperty(self, key: str, value: str) -> None:
-        """ Equivalent to ``self[key] = value`` """
+        """Equivalent to ``self[key] = value``"""
         self[key] = value
 
     def store(self, out: TextIO, comments: Optional[str] = None) -> None:
@@ -196,7 +200,7 @@ class Properties(MutableMapping[str, str]):
         self,
         out: BinaryIO,
         comment: Optional[str] = None,
-        encoding: str = 'UTF-8',
+        encoding: str = "UTF-8",
     ) -> None:
         """
         Write the `Properties` instance's entries (in unspecified order) in XML
