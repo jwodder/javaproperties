@@ -20,7 +20,7 @@ if sys.version_info[:2] >= (3, 9):
     Dict = dict
     Tuple = tuple
 else:
-    from typing import Dict, Iterable, Iterator, Tuple, Mapping
+    from typing import Dict, Iterable, Iterator, Mapping, Tuple
 
 T = TypeVar("T")
 

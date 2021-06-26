@@ -1,5 +1,6 @@
 import sys
 import pytest
+
 import javaproperties  # noqa
 
 

@@ -8,7 +8,7 @@ if sys.version_info[:2] >= (3, 9):
     List = list
     Tuple = tuple
 else:
-    from typing import List, Iterable, Iterator, Mapping, Tuple
+    from typing import Iterable, Iterator, List, Mapping, Tuple
 
 CONTINUED_RGX = re.compile(r"(?<!\\)((?:\\\\)*)\\\r?\n?\Z")
 
