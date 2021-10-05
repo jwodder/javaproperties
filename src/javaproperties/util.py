@@ -1,14 +1,15 @@
 import re
-import sys
-from typing import Generic, Optional, TypeVar, Union
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Iterator, Mapping
-
-    List = list
-    Tuple = tuple
-else:
-    from typing import Iterable, Iterator, List, Mapping, Tuple
+from typing import (
+    Generic,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeVar,
+    Union,
+)
 
 CONTINUED_RGX = re.compile(r"(?<!\\)((?:\\\\)*)\\\r?\n?\Z")
 

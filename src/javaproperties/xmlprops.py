@@ -1,10 +1,14 @@
-import sys
 from typing import (
     AnyStr,
     BinaryIO,
     Callable,
+    Dict,
     IO,
+    Iterable,
+    Iterator,
+    Mapping,
     Optional,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -13,14 +17,6 @@ from typing import (
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, quoteattr
 from .util import itemize
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Iterator, Mapping
-
-    Dict = dict
-    Tuple = tuple
-else:
-    from typing import Dict, Iterable, Iterator, Mapping, Tuple
 
 T = TypeVar("T")
 

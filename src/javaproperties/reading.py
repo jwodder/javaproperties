@@ -1,17 +1,20 @@
 from io import BytesIO, StringIO
 import re
-import sys
-from typing import Any, Callable, IO, Type, TypeVar, Union, overload
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    IO,
+    Iterable,
+    Iterator,
+    Match,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    overload,
+)
 from .util import CONTINUED_RGX, ascii_splitlines
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Iterator
-    from re import Match
-
-    Dict = dict
-    Tuple = tuple
-else:
-    from typing import Dict, Iterable, Iterator, Match, Tuple
 
 T = TypeVar("T")
 

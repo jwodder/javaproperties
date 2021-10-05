@@ -1,18 +1,23 @@
 from collections.abc import Mapping as MappingABC
-import sys
-from typing import Any, BinaryIO, IO, Optional, TextIO, TypeVar, Union
+from typing import (
+    Any,
+    BinaryIO,
+    Dict,
+    IO,
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Set,
+    TextIO,
+    Tuple,
+    TypeVar,
+    Union,
+)
 from .reading import load
 from .writing import dump
 from .xmlprops import dump_xml, load_xml
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Iterator, Mapping, MutableMapping
-
-    Dict = dict
-    Set = set
-    Tuple = tuple
-else:
-    from typing import Dict, Iterable, Iterator, Mapping, MutableMapping, Set, Tuple
 
 T = TypeVar("T")
 

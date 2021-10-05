@@ -1,3 +1,7 @@
+v0.8.1 (in development)
+-----------------------
+- Fix a typing issue in Python 3.9
+
 v0.8.0 (2020-11-28)
 -------------------
 - Drop support for Python 2.7, 3.4, and 3.5

@@ -2,27 +2,25 @@ from collections import OrderedDict
 from collections.abc import Mapping as MappingABC
 from datetime import datetime
 from io import BytesIO, StringIO
-import sys
-from typing import Any, AnyStr, IO, Optional, TextIO, Union, cast
+from typing import (
+    Any,
+    AnyStr,
+    IO,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Reversible,
+    TextIO,
+    Tuple,
+    Union,
+    cast,
+)
 from .reading import Comment, KeyValue, PropertiesElement, Whitespace, loads, parse
 from .util import CONTINUED_RGX, LinkedList, LinkedListNode, ascii_splitlines
 from .writing import java_timestamp, join_key_value, to_comment
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Iterator, Mapping, MutableMapping, Reversible
-
-    List = list
-    Tuple = tuple
-else:
-    from typing import (
-        Iterable,
-        Iterator,
-        List,
-        Mapping,
-        MutableMapping,
-        Reversible,
-        Tuple,
-    )
 
 _NOSOURCE = ""  # .source value for new or modified KeyValue instances
 

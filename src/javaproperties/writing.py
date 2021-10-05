@@ -1,18 +1,9 @@
 from datetime import datetime
 from io import StringIO
 import re
-import sys
 import time
-from typing import Optional, TextIO, Union
+from typing import Iterable, Mapping, Match, Optional, TextIO, Tuple, Union
 from .util import itemize
-
-if sys.version_info[:2] >= (3, 9):
-    from collections.abc import Iterable, Mapping
-    from re import Match
-
-    Tuple = tuple
-else:
-    from typing import Iterable, Mapping, Match, Tuple
 
 
 def dump(
