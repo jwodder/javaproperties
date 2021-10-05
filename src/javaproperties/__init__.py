@@ -36,7 +36,7 @@ from .writing import (
 )
 from .xmlprops import dump_xml, dumps_xml, load_xml, loads_xml
 
-__version__ = "0.8.1.dev1"
+__version__ = "0.8.1"
 __author__ = "John Thorvald Wodder II"
 __author_email__ = "javaproperties@varonathe.org"
 __license__ = "MIT"

@@ -3,8 +3,8 @@
 Changelog
 =========
 
-v0.8.1 (in development)
------------------------
+v0.8.1 (2021-10-05)
+-------------------
 - Fix a typing issue in Python 3.9
 
 
