@@ -72,8 +72,9 @@ old_pacific = tzstr("PST8PDT,M4.1.0,M10.5.0")
         ),
         # Duplicated by fall back:
         # Times duplicated by DST are interpreted non-deterministically by Python
-        # pre-3.6 (cf. <https://git.io/vixsE>), so there are two possible return
-        # values for these calls.
+        # pre-3.6 (cf.
+        # <https://github.com/dateutil/dateutil/blob/36e6cfa/dateutil/tz/tz.py#L143>),
+        # so there are two possible return values for these calls.
         (
             datetime(2016, 11, 6, 1, 30, 0),
             ("Sun Nov 06 01:30:00 EDT 2016", "Sun Nov 06 01:30:00 EST 2016"),
