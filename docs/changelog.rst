@@ -6,6 +6,7 @@ Changelog
 v0.8.1 (2021-10-05)
 -------------------
 - Fix a typing issue in Python 3.9
+- Support Python 3.10
 
 
 v0.8.0 (2020-11-28)
