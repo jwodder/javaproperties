@@ -3,6 +3,11 @@
 Changelog
 =========
 
+v0.9.0 (in development)
+-----------------------
+- Drop support for Python 3.6
+
+
 v0.8.1 (2021-10-05)
 -------------------
 - Fix a typing issue in Python 3.9
