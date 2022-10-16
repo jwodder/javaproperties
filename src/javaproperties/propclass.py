@@ -1,20 +1,6 @@
-from collections.abc import Mapping as MappingABC
-from typing import (
-    Any,
-    BinaryIO,
-    Dict,
-    IO,
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    Optional,
-    Set,
-    TextIO,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from __future__ import annotations
+from collections.abc import Iterable, Iterator, Mapping
+from typing import Any, BinaryIO, IO, MutableMapping, Optional, TextIO, TypeVar
 from .reading import load
 from .writing import dump
 from .xmlprops import dump_xml, load_xml
@@ -52,10 +38,10 @@ class Properties(MutableMapping[str, str]):
 
     def __init__(
         self,
-        data: Union[None, Mapping[str, str], Iterable[Tuple[str, str]]] = None,
+        data: None | Mapping[str, str] | Iterable[tuple[str, str]] = None,
         defaults: Optional["Properties"] = None,
     ) -> None:
-        self.data: Dict[str, str] = {}
+        self.data: dict[str, str] = {}
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
         #: `getProperty`, `propertyNames`, `stringPropertyNames`, and `__eq__`
         #: use this attribute; all other methods (including the standard
@@ -89,14 +75,12 @@ class Properties(MutableMapping[str, str]):
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Properties):
             return self.data == other.data and self.defaults == other.defaults
-        elif isinstance(other, MappingABC):
+        elif isinstance(other, Mapping):
             return dict(self) == other
         else:
             return NotImplemented
 
-    def getProperty(
-        self, key: str, defaultValue: Optional[T] = None
-    ) -> Union[str, T, None]:
+    def getProperty(self, key: str, defaultValue: Optional[T] = None) -> str | T | None:
         """
         Fetch the value associated with the key ``key`` in the `Properties`
         instance.  If the key is not present, `defaults` is checked, and then
@@ -171,12 +155,12 @@ class Properties(MutableMapping[str, str]):
         """
         dump(self.data, out, comments=comments)
 
-    def stringPropertyNames(self) -> Set[str]:
+    def stringPropertyNames(self) -> set[str]:
         r"""
         Returns a `set` of all keys in the `Properties` instance and its
         `defaults` (and its `defaults`\ ’s `defaults`, etc.)
 
-        :rtype: Set[str]
+        :rtype: set[str]
         """
         names = set(self.data)
         if self.defaults is not None:
@@ -220,7 +204,7 @@ class Properties(MutableMapping[str, str]):
         """
         dump_xml(self.data, out, comment=comment, encoding=encoding)
 
-    def copy(self) -> "Properties":
+    def copy(self) -> Properties:
         """
         .. versionadded:: 0.5.0
 

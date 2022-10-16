@@ -1,23 +1,9 @@
+from __future__ import annotations
 from collections import OrderedDict
-from collections.abc import Mapping as MappingABC
+from collections.abc import Iterable, Iterator, Mapping
 from datetime import datetime
 from io import BytesIO, StringIO
-from typing import (
-    Any,
-    AnyStr,
-    IO,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    MutableMapping,
-    Optional,
-    Reversible,
-    TextIO,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import Any, AnyStr, IO, MutableMapping, Optional, Reversible, TextIO, cast
 from .reading import Comment, KeyValue, PropertiesElement, Whitespace, loads, parse
 from .util import CONTINUED_RGX, LinkedList, LinkedListNode, ascii_splitlines
 from .writing import java_timestamp, join_key_value, to_comment
@@ -65,12 +51,12 @@ class PropertiesFile(MutableMapping[str, str]):
 
     def __init__(
         self,
-        mapping: Union[None, Mapping[str, str], Iterable[Tuple[str, str]]] = None,
+        mapping: None | Mapping[str, str] | Iterable[tuple[str, str]] = None,
         **kwargs: str,
     ) -> None:
         #: mapping from keys to list of LinkedListNode's in self._lines
         self._key2nodes: MutableMapping[
-            str, List[LinkedListNode[PropertiesElement]]
+            str, list[LinkedListNode[PropertiesElement]]
         ] = OrderedDict()
         #: linked list of PropertiesElement's in order of appearance in file
         self._lines: LinkedList[PropertiesElement] = LinkedList()
@@ -158,7 +144,7 @@ class PropertiesFile(MutableMapping[str, str]):
     def __len__(self) -> int:
         return len(self._key2nodes)
 
-    def _comparable(self) -> List[Tuple[Optional[str], str]]:
+    def _comparable(self) -> list[tuple[Optional[str], str]]:
         return [
             (p.key, p.value) if isinstance(p, KeyValue) else (None, p.source)
             for n in self._lines.iternodes()
@@ -171,13 +157,13 @@ class PropertiesFile(MutableMapping[str, str]):
         if isinstance(other, PropertiesFile):
             return self._comparable() == other._comparable()
         ### TODO: Special-case OrderedDict?
-        elif isinstance(other, MappingABC):
+        elif isinstance(other, Mapping):
             return dict(self) == other
         else:
             return NotImplemented
 
     @classmethod
-    def load(cls, fp: IO) -> "PropertiesFile":
+    def load(cls, fp: IO) -> PropertiesFile:
         """
         Parse the contents of the `~io.IOBase.readline`-supporting file-like
         object ``fp`` as a simple line-oriented ``.properties`` file and return
@@ -204,7 +190,7 @@ class PropertiesFile(MutableMapping[str, str]):
         return obj
 
     @classmethod
-    def loads(cls, s: AnyStr) -> "PropertiesFile":
+    def loads(cls, s: AnyStr) -> PropertiesFile:
         """
         Parse the contents of the string ``s`` as a simple line-oriented
         ``.properties`` file and return a `PropertiesFile` instance.
@@ -316,7 +302,7 @@ class PropertiesFile(MutableMapping[str, str]):
         self.dump(s, separator=separator, ensure_ascii=ensure_ascii)
         return s.getvalue()
 
-    def copy(self) -> "PropertiesFile":
+    def copy(self) -> PropertiesFile:
         """Create a copy of the mapping, including formatting information"""
         dup = type(self)()
         for elem in self._lines:
@@ -377,7 +363,7 @@ class PropertiesFile(MutableMapping[str, str]):
         return None
 
     @timestamp.setter
-    def timestamp(self, value: Union[str, None, bool, float, datetime]) -> None:
+    def timestamp(self, value: str | None | bool | float | datetime) -> None:
         if value is not None and value is not False:
             if not isinstance(value, str):
                 value = java_timestamp(value)

@@ -1,17 +1,19 @@
+from __future__ import annotations
+from collections.abc import Iterable, Mapping
 from datetime import datetime
 from io import StringIO
 import re
 import time
-from typing import Iterable, Mapping, Match, Optional, TextIO, Tuple, Union
+from typing import Optional, TextIO
 from .util import itemize
 
 
 def dump(
-    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    props: Mapping[str, str] | Iterable[tuple[str, str]],
     fp: TextIO,
     separator: str = "=",
     comments: Optional[str] = None,
-    timestamp: Union[None, bool, float, datetime] = True,
+    timestamp: None | bool | float | datetime = True,
     sort_keys: bool = False,
     ensure_ascii: bool = True,
     ensure_ascii_comments: Optional[bool] = None,
@@ -64,10 +66,10 @@ def dump(
 
 
 def dumps(
-    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    props: Mapping[str, str] | Iterable[tuple[str, str]],
     separator: str = "=",
     comments: Optional[str] = None,
-    timestamp: Union[None, bool, float, datetime] = True,
+    timestamp: None | bool | float | datetime = True,
     sort_keys: bool = False,
     ensure_ascii: bool = True,
     ensure_ascii_comments: Optional[bool] = None,
@@ -203,7 +205,7 @@ _escapes = {
 }
 
 
-def _esc(m: Match[str]) -> str:
+def _esc(m: re.Match[str]) -> str:
     c = m.group()
     try:
         return _escapes[c]
@@ -271,7 +273,7 @@ MONTHS = [
 ]
 
 
-def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
+def java_timestamp(timestamp: None | bool | float | datetime = True) -> str:
     """
     .. versionadded:: 0.2.0
 
@@ -334,7 +336,7 @@ def java_timestamp(timestamp: Union[None, bool, float, datetime] = True) -> str:
     )
 
 
-def javapropertiesreplace_errors(e: Union[UnicodeError]) -> Tuple[str, int]:
+def javapropertiesreplace_errors(e: UnicodeError) -> tuple[str, int]:
     """
     .. versionadded:: 0.6.0
 

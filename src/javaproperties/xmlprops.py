@@ -1,19 +1,6 @@
-from typing import (
-    AnyStr,
-    BinaryIO,
-    Callable,
-    Dict,
-    IO,
-    Iterable,
-    Iterator,
-    Mapping,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    overload,
-)
+from __future__ import annotations
+from collections.abc import Callable, Iterable, Iterator, Mapping
+from typing import AnyStr, BinaryIO, IO, Optional, TypeVar, overload
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, quoteattr
 from .util import itemize
@@ -22,17 +9,17 @@ T = TypeVar("T")
 
 
 @overload
-def load_xml(fp: IO) -> Dict[str, str]:
+def load_xml(fp: IO) -> dict[str, str]:
     ...
 
 
 @overload
-def load_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
+def load_xml(fp: IO, object_pairs_hook: type[T]) -> T:
     ...
 
 
 @overload
-def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]) -> T:
+def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]) -> T:
     ...
 
 
@@ -66,18 +53,18 @@ def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
 
 
 @overload
-def loads_xml(s: AnyStr) -> Dict[str, str]:
+def loads_xml(s: AnyStr) -> dict[str, str]:
     ...
 
 
 @overload
-def loads_xml(fp: IO, object_pairs_hook: Type[T]) -> T:
+def loads_xml(fp: IO, object_pairs_hook: type[T]) -> T:
     ...
 
 
 @overload
 def loads_xml(
-    s: AnyStr, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]
+    s: AnyStr, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]
 ) -> T:
     ...
 
@@ -112,7 +99,7 @@ def loads_xml(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
     return object_pairs_hook(_fromXML(elem))
 
 
-def _fromXML(root: ET.Element) -> Iterator[Tuple[str, str]]:
+def _fromXML(root: ET.Element) -> Iterator[tuple[str, str]]:
     if root.tag != "properties":
         raise ValueError("XML tree is not rooted at <properties>")
     for entry in root.findall("entry"):
@@ -123,7 +110,7 @@ def _fromXML(root: ET.Element) -> Iterator[Tuple[str, str]]:
 
 
 def dump_xml(
-    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    props: Mapping[str, str] | Iterable[tuple[str, str]],
     fp: BinaryIO,
     comment: Optional[str] = None,
     encoding: str = "UTF-8",
@@ -162,7 +149,7 @@ def dump_xml(
 
 
 def dumps_xml(
-    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    props: Mapping[str, str] | Iterable[tuple[str, str]],
     comment: Optional[str] = None,
     sort_keys: bool = False,
 ) -> str:
@@ -184,7 +171,7 @@ def dumps_xml(
 
 
 def _stream_xml(
-    props: Union[Mapping[str, str], Iterable[Tuple[str, str]]],
+    props: Mapping[str, str] | Iterable[tuple[str, str]],
     comment: Optional[str] = None,
     sort_keys: bool = False,
 ) -> Iterator[str]:

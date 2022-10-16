@@ -1,15 +1,7 @@
+from __future__ import annotations
+from collections.abc import Iterable, Iterator, Mapping
 import re
-from typing import (
-    Generic,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import Generic, Optional, TypeVar
 
 CONTINUED_RGX = re.compile(r"(?<!\\)((?:\\\\)*)\\\r?\n?\Z")
 
@@ -34,7 +26,7 @@ class LinkedList(Generic[T]):
             yield n
             n = n.next
 
-    def append(self, value: T) -> "LinkedListNode[T]":
+    def append(self, value: T) -> LinkedListNode[T]:
         n = LinkedListNode(value, self)
         if self.start is None:
             self.start = n
@@ -69,7 +61,7 @@ class LinkedListNode(Generic[T]):
         if self is self.lst.end:
             self.lst.end = self.prev
 
-    def insert_after(self, value: T) -> "LinkedListNode[T]":
+    def insert_after(self, value: T) -> LinkedListNode[T]:
         """Inserts a new node with value ``value`` after the node ``self``"""
         n = LinkedListNode(value, self.lst)
         n.prev = self
@@ -82,7 +74,7 @@ class LinkedListNode(Generic[T]):
             self.lst.end = n
         return n
 
-    def insert_before(self, value: T) -> "LinkedListNode[T]":
+    def insert_before(self, value: T) -> LinkedListNode[T]:
         """
         Inserts a new node with value ``value`` before the node ``self``
         """
@@ -99,10 +91,10 @@ class LinkedListNode(Generic[T]):
 
 
 def itemize(
-    kvs: Union[Mapping[K, V], Iterable[Tuple[K, V]]],
+    kvs: Mapping[K, V] | Iterable[tuple[K, V]],
     sort_keys: bool = False,
-) -> Iterable[Tuple[K, V]]:
-    items: Iterable[Tuple[K, V]]
+) -> Iterable[tuple[K, V]]:
+    items: Iterable[tuple[K, V]]
     if isinstance(kvs, Mapping):
         items = ((k, kvs[k]) for k in kvs)
     else:
@@ -112,7 +104,7 @@ def itemize(
     return items
 
 
-def ascii_splitlines(s: str) -> List[str]:
+def ascii_splitlines(s: str) -> list[str]:
     """
     Like `str.splitlines(True)`, except it only treats LF, CR LF, and CR as
     line endings

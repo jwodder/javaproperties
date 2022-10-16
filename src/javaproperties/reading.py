@@ -1,36 +1,25 @@
+from __future__ import annotations
+from collections.abc import Callable, Iterator
 from io import BytesIO, StringIO
 import re
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    IO,
-    Iterable,
-    Iterator,
-    Match,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import Any, IO, Iterable, TypeVar, overload
 from .util import CONTINUED_RGX, ascii_splitlines
 
 T = TypeVar("T")
 
 
 @overload
-def load(fp: IO) -> Dict[str, str]:
+def load(fp: IO) -> dict[str, str]:
     ...
 
 
 @overload
-def load(fp: IO, object_pairs_hook: Type[T]) -> T:
+def load(fp: IO, object_pairs_hook: type[T]) -> T:
     ...
 
 
 @overload
-def load(fp: IO, object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]) -> T:
+def load(fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]) -> T:
     ...
 
 
@@ -69,18 +58,18 @@ def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
 
 
 @overload
-def loads(s: Union[str, bytes]) -> Dict[str, str]:
+def loads(s: str | bytes) -> dict[str, str]:
     ...
 
 
 @overload
-def loads(s: Union[str, bytes], object_pairs_hook: Type[T]) -> T:
+def loads(s: str | bytes, object_pairs_hook: type[T]) -> T:
     ...
 
 
 @overload
 def loads(
-    s: Union[str, bytes], object_pairs_hook: Callable[[Iterator[Tuple[str, str]]], T]
+    s: str | bytes, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]
 ) -> T:
     ...
 
@@ -165,7 +154,7 @@ class PropertiesElement(Iterable[str]):
             s = s[:-1]
         return s
 
-    def _with_source(self, newsource: str) -> "PropertiesElement":
+    def _with_source(self, newsource: str) -> PropertiesElement:
         return type(self)(source=newsource)
 
 
@@ -234,7 +223,7 @@ class KeyValue(PropertiesElement):
             " source={1.source!r})".format(type(self), self)
         )
 
-    def _with_source(self, newsource: str) -> "KeyValue":
+    def _with_source(self, newsource: str) -> KeyValue:
         return type(self)(key=self.key, value=self.value, source=newsource)
 
 
@@ -243,7 +232,7 @@ BLANK_RGX = re.compile(r"^[ \t\f]*\r?\n?\Z")
 SEPARATOR_RGX = re.compile(r"(?<!\\)(?:\\\\)*([ \t\f]*[=:]|[ \t\f])[ \t\f]*")
 
 
-def parse(src: Union[IO, str, bytes]) -> Iterator[PropertiesElement]:
+def parse(src: IO | str | bytes) -> Iterator[PropertiesElement]:
     """
     Parse the given data as a simple line-oriented ``.properties`` file and
     return a generator of `PropertiesElement` objects representing the
@@ -357,7 +346,7 @@ def unescape(field: str) -> str:
 _unescapes = {"t": "\t", "n": "\n", "f": "\f", "r": "\r"}
 
 
-def _unesc(m: Match[str]) -> str:
+def _unesc(m: re.Match[str]) -> str:
     esc = m.group(1)
     if esc[0] == "u":
         if not U_ESCAPE_RGX.match(esc):
@@ -369,7 +358,7 @@ def _unesc(m: Match[str]) -> str:
         return _unescapes.get(esc, esc)
 
 
-def _unsurrogate(m: Match[str]) -> str:
+def _unsurrogate(m: re.Match[str]) -> str:
     c, d = map(ord, m.group())
     uord = ((c - 0xD800) << 10) + (d - 0xDC00) + 0x10000
     return chr(uord)
