@@ -2,7 +2,7 @@ from javaproperties import __version__
 
 project = "javaproperties"
 author = "John T. Wodder II"
-copyright = "2016-2021 John T. Wodder II"
+copyright = "2016-2021 John T. Wodder II"  # noqa: A001
 
 extensions = [
     "sphinx.ext.autodoc",
