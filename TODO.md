@@ -6,6 +6,7 @@
 - Try to include the line number (and column number and filename?) in
   `InvalidUEscapeError`s
 - Update `Properties` to match the latest Java version?
+- Properly annotate overloaded functions
 
 New Features
 ------------
