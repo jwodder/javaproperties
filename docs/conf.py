@@ -7,7 +7,6 @@ copyright = "2016-2021 John T. Wodder II"  # noqa: A001
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
 ]
@@ -25,14 +24,13 @@ intersphinx_mapping = {
 
 exclude_patterns = ["_build"]
 source_suffix = ".rst"
-source_encoding = "utf-8-sig"
+source_encoding = "utf-8"
 master_doc = "index"
 version = __version__
 release = __version__
 today_fmt = "%Y %b %d"
 default_role = "py:obj"
 pygments_style = "sphinx"
-todo_include_todos = True
 
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {
