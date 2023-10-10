@@ -128,7 +128,8 @@ def test_dumps_no_ensure_ascii(d, s):
 @pytest.mark.parametrize(
     "c",
     [
-        "" "foobar",
+        "",
+        "foobar",
         " leading",
         "trailing ",
         "   ",

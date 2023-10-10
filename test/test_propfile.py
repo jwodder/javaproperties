@@ -872,7 +872,7 @@ def test_propfile_get_timestamp(src, ts):
             "key=value\n",
             None,
             "Wed Mar 04 12:57:41 PST 2020",
-            "#Comment\n" "#Comment 2\n" "#Wed Mar 04 12:57:41 PST 2020\n" "key=value\n",
+            "#Comment\n#Comment 2\n#Wed Mar 04 12:57:41 PST 2020\nkey=value\n",
         ),
         (
             "#Comment\n"
@@ -882,7 +882,7 @@ def test_propfile_get_timestamp(src, ts):
             "key=value\n",
             False,
             "Wed Mar 04 12:57:41 PST 2020",
-            "#Comment\n" "#Comment 2\n" "#Wed Mar 04 12:57:41 PST 2020\n" "key=value\n",
+            "#Comment\n#Comment 2\n#Wed Mar 04 12:57:41 PST 2020\nkey=value\n",
         ),
         (
             "#Comment\n"
@@ -973,7 +973,7 @@ def test_propfile_get_timestamp(src, ts):
             "key=value\n",
         ),
         (
-            "#Comment\n" "\n" "#Comment 2\n" "key=value\n",
+            "#Comment\n\n#Comment 2\nkey=value\n",
             1234567890,
             "Fri Feb 13 18:31:30 EST 2009",
             "#Comment\n"
@@ -1106,7 +1106,7 @@ def test_propfile_get_header_comment(src, c):
     [
         "",
         "key=value\n",
-        "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\n" "key=value\n#Post-entry comment\n",
+        "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\nkey=value\n#Post-entry comment\n",
     ],
 )
 def test_propfile_set_header_comment(part1, part2, c, c2, csrc):
@@ -1134,7 +1134,7 @@ def test_propfile_set_header_comment(part1, part2, c, c2, csrc):
     [
         "",
         "key=value\n",
-        "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\n" "key=value\n#Post-entry comment\n",
+        "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\nkey=value\n#Post-entry comment\n",
     ],
 )
 def test_propfile_delete_header_comment(part1, part2):
