@@ -9,18 +9,15 @@ T = TypeVar("T")
 
 
 @overload
-def load(fp: IO) -> dict[str, str]:
-    ...
+def load(fp: IO) -> dict[str, str]: ...
 
 
 @overload
-def load(fp: IO, object_pairs_hook: type[T]) -> T:
-    ...
+def load(fp: IO, object_pairs_hook: type[T]) -> T: ...
 
 
 @overload
-def load(fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]) -> T:
-    ...
+def load(fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]) -> T: ...
 
 
 def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
@@ -58,20 +55,17 @@ def load(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
 
 
 @overload
-def loads(s: str | bytes) -> dict[str, str]:
-    ...
+def loads(s: str | bytes) -> dict[str, str]: ...
 
 
 @overload
-def loads(s: str | bytes, object_pairs_hook: type[T]) -> T:
-    ...
+def loads(s: str | bytes, object_pairs_hook: type[T]) -> T: ...
 
 
 @overload
 def loads(
     s: str | bytes, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]
-) -> T:
-    ...
+) -> T: ...
 
 
 def loads(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]

@@ -9,18 +9,17 @@ T = TypeVar("T")
 
 
 @overload
-def load_xml(fp: IO) -> dict[str, str]:
-    ...
+def load_xml(fp: IO) -> dict[str, str]: ...
 
 
 @overload
-def load_xml(fp: IO, object_pairs_hook: type[T]) -> T:
-    ...
+def load_xml(fp: IO, object_pairs_hook: type[T]) -> T: ...
 
 
 @overload
-def load_xml(fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]) -> T:
-    ...
+def load_xml(
+    fp: IO, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]
+) -> T: ...
 
 
 def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
@@ -53,20 +52,17 @@ def load_xml(fp, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
 
 
 @overload
-def loads_xml(s: AnyStr) -> dict[str, str]:
-    ...
+def loads_xml(s: AnyStr) -> dict[str, str]: ...
 
 
 @overload
-def loads_xml(fp: IO, object_pairs_hook: type[T]) -> T:
-    ...
+def loads_xml(fp: IO, object_pairs_hook: type[T]) -> T: ...
 
 
 @overload
 def loads_xml(
     s: AnyStr, object_pairs_hook: Callable[[Iterator[tuple[str, str]]], T]
-) -> T:
-    ...
+) -> T: ...
 
 
 def loads_xml(s, object_pairs_hook=dict):  # type: ignore[no-untyped-def]
