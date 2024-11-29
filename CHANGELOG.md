@@ -1,7 +1,7 @@
 v0.9.0 (in development)
 -----------------------
 - Drop support for Python 3.6 and 3.7
-- Support Python 3.11 and 3.12
+- Support Python 3.11, 3.12, and 3.13
 - Migrated from setuptools to hatch
 
 v0.8.1 (2021-10-05)
