@@ -370,6 +370,7 @@ class InvalidUEscapeError(ValueError):
     def __init__(self, escape: str) -> None:
         #: The invalid ``\uXXXX`` escape sequence encountered
         self.escape: str = escape
+        super().__init__(escape)
 
     def __str__(self) -> str:
         return "Invalid \\u escape sequence: " + self.escape

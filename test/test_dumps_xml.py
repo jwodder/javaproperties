@@ -54,31 +54,31 @@ from javaproperties import dumps_xml
         (
             [
                 ("key", "value"),
-                ("edh", "\xF0"),
+                ("edh", "\xf0"),
                 ("snowman", "\u2603"),
-                ("goat", "\U0001F410"),
+                ("goat", "\U0001f410"),
             ],
             '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
             "<properties>\n"
             '<entry key="key">value</entry>\n'
-            '<entry key="edh">\xF0</entry>\n'
+            '<entry key="edh">\xf0</entry>\n'
             '<entry key="snowman">\u2603</entry>\n'
-            '<entry key="goat">\U0001F410</entry>\n'
+            '<entry key="goat">\U0001f410</entry>\n'
             "</properties>\n",
         ),
         (
             [
                 ("key", "value"),
-                ("\xF0", "edh"),
+                ("\xf0", "edh"),
                 ("\u2603", "snowman"),
-                ("\U0001F410", "goat"),
+                ("\U0001f410", "goat"),
             ],
             '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
             "<properties>\n"
             '<entry key="key">value</entry>\n'
-            '<entry key="\xF0">edh</entry>\n'
+            '<entry key="\xf0">edh</entry>\n'
             '<entry key="\u2603">snowman</entry>\n'
-            '<entry key="\U0001F410">goat</entry>\n'
+            '<entry key="\U0001f410">goat</entry>\n'
             "</properties>\n",
         ),
     ],

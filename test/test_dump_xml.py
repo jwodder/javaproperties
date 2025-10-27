@@ -12,9 +12,9 @@ def test_dump_xml_encoding(enc):
     dump_xml(
         [
             ("key", "value"),
-            ("edh", "\xF0"),
+            ("edh", "\xf0"),
             ("snowman", "\u2603"),
-            ("goat", "\U0001F410"),
+            ("goat", "\U0001f410"),
         ],
         fp,
         encoding=enc,
@@ -26,9 +26,9 @@ def test_dump_xml_encoding(enc):
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key="key">value</entry>
-<entry key="edh">\xF0</entry>
+<entry key="edh">\xf0</entry>
 <entry key="snowman">\u2603</entry>
-<entry key="goat">\U0001F410</entry>
+<entry key="goat">\U0001f410</entry>
 </properties>
 """.format(
             enc

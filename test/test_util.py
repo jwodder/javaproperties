@@ -284,10 +284,10 @@ def test_linked_list_insert_after_last():
         ("foo\r\nbar", ["foo\r\n", "bar"]),
         ("foo\n\rbar", ["foo\n", "\r", "bar"]),
         (
-            "Why\vare\fthere\x1Cso\x1Ddang\x1Emany\x85line\u2028separator\u2029"
+            "Why\vare\fthere\x1cso\x1ddang\x1emany\x85line\u2028separator\u2029"
             "characters?",
             [
-                "Why\vare\fthere\x1Cso\x1Ddang\x1Emany\x85line\u2028separator\u2029"
+                "Why\vare\fthere\x1cso\x1ddang\x1emany\x85line\u2028separator\u2029"
                 "characters?"
             ],
         ),

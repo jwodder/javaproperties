@@ -24,7 +24,7 @@ from javaproperties import load_xml
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key="key">value</entry>
-<entry key="edh">\xF0</entry>
+<entry key="edh">\xf0</entry>
 <entry key="snowman">&#9731;</entry>
 <entry key="goat">&#128016;</entry>
 </properties>
@@ -34,9 +34,9 @@ from javaproperties import load_xml
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key="key">value</entry>
-<entry key="edh">\xF0</entry>
+<entry key="edh">\xf0</entry>
 <entry key="snowman">\u2603</entry>
-<entry key="goat">\U0001F410</entry>
+<entry key="goat">\U0001f410</entry>
 </properties>
 """.encode(
             "utf-16be"
@@ -46,9 +46,9 @@ from javaproperties import load_xml
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key="key">value</entry>
-<entry key="edh">\xC3\xB0</entry>
-<entry key="snowman">\xE2\x98\x83</entry>
-<entry key="goat">\xF0\x9F\x90\x90</entry>
+<entry key="edh">\xc3\xb0</entry>
+<entry key="snowman">\xe2\x98\x83</entry>
+<entry key="goat">\xf0\x9f\x90\x90</entry>
 </properties>
 """,
     ],
@@ -56,7 +56,7 @@ from javaproperties import load_xml
 def test_load_xml(b):
     assert load_xml(BytesIO(b)) == {
         "key": "value",
-        "edh": "\xF0",
+        "edh": "\xf0",
         "snowman": "\u2603",
-        "goat": "\U0001F410",
+        "goat": "\U0001f410",
     }

@@ -9,8 +9,8 @@ from javaproperties import Comment, KeyValue, Whitespace, parse
         ("\n", [Whitespace("\n")]),
         (" \n\t\n", [Whitespace(" \n"), Whitespace("\t\n")]),
         ("key=value\n", [KeyValue("key", "value", "key=value\n")]),
-        ("\xF0=\u2603\n", [KeyValue("\xF0", "\u2603", "\xF0=\u2603\n")]),
-        ("\\u00F0=\\u2603\n", [KeyValue("\xF0", "\u2603", "\\u00F0=\\u2603\n")]),
+        ("\xf0=\u2603\n", [KeyValue("\xf0", "\u2603", "\xf0=\u2603\n")]),
+        ("\\u00F0=\\u2603\n", [KeyValue("\xf0", "\u2603", "\\u00F0=\\u2603\n")]),
         (" key :\t value \n", [KeyValue("key", "value ", " key :\t value \n")]),
         (
             "#This is a comment.\n"

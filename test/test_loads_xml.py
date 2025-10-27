@@ -90,7 +90,7 @@ from javaproperties import loads_xml
         ),
         (
             '<properties><entry key="goat">&#x1F410;</entry></properties>',
-            {"goat": "\U0001F410"},
+            {"goat": "\U0001f410"},
         ),
     ],
 )
