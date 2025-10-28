@@ -441,7 +441,7 @@ def test_propclass_propertyNames():
 
 def test_propclass_stringPropertyNames():
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
-    assert p.stringPropertyNames() == set(["key", "apple", "foo"])
+    assert p.stringPropertyNames() == {"key", "apple", "foo"}
 
 
 def test_propclass_getProperty():
@@ -520,7 +520,7 @@ def test_propclass_defaults_propertyNames():
 def test_propclass_defaults_stringPropertyNames():
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
-    assert p.stringPropertyNames() == set(["key", "apple", "horse"])
+    assert p.stringPropertyNames() == {"key", "apple", "horse"}
 
 
 def test_propclass_setProperty():

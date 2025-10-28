@@ -1,9 +1,9 @@
 from __future__ import annotations
 from collections import OrderedDict
-from collections.abc import Iterable, Iterator, Mapping
+from collections.abc import Iterable, Iterator, Mapping, MutableMapping, Reversible
 from datetime import datetime
 from io import BytesIO, StringIO
-from typing import Any, AnyStr, IO, MutableMapping, Optional, Reversible, TextIO, cast
+from typing import Any, AnyStr, IO, TextIO, cast
 from .reading import Comment, KeyValue, PropertiesElement, Whitespace, loads, parse
 from .util import CONTINUED_RGX, LinkedList, LinkedListNode, ascii_splitlines
 from .writing import java_timestamp, join_key_value, to_comment
@@ -144,7 +144,7 @@ class PropertiesFile(MutableMapping[str, str]):
     def __len__(self) -> int:
         return len(self._key2nodes)
 
-    def _comparable(self) -> list[tuple[Optional[str], str]]:
+    def _comparable(self) -> list[tuple[str | None, str]]:
         return [
             (p.key, p.value) if isinstance(p, KeyValue) else (None, p.source)
             for n in self._lines.iternodes()
@@ -312,7 +312,7 @@ class PropertiesFile(MutableMapping[str, str]):
         return dup
 
     @property
-    def timestamp(self) -> Optional[str]:
+    def timestamp(self) -> str | None:
         """
         .. versionadded:: 0.7.0
 
@@ -397,7 +397,7 @@ class PropertiesFile(MutableMapping[str, str]):
                 return
 
     @property
-    def header_comment(self) -> Optional[str]:
+    def header_comment(self) -> str | None:
         """
         .. versionadded:: 0.7.0
 
@@ -455,7 +455,7 @@ class PropertiesFile(MutableMapping[str, str]):
             return None
 
     @header_comment.setter
-    def header_comment(self, value: Optional[str]) -> None:
+    def header_comment(self, value: str | None) -> None:
         if value is None:
             comments = []
         else:

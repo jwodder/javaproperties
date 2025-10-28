@@ -1,8 +1,8 @@
 from __future__ import annotations
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from io import BytesIO, StringIO
 import re
-from typing import Any, IO, Iterable, TypeVar, overload
+from typing import Any, IO, TypeVar, overload
 from .util import CONTINUED_RGX, ascii_splitlines
 
 T = TypeVar("T")
@@ -274,8 +274,7 @@ def parse(src: IO | str | bytes) -> Iterator[PropertiesElement]:
                     ll = line
                 if ll == "":
                     return
-                for ln in ascii_splitlines(ll):
-                    yield ln
+                yield from ascii_splitlines(ll)
 
         liter = lineiter()
     for source in liter:

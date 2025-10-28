@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections.abc import Callable, Iterable, Iterator, Mapping
-from typing import AnyStr, BinaryIO, IO, Optional, TypeVar, overload
+from typing import AnyStr, BinaryIO, IO, TypeVar, overload
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape, quoteattr
 from .util import itemize
@@ -108,7 +108,7 @@ def _fromXML(root: ET.Element) -> Iterator[tuple[str, str]]:
 def dump_xml(
     props: Mapping[str, str] | Iterable[tuple[str, str]],
     fp: BinaryIO,
-    comment: Optional[str] = None,
+    comment: str | None = None,
     encoding: str = "UTF-8",
     sort_keys: bool = False,
 ) -> None:
@@ -136,7 +136,7 @@ def dump_xml(
     # for s in _stream_xml(props, comment, sort_keys):
     #    print(s, file=fptxt)
     fp.write(
-        '<?xml version="1.0" encoding={0} standalone="no"?>\n'.format(
+        '<?xml version="1.0" encoding={} standalone="no"?>\n'.format(
             quoteattr(encoding)
         ).encode(encoding, "xmlcharrefreplace")
     )
@@ -146,7 +146,7 @@ def dump_xml(
 
 def dumps_xml(
     props: Mapping[str, str] | Iterable[tuple[str, str]],
-    comment: Optional[str] = None,
+    comment: str | None = None,
     sort_keys: bool = False,
 ) -> str:
     """
@@ -168,7 +168,7 @@ def dumps_xml(
 
 def _stream_xml(
     props: Mapping[str, str] | Iterable[tuple[str, str]],
-    comment: Optional[str] = None,
+    comment: str | None = None,
     sort_keys: bool = False,
 ) -> Iterator[str]:
     yield '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">'
@@ -176,5 +176,5 @@ def _stream_xml(
     if comment is not None:
         yield "<comment>" + escape(comment) + "</comment>"
     for k, v in itemize(props, sort_keys=sort_keys):
-        yield "<entry key={0}>{1}</entry>".format(quoteattr(k), escape(v))
+        yield f"<entry key={quoteattr(k)}>{escape(v)}</entry>"
     yield "</properties>"
