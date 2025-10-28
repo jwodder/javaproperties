@@ -4,7 +4,7 @@ from datetime import datetime
 from io import StringIO
 import re
 import time
-from typing import Optional, TextIO
+from typing import TextIO
 from .util import itemize
 
 
@@ -12,11 +12,11 @@ def dump(
     props: Mapping[str, str] | Iterable[tuple[str, str]],
     fp: TextIO,
     separator: str = "=",
-    comments: Optional[str] = None,
+    comments: str | None = None,
     timestamp: None | bool | float | datetime = True,
     sort_keys: bool = False,
     ensure_ascii: bool = True,
-    ensure_ascii_comments: Optional[bool] = None,
+    ensure_ascii_comments: bool | None = None,
 ) -> None:
     """
     Write a series of key-value pairs to a file in simple line-oriented
@@ -68,11 +68,11 @@ def dump(
 def dumps(
     props: Mapping[str, str] | Iterable[tuple[str, str]],
     separator: str = "=",
-    comments: Optional[str] = None,
+    comments: str | None = None,
     timestamp: None | bool | float | datetime = True,
     sort_keys: bool = False,
     ensure_ascii: bool = True,
-    ensure_ascii_comments: Optional[bool] = None,
+    ensure_ascii_comments: bool | None = None,
 ) -> str:
     """
     Convert a series of key-value pairs to a `str` in simple line-oriented
@@ -128,7 +128,7 @@ NEWLINE_OLD_COMMENT_RGX = re.compile(r"\n(?![#!])")
 NON_N_EOL_RGX = re.compile(r"\r\n?")
 
 
-def to_comment(comment: str, ensure_ascii: Optional[bool] = None) -> str:
+def to_comment(comment: str, ensure_ascii: bool | None = None) -> str:
     """
     Convert a string to a ``.properties`` file comment.  Non-Latin-1 or
     non-ASCII characters in the string may be escaped using ``\\uXXXX`` escapes
@@ -220,7 +220,7 @@ def _to_u_escape(c: str) -> str:
         # surrogate pairs?
         assert co <= 0x10FFFF
         co -= 0x10000
-        return "\\u{0:04x}\\u{1:04x}".format(0xD800 + (co >> 10), 0xDC00 + (co & 0x3FF))
+        return f"\\u{0xD800 + (co >> 10):04x}\\u{0xDC00 + (co & 0x3FF):04x}"
     else:
         return f"\\u{co:04x}"
 
@@ -310,7 +310,7 @@ def java_timestamp(timestamp: None | bool | float | datetime = True) -> str:
     else:
         ### TODO: Reimplement this using datetime.astimezone() to convert
         ### everything to an aware datetime?
-        ts: Optional[float]
+        ts: float | None
         if timestamp is True:
             ts = None
         elif isinstance(timestamp, datetime):

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from collections.abc import Iterable, Iterator, Mapping
 import re
-from typing import Generic, Optional, TypeVar
+from typing import Generic, TypeVar
 
 CONTINUED_RGX = re.compile(r"(?<!\\)((?:\\\\)*)\\\r?\n?\Z")
 
@@ -14,13 +14,13 @@ V = TypeVar("V")
 
 class LinkedList(Generic[T]):
     def __init__(self) -> None:
-        self.start: Optional["LinkedListNode[T]"] = None
-        self.end: Optional["LinkedListNode[T]"] = None
+        self.start: LinkedListNode[T] | None = None
+        self.end: LinkedListNode[T] | None = None
 
     def __iter__(self) -> Iterator[T]:
         return (n.value for n in self.iternodes())
 
-    def iternodes(self) -> Iterator["LinkedListNode[T]"]:
+    def iternodes(self) -> Iterator[LinkedListNode[T]]:
         n = self.start
         while n is not None:
             yield n
@@ -37,7 +37,7 @@ class LinkedList(Generic[T]):
         self.end = n
         return n
 
-    def find_node(self, node: "LinkedListNode[T]") -> Optional[int]:
+    def find_node(self, node: LinkedListNode[T]) -> int | None:
         for i, n in enumerate(self.iternodes()):
             if n is node:
                 return i
@@ -48,8 +48,8 @@ class LinkedListNode(Generic[T]):
     def __init__(self, value: T, lst: LinkedList[T]) -> None:
         self.value: T = value
         self.lst: LinkedList[T] = lst
-        self.prev: Optional["LinkedListNode[T]"] = None
-        self.next: Optional["LinkedListNode[T]"] = None
+        self.prev: LinkedListNode[T] | None = None
+        self.next: LinkedListNode[T] | None = None
 
     def unlink(self) -> None:
         if self.prev is not None:

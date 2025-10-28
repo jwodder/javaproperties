@@ -1,6 +1,6 @@
 from __future__ import annotations
-from collections.abc import Iterable, Iterator, Mapping
-from typing import Any, BinaryIO, IO, MutableMapping, Optional, TextIO, TypeVar
+from collections.abc import Iterable, Iterator, Mapping, MutableMapping
+from typing import Any, BinaryIO, IO, TextIO, TypeVar
 from .reading import load
 from .writing import dump
 from .xmlprops import dump_xml, load_xml
@@ -39,7 +39,7 @@ class Properties(MutableMapping[str, str]):
     def __init__(
         self,
         data: None | Mapping[str, str] | Iterable[tuple[str, str]] = None,
-        defaults: Optional["Properties"] = None,
+        defaults: Properties | None = None,
     ) -> None:
         self.data: dict[str, str] = {}
         #: A `Properties` subobject used as fallback for `getProperty`.  Only
@@ -80,7 +80,7 @@ class Properties(MutableMapping[str, str]):
         else:
             return NotImplemented
 
-    def getProperty(self, key: str, defaultValue: Optional[T] = None) -> str | T | None:
+    def getProperty(self, key: str, defaultValue: T | None = None) -> str | T | None:
         """
         Fetch the value associated with the key ``key`` in the `Properties`
         instance.  If the key is not present, `defaults` is checked, and then
@@ -141,7 +141,7 @@ class Properties(MutableMapping[str, str]):
         """Equivalent to ``self[key] = value``"""
         self[key] = value
 
-    def store(self, out: TextIO, comments: Optional[str] = None) -> None:
+    def store(self, out: TextIO, comments: str | None = None) -> None:
         """
         Write the `Properties` instance's entries (in unspecified order) in
         ``.properties`` format to ``out``, including the current timestamp.
@@ -188,7 +188,7 @@ class Properties(MutableMapping[str, str]):
     def storeToXML(
         self,
         out: BinaryIO,
-        comment: Optional[str] = None,
+        comment: str | None = None,
         encoding: str = "UTF-8",
     ) -> None:
         """
