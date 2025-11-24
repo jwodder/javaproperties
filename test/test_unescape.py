@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 from javaproperties import InvalidUEscapeError, unescape
 
@@ -47,7 +48,7 @@ from javaproperties import InvalidUEscapeError, unescape
         ("\U0001f410", "\U0001f410"),
     ],
 )
-def test_unescape(sin, sout):
+def test_unescape(sin: str, sout: str) -> None:
     assert unescape(sin) == sout
 
 
@@ -67,7 +68,7 @@ def test_unescape(sin, sout):
         ("\\u abcx", "\\u abc"),
     ],
 )
-def test_unescape_invalid_u_escape(s, esc):
+def test_unescape_invalid_u_escape(s: str, esc: str) -> None:
     with pytest.raises(InvalidUEscapeError) as excinfo:
         unescape(s)
     assert excinfo.value.escape == esc

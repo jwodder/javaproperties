@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import OrderedDict
 import pytest
 from javaproperties import InvalidUEscapeError, loads
@@ -132,17 +133,17 @@ from javaproperties import InvalidUEscapeError, loads
         ("key=\\\\u260x", {"key": "\\u260x"}),
     ],
 )
-def test_loads(s, d):
+def test_loads(s: str, d: dict[str, str]) -> None:
     assert loads(s) == d
 
 
-def test_loads_multiple_ordereddict():
+def test_loads_multiple_ordereddict() -> None:
     assert loads(
         "key = value\nfoo = bar", object_pairs_hook=OrderedDict
     ) == OrderedDict([("key", "value"), ("foo", "bar")])
 
 
-def test_loads_multiple_ordereddict_rev():
+def test_loads_multiple_ordereddict_rev() -> None:
     assert loads(
         "foo = bar\nkey = value", object_pairs_hook=OrderedDict
     ) == OrderedDict([("foo", "bar"), ("key", "value")])
@@ -173,7 +174,7 @@ def test_loads_multiple_ordereddict_rev():
         ("bad = \\uxabc", "\\uxabc"),
     ],
 )
-def test_loads_invalid_u_escape(s, esc):
+def test_loads_invalid_u_escape(s: str, esc: str) -> None:
     with pytest.raises(InvalidUEscapeError) as excinfo:
         loads(s)
     assert excinfo.value.escape == esc

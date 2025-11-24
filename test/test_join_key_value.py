@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 from javaproperties import join_key_value
 
@@ -40,7 +41,7 @@ from javaproperties import join_key_value
         ("backspace", "\b", "backspace=\\u0008"),
     ],
 )
-def test_join_key_value(key, value, s):
+def test_join_key_value(key: str, value: str, s: str) -> None:
     assert join_key_value(key, value) == s
 
 
@@ -54,7 +55,7 @@ def test_join_key_value(key, value, s):
         (" key ", " value ", " : ", "\\ key\\  : \\ value "),
     ],
 )
-def test_join_key_value_separator(key, value, sep, s):
+def test_join_key_value_separator(key: str, value: str, sep: str, s: str) -> None:
     assert join_key_value(key, value, separator=sep) == s
 
 
@@ -96,5 +97,5 @@ def test_join_key_value_separator(key, value, sep, s):
         ("backspace", "\b", "backspace=\\u0008"),
     ],
 )
-def test_join_key_value_no_ensure_ascii(key, value, s):
+def test_join_key_value_no_ensure_ascii(key: str, value: str, s: str) -> None:
     assert join_key_value(key, value, ensure_ascii=False) == s

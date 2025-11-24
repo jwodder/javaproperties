@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import OrderedDict
 from datetime import datetime
 from dateutil.tz import tzoffset
@@ -51,7 +52,7 @@ from javaproperties import dumps, to_comment
         ({"backspace": "\b"}, "backspace=\\u0008\n"),
     ],
 )
-def test_dumps(d, s):
+def test_dumps(d: dict[str, str], s: str) -> None:
     assert dumps(d, timestamp=False) == s
 
 
@@ -71,7 +72,7 @@ def test_dumps(d, s):
         ),
     ],
 )
-def test_dumps_sorted(d, s):
+def test_dumps_sorted(d: dict[str, str], s: str) -> None:
     assert dumps(d, timestamp=False, sort_keys=True) == s
 
 
@@ -90,7 +91,7 @@ def test_dumps_sorted(d, s):
         ),
     ],
 )
-def test_dump_timestamp(ts, s):
+def test_dump_timestamp(ts: datetime | int | None, s: str) -> None:
     assert dumps({"key": "value"}, timestamp=ts) == s
 
 
@@ -121,7 +122,7 @@ def test_dump_timestamp(ts, s):
         ({"backspace": "\b"}, "backspace=\\u0008\n"),
     ],
 )
-def test_dumps_no_ensure_ascii(d, s):
+def test_dumps_no_ensure_ascii(d: dict[str, str], s: str) -> None:
     assert dumps(d, timestamp=False, ensure_ascii=False) == s
 
 
@@ -175,7 +176,7 @@ def test_dumps_no_ensure_ascii(d, s):
     ],
 )
 @pytest.mark.parametrize("ensure_ascii_comments", [None, True, False])
-def test_dumps_comments(c, ensure_ascii_comments):
+def test_dumps_comments(c: str, ensure_ascii_comments: bool | None) -> None:
     s = dumps(
         {"key": "value"},
         timestamp=False,
@@ -202,7 +203,9 @@ def test_dumps_comments(c, ensure_ascii_comments):
         ("#x\xf0\u2603\U0001f410\n", False),
     ],
 )
-def test_dumps_ensure_ascii_cross_ensure_ascii_comments(pout, ea, cout, eac):
+def test_dumps_ensure_ascii_cross_ensure_ascii_comments(
+    pout: str, ea: bool, cout: str, eac: bool | None
+) -> None:
     assert (
         dumps(
             {"x\xf0": "\u2603\U0001f410"},
@@ -215,11 +218,11 @@ def test_dumps_ensure_ascii_cross_ensure_ascii_comments(pout, ea, cout, eac):
     )
 
 
-def test_dumps_tab_separator():
+def test_dumps_tab_separator() -> None:
     assert dumps({"key": "value"}, separator="\t", timestamp=False) == "key\tvalue\n"
 
 
-def test_dumps_timestamp_and_comment():
+def test_dumps_timestamp_and_comment() -> None:
     assert (
         dumps(
             {"key": "value"},

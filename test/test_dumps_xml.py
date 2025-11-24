@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import OrderedDict
 import pytest
 from javaproperties import dumps_xml
@@ -83,7 +84,7 @@ from javaproperties import dumps_xml
         ),
     ],
 )
-def test_dumps_xml(d, s):
+def test_dumps_xml(d: dict[str, str], s: str) -> None:
     assert dumps_xml(d) == s
 
 
@@ -132,31 +133,25 @@ def test_dumps_xml(d, s):
         ),
     ],
 )
-def test_dumps_xml_sorted(d, s):
+def test_dumps_xml_sorted(d: dict[str, str], s: str) -> None:
     assert dumps_xml(d, sort_keys=True) == s
 
 
-def test_dumps_xml_comment():
-    assert (
-        dumps_xml({"key": "value"}, comment="This is a comment.")
-        == """\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>This is a comment.</comment>
-<entry key="key">value</entry>
-</properties>
-"""
+def test_dumps_xml_comment() -> None:
+    assert dumps_xml({"key": "value"}, comment="This is a comment.") == (
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        "<properties>\n"
+        "<comment>This is a comment.</comment>\n"
+        '<entry key="key">value</entry>\n'
+        "</properties>\n"
     )
 
 
-def test_dumps_xml_entities():
-    assert (
-        dumps_xml({"&<>\"'": "&<>\"'"}, comment="&<>\"'")
-        == """\
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>&amp;&lt;&gt;"'</comment>
-<entry key="&amp;&lt;&gt;&quot;'">&amp;&lt;&gt;"'</entry>
-</properties>
-"""
+def test_dumps_xml_entities() -> None:
+    assert dumps_xml({"&<>\"'": "&<>\"'"}, comment="&<>\"'") == (
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        "<properties>\n"
+        "<comment>&amp;&lt;&gt;\"'</comment>\n"
+        '<entry key="&amp;&lt;&gt;&quot;\'">&amp;&lt;&gt;"\'</entry>\n'
+        "</properties>\n"
     )

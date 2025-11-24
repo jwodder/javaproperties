@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 from javaproperties import escape
 
@@ -35,7 +36,7 @@ from javaproperties import escape
         ("\udc10\ud83d", "\\udc10\\ud83d"),
     ],
 )
-def test_escape(sin, sout):
+def test_escape(sin: str, sout: str) -> None:
     assert escape(sin) == sout
 
 
@@ -74,5 +75,5 @@ def test_escape(sin, sout):
         ("\udc10\ud83d", "\udc10\ud83d"),
     ],
 )
-def test_escape_no_ensure_ascii(sin, sout):
+def test_escape_no_ensure_ascii(sin: str, sout: str) -> None:
     assert escape(sin, ensure_ascii=False) == sout

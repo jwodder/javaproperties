@@ -1,3 +1,4 @@
+from __future__ import annotations
 from datetime import datetime
 from dateutil.tz import tzstr
 import pytest
@@ -91,7 +92,9 @@ old_pacific = tzstr("PST8PDT,M4.1.0,M10.5.0")
         ),
     ],
 )
-def test_java_timestamp(ts, s):
+def test_java_timestamp(
+    ts: datetime | int | float | bool | None, s: str | tuple[str, str]
+) -> None:
     r = java_timestamp(ts)
     if isinstance(s, tuple):
         assert r in s
@@ -117,14 +120,14 @@ def test_java_timestamp(ts, s):
         ),
     ],
 )
-def test_java_timestamp_fold(ts, fold, s):
+def test_java_timestamp_fold(ts: datetime, fold: int, s: str) -> None:
     assert java_timestamp(ts.replace(fold=fold)) == s
 
 
-def test_java_timestamp_now(fixed_timestamp):
+def test_java_timestamp_now(fixed_timestamp: str) -> None:
     assert java_timestamp() == fixed_timestamp
 
 
-def test_java_timestamp_dogfood_type_error():
+def test_java_timestamp_dogfood_type_error() -> None:
     with pytest.raises(TypeError):
-        java_timestamp("Mon Dec 12 12:12:12 EST 2016")
+        java_timestamp("Mon Dec 12 12:12:12 EST 2016")  # type: ignore[arg-type]

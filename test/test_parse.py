@@ -1,5 +1,6 @@
+from __future__ import annotations
 import pytest
-from javaproperties import Comment, KeyValue, Whitespace, parse
+from javaproperties import Comment, KeyValue, PropertiesElement, Whitespace, parse
 
 
 @pytest.mark.parametrize(
@@ -54,11 +55,11 @@ from javaproperties import Comment, KeyValue, Whitespace, parse
         ),
     ],
 )
-def test_parse(s, objects):
+def test_parse(s: str, objects: list[PropertiesElement]) -> None:
     assert list(parse(s)) == objects
 
 
-def test_keyvalue_attributes():
+def test_keyvalue_attributes() -> None:
     kv = KeyValue("a", "b", "c")
     assert kv.key == "a"
     assert kv.value == "b"
@@ -70,7 +71,7 @@ def test_keyvalue_attributes():
     assert s == kv.source
 
 
-def test_comment_attributes():
+def test_comment_attributes() -> None:
     c = Comment("a")
     assert c.source == "a"
     assert repr(c) == "javaproperties.reading.Comment(source='a')"
@@ -78,7 +79,7 @@ def test_comment_attributes():
     assert s == c.source
 
 
-def test_whitespace_attributes():
+def test_whitespace_attributes() -> None:
     ws = Whitespace("a")
     assert ws.source == "a"
     assert repr(ws) == "javaproperties.reading.Whitespace(source='a')"
@@ -127,7 +128,7 @@ def test_whitespace_attributes():
         ("#Mo  Mär 02 13:59:03 EST 2020\n", False),
     ],
 )
-def test_comment_is_timestamp(c, is_t):
+def test_comment_is_timestamp(c: str, is_t: bool) -> None:
     assert Comment(c).is_timestamp() == is_t
 
 
@@ -148,8 +149,8 @@ def test_comment_is_timestamp(c, is_t):
         ("key va\\\n\\\n", "key va\\\n"),
     ],
 )
-def test_keyvalue_source_stripped(s, ss):
-    assert KeyValue(None, None, s).source_stripped == ss
+def test_keyvalue_source_stripped(s: str, ss: str) -> None:
+    assert KeyValue("foo", "bar", s).source_stripped == ss
 
 
 @pytest.mark.parametrize(
@@ -162,7 +163,7 @@ def test_keyvalue_source_stripped(s, ss):
         ("#comment\\\n", "#comment\\"),
     ],
 )
-def test_comment_source_stripped(s, ss):
+def test_comment_source_stripped(s: str, ss: str) -> None:
     assert Comment(s).source_stripped == ss
 
 
@@ -183,7 +184,7 @@ def test_comment_source_stripped(s, ss):
         ("\\\n\\\n", "\\\n"),
     ],
 )
-def test_whitespace_source_stripped(s, ss):
+def test_whitespace_source_stripped(s: str, ss: str) -> None:
     assert Whitespace(s).source_stripped == ss
 
 
@@ -203,5 +204,5 @@ def test_whitespace_source_stripped(s, ss):
         ("  weird edge # case", "weird edge # case"),
     ],
 )
-def test_comment_value(s, v):
+def test_comment_value(s: str, v: str) -> None:
     assert Comment(s).value == v

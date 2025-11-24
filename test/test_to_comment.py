@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 from javaproperties import to_comment
 
@@ -52,7 +53,7 @@ s = "".join(
         (s, "#" + s),
     ],
 )
-def test_to_comment(cin, cout):
+def test_to_comment(cin: str, cout: str) -> None:
     assert to_comment(cin) == cout
     assert to_comment(cin, ensure_ascii=None) == cout
 
@@ -102,7 +103,7 @@ def test_to_comment(cin, cout):
         (s, "#" + s),
     ],
 )
-def test_to_comment_no_ensure_ascii(cin, cout):
+def test_to_comment_no_ensure_ascii(cin: str, cout: str) -> None:
     assert to_comment(cin, ensure_ascii=False) == cout
 
 
@@ -156,5 +157,5 @@ def test_to_comment_no_ensure_ascii(cin, cout):
         ),
     ],
 )
-def test_to_comment_ensure_ascii(cin, cout):
+def test_to_comment_ensure_ascii(cin: str, cout: str) -> None:
     assert to_comment(cin, ensure_ascii=True) == cout

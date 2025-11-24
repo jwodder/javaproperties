@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 
 import javaproperties  # noqa
@@ -40,7 +41,7 @@ import javaproperties  # noqa
         ("kid \U0001f410", "cp500", "kid \\ud83d\\udc10".encode("cp500")),
     ],
 )
-def test_javapropertiesreplace(s, enc, b):
+def test_javapropertiesreplace(s: str, enc: str, b: bytes) -> None:
     assert s.encode(enc, "javapropertiesreplace") == b
 
 
@@ -63,5 +64,5 @@ def test_javapropertiesreplace(s, enc, b):
         "cp500",
     ],
 )
-def test_javaproperties_bad_surrogates(s, enc, esc):
+def test_javaproperties_bad_surrogates(s: str, enc: str, esc: str) -> None:
     assert s.encode(enc, "javapropertiesreplace") == esc.encode(enc)
