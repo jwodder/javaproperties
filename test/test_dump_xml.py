@@ -1,3 +1,4 @@
+from __future__ import annotations
 from io import BytesIO
 import pytest
 from javaproperties import dump_xml
@@ -7,7 +8,7 @@ from javaproperties import dump_xml
 
 
 @pytest.mark.parametrize("enc", ["ASCII", "Latin-1", "UTF-16BE", "UTF-8"])
-def test_dump_xml_encoding(enc):
+def test_dump_xml_encoding(enc: str) -> None:
     fp = BytesIO()
     dump_xml(
         [
@@ -19,20 +20,13 @@ def test_dump_xml_encoding(enc):
         fp,
         encoding=enc,
     )
-    assert (
-        fp.getvalue()
-        == """\
-<?xml version="1.0" encoding="{}" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-<entry key="edh">\xf0</entry>
-<entry key="snowman">\u2603</entry>
-<entry key="goat">\U0001f410</entry>
-</properties>
-""".format(
-            enc
-        ).encode(
-            enc, "xmlcharrefreplace"
-        )
-    )
+    assert fp.getvalue() == (
+        f'<?xml version="1.0" encoding="{enc}" standalone="no"?>\n'
+        '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        "<properties>\n"
+        '<entry key="key">value</entry>\n'
+        '<entry key="edh">\xf0</entry>\n'
+        '<entry key="snowman">\u2603</entry>\n'
+        '<entry key="goat">\U0001f410</entry>\n'
+        "</properties>\n"
+    ).encode(enc, "xmlcharrefreplace")

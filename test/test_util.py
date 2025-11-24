@@ -1,17 +1,19 @@
+from __future__ import annotations
+from typing import Any
 import pytest
 from javaproperties.util import LinkedList, ascii_splitlines
 
 
-def test_linkedlist_empty():
-    ll = LinkedList()
+def test_linkedlist_empty() -> None:
+    ll: LinkedList[int] = LinkedList()
     assert list(ll) == []
     assert list(ll.iternodes()) == []
     assert ll.start is None
     assert ll.end is None
 
 
-def test_linkedlist_one_elem():
-    ll = LinkedList()
+def test_linkedlist_one_elem() -> None:
+    ll: LinkedList[int] = LinkedList()
     n = ll.append(42)
     assert list(ll) == [42]
     assert list(ll.iternodes()) == [n]
@@ -22,8 +24,8 @@ def test_linkedlist_one_elem():
     assert n.next is None
 
 
-def test_linkedlist_two_elem():
-    ll = LinkedList()
+def test_linkedlist_two_elem() -> None:
+    ll: LinkedList[int | str] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     assert list(ll) == [42, "fnord"]
@@ -38,8 +40,8 @@ def test_linkedlist_two_elem():
     assert n2.next is None
 
 
-def test_linked_list_three_elem():
-    ll = LinkedList()
+def test_linked_list_three_elem() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -58,8 +60,8 @@ def test_linked_list_three_elem():
     assert n3.next is None
 
 
-def test_linked_list_unlink_only():
-    ll = LinkedList()
+def test_linked_list_unlink_only() -> None:
+    ll: LinkedList[int] = LinkedList()
     n = ll.append(42)
     n.unlink()
     assert list(ll) == []
@@ -69,8 +71,8 @@ def test_linked_list_unlink_only():
     assert ll.find_node(n) is None
 
 
-def test_linked_list_unlink_first():
-    ll = LinkedList()
+def test_linked_list_unlink_first() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -88,8 +90,8 @@ def test_linked_list_unlink_first():
     assert n3.next is None
 
 
-def test_linked_list_unlink_middle():
-    ll = LinkedList()
+def test_linked_list_unlink_middle() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -107,8 +109,8 @@ def test_linked_list_unlink_middle():
     assert n3.next is None
 
 
-def test_linked_list_unlink_last():
-    ll = LinkedList()
+def test_linked_list_unlink_last() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -126,8 +128,8 @@ def test_linked_list_unlink_last():
     assert n2.next is None
 
 
-def test_linked_list_insert_before_first():
-    ll = LinkedList()
+def test_linked_list_insert_before_first() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -150,8 +152,8 @@ def test_linked_list_insert_before_first():
     assert n3.next is None
 
 
-def test_linked_list_insert_before_middle():
-    ll = LinkedList()
+def test_linked_list_insert_before_middle() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -174,8 +176,8 @@ def test_linked_list_insert_before_middle():
     assert n3.next is None
 
 
-def test_linked_list_insert_before_last():
-    ll = LinkedList()
+def test_linked_list_insert_before_last() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -198,8 +200,8 @@ def test_linked_list_insert_before_last():
     assert n3.next is None
 
 
-def test_linked_list_insert_after_first():
-    ll = LinkedList()
+def test_linked_list_insert_after_first() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -222,8 +224,8 @@ def test_linked_list_insert_after_first():
     assert n3.next is None
 
 
-def test_linked_list_insert_after_middle():
-    ll = LinkedList()
+def test_linked_list_insert_after_middle() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -246,8 +248,8 @@ def test_linked_list_insert_after_middle():
     assert n3.next is None
 
 
-def test_linked_list_insert_after_last():
-    ll = LinkedList()
+def test_linked_list_insert_after_last() -> None:
+    ll: LinkedList[Any] = LinkedList()
     n1 = ll.append(42)
     n2 = ll.append("fnord")
     n3 = ll.append([0, 1, 2])
@@ -293,5 +295,5 @@ def test_linked_list_insert_after_last():
         ),
     ],
 )
-def test_ascii_splitlines(s, lines):
+def test_ascii_splitlines(s: str, lines: list[str]) -> None:
     assert ascii_splitlines(s) == lines

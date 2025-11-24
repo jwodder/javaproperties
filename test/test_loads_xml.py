@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import OrderedDict
 import pytest
 from javaproperties import loads_xml
@@ -94,47 +95,37 @@ from javaproperties import loads_xml
         ),
     ],
 )
-def test_loads_xml(s, d):
+def test_loads_xml(s: str, d: dict[str, str]) -> None:
     assert loads_xml(s) == d
 
 
-def test_loads_xml_bad_root():
+def test_loads_xml_bad_root() -> None:
     with pytest.raises(ValueError) as excinfo:
         loads_xml('<not-properties><entry key="key">value</entry></not-properties>')
     assert "not rooted at <properties>" in str(excinfo.value)
 
 
-def test_loads_xml_no_key():
+def test_loads_xml_no_key() -> None:
     with pytest.raises(ValueError) as excinfo:
         loads_xml("<properties><entry>value</entry></properties>")
     assert '<entry> is missing "key" attribute' in str(excinfo.value)
 
 
-def test_loads_xml_multiple_ordereddict():
-    assert (
-        loads_xml(
-            """
-<properties>
-    <entry key="key">value</entry>
-    <entry key="foo">bar</entry>
-</properties>
-""",
-            object_pairs_hook=OrderedDict,
-        )
-        == OrderedDict([("key", "value"), ("foo", "bar")])
-    )
+def test_loads_xml_multiple_orderddict() -> None:
+    assert loads_xml(
+        "<properties>\n"
+        '    <entry key="key">value</entry>\n'
+        '    <entry key="foo">bar</entry>\n'
+        "</properties>\n",
+        object_pairs_hook=OrderedDict,
+    ) == OrderedDict([("key", "value"), ("foo", "bar")])
 
 
-def test_loads_xml_multiple_ordereddict_rev():
-    assert (
-        loads_xml(
-            """
-<properties>
-    <entry key="foo">bar</entry>
-    <entry key="key">value</entry>
-</properties>
-""",
-            object_pairs_hook=OrderedDict,
-        )
-        == OrderedDict([("foo", "bar"), ("key", "value")])
-    )
+def test_loads_xml_multiple_ordereddict_rev() -> None:
+    assert loads_xml(
+        "<properties>\n"
+        '    <entry key="foo">bar</entry>\n'
+        '    <entry key="key">value</entry>\n'
+        "</properties>\n",
+        object_pairs_hook=OrderedDict,
+    ) == OrderedDict([("foo", "bar"), ("key", "value")])

@@ -1,5 +1,7 @@
+from __future__ import annotations
 from collections import OrderedDict
 from datetime import datetime
+from typing import AnyStr
 from dateutil.tz import tzstr
 import pytest
 from javaproperties import PropertiesFile, dumps
@@ -23,7 +25,7 @@ foo : second definition
 """
 
 
-def test_propfile_empty():
+def test_propfile_empty() -> None:
     pf = PropertiesFile()
     pf._check()
     assert len(pf) == 0
@@ -36,7 +38,7 @@ def test_propfile_empty():
 
 
 @pytest.mark.parametrize("src", [INPUT, INPUT.encode("iso-8859-1")])
-def test_propfile_loads(src):
+def test_propfile_loads(src: AnyStr) -> None:
     pf = PropertiesFile.loads(src)
     pf._check()
     assert len(pf) == 4
@@ -57,13 +59,13 @@ def test_propfile_loads(src):
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
 
 
-def test_propfile_dumps():
+def test_propfile_dumps() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert pf.dumps() == INPUT
 
 
-def test_propfile_getitem():
+def test_propfile_getitem() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert pf["key"] == "value"
@@ -73,7 +75,7 @@ def test_propfile_getitem():
     pf._check()
 
 
-def test_propfile_setitem():
+def test_propfile_setitem() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["key"] = "lock"
@@ -92,29 +94,26 @@ def test_propfile_setitem():
     ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-key=lock
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key=lock\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
-def test_propfile_additem():
+def test_propfile_additem() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["new"] = "old"
@@ -135,30 +134,27 @@ def test_propfile_additem():
     ]
     assert list(pf) == ["foo", "bar", "key", "zebra", "new"]
     assert list(reversed(pf)) == ["new", "zebra", "key", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-key = value
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-new=old
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key = value\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
+        "new=old\n"
     )
 
 
-def test_propfile_delitem():
+def test_propfile_delitem() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     del pf["key"]
@@ -175,28 +171,25 @@ def test_propfile_delitem():
     ]
     assert list(pf) == ["foo", "bar", "zebra"]
     assert list(reversed(pf)) == ["zebra", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
-def test_propfile_delitem_missing():
+def test_propfile_delitem_missing() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     with pytest.raises(KeyError):
@@ -221,7 +214,7 @@ def test_propfile_delitem_missing():
     assert pf.dumps() == INPUT
 
 
-def test_propfile_move_item():
+def test_propfile_move_item() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     del pf["key"]
@@ -242,29 +235,26 @@ def test_propfile_move_item():
     ]
     assert list(pf) == ["foo", "bar", "zebra", "key"]
     assert list(reversed(pf)) == ["key", "zebra", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-key=recreated
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
+        "key=recreated\n"
     )
 
 
-def test_propfile_set_nochange():
+def test_propfile_set_nochange() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert pf["key"] == "value"
@@ -284,41 +274,32 @@ def test_propfile_set_nochange():
     ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-key=value
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key=value\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
-def test_propfile_dumps_function():
-    assert (
-        dumps(PropertiesFile.loads(INPUT), timestamp=False)
-        == """\
-foo=second definition
-bar=only definition
-key=value
-zebra=apple
-"""
+def test_propfile_dumps_function() -> None:
+    assert dumps(PropertiesFile.loads(INPUT), timestamp=False) == (
+        "foo=second definition\nbar=only definition\nkey=value\nzebra=apple\n"
     )
 
 
-def test_propfile_set_repeated_key():
+def test_propfile_set_repeated_key() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["foo"] = "redefinition"
@@ -337,28 +318,25 @@ def test_propfile_set_repeated_key():
     ]
     assert list(pf) == ["foo", "bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar", "foo"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo=redefinition
-bar=only definition
-
-# Comment between values
-
-key = value
-
-zebra \\
-    apple
-
-# Comment at end of file
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo=redefinition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key = value\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
-def test_propfile_delete_repeated_key():
+def test_propfile_delete_repeated_key() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     del pf["foo"]
@@ -375,27 +353,24 @@ def test_propfile_delete_repeated_key():
     ]
     assert list(pf) == ["bar", "key", "zebra"]
     assert list(reversed(pf)) == ["zebra", "key", "bar"]
-    assert (
-        pf.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-bar=only definition
-
-# Comment between values
-
-key = value
-
-zebra \\
-    apple
-
-# Comment at end of file
-"""
+    assert pf.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key = value\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
-def test_propfile_from_ordereddict():
+def test_propfile_from_ordereddict() -> None:
     pf = PropertiesFile(OrderedDict([("key", "value"), ("apple", "zebra")]))
     pf._check()
     assert len(pf) == 2
@@ -407,7 +382,7 @@ def test_propfile_from_ordereddict():
     assert pf.dumps() == "key=value\napple=zebra\n"
 
 
-def test_propfile_from_kwarg():
+def test_propfile_from_kwarg() -> None:
     pf = PropertiesFile(key="value")
     pf._check()
     assert len(pf) == 1
@@ -419,7 +394,7 @@ def test_propfile_from_kwarg():
     assert pf.dumps() == "key=value\n"
 
 
-def test_propfile_from_pairs_list():
+def test_propfile_from_pairs_list() -> None:
     pf = PropertiesFile([("key", "value"), ("apple", "zebra")])
     pf._check()
     assert len(pf) == 2
@@ -431,7 +406,7 @@ def test_propfile_from_pairs_list():
     assert pf.dumps() == "key=value\napple=zebra\n"
 
 
-def test_propfile_from_ordereddict_and_kwarg():
+def test_propfile_from_ordereddict_and_kwarg() -> None:
     pf = PropertiesFile(OrderedDict([("key", "value"), ("apple", "zebra")]), key="lock")
     pf._check()
     assert len(pf) == 2
@@ -443,48 +418,45 @@ def test_propfile_from_ordereddict_and_kwarg():
     assert pf.dumps() == "key=lock\napple=zebra\n"
 
 
-def test_propfile_dumps_separator():
+def test_propfile_dumps_separator() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert pf.dumps(separator="\t") == INPUT
 
 
-def test_propfile_set_dumps_separator():
+def test_propfile_set_dumps_separator() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["key"] = "lock"
     pf._check()
-    assert (
-        pf.dumps(separator="\t")
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo: first definition
-bar=only definition
-
-# Comment between values
-
-key\tlock
-
-zebra \\
-    apple
-foo : second definition
-
-# Comment at end of file
-"""
+    assert pf.dumps(separator="\t") == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo: first definition\n"
+        "bar=only definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key\tlock\n"
+        "\n"
+        "zebra \\\n"
+        "    apple\n"
+        "foo : second definition\n"
+        "\n"
+        "# Comment at end of file\n"
     )
 
 
 @pytest.mark.parametrize("ensure_ascii", [False, True])
-def test_propfile_dumps_ensure_ascii(ensure_ascii):
+def test_propfile_dumps_ensure_ascii(ensure_ascii: bool) -> None:
     txt = INPUT + "ð=edh\n"
     pf = PropertiesFile.loads(txt)
     pf._check()
     assert pf.dumps(ensure_ascii=ensure_ascii) == txt
 
 
-def test_propfile_set_dumps_ensure_ascii():
+def test_propfile_set_dumps_ensure_ascii() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["ð"] = "edh"
@@ -492,7 +464,7 @@ def test_propfile_set_dumps_ensure_ascii():
     assert pf.dumps(ensure_ascii=True) == INPUT + "\\u00f0=edh\n"
 
 
-def test_propfile_set_dumps_no_ensure_ascii():
+def test_propfile_set_dumps_no_ensure_ascii() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     pf["ð"] = "edh"
@@ -500,7 +472,7 @@ def test_propfile_set_dumps_no_ensure_ascii():
     assert pf.dumps(ensure_ascii=False) == INPUT + "ð=edh\n"
 
 
-def test_propfile_copy():
+def test_propfile_copy() -> None:
     pf = PropertiesFile({"Foo": "bar"})
     pf2 = pf.copy()
     pf._check()
@@ -523,7 +495,7 @@ def test_propfile_copy():
     assert pf != pf2
 
 
-def test_propfile_copy_more():
+def test_propfile_copy_more() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf2 = pf.copy()
     pf._check()
@@ -562,50 +534,47 @@ def test_propfile_copy_more():
         "new": "old",
     }
     assert pf.dumps() == INPUT
-    assert (
-        pf2.dumps()
-        == """\
-# A comment before the timestamp
-#Thu Mar 16 17:06:52 EDT 2017
-# A comment after the timestamp
-foo=third definition
-
-# Comment between values
-
-key=value
-
-zebra=horse
-
-# Comment at end of file
-new=old
-"""
+    assert pf2.dumps() == (
+        "# A comment before the timestamp\n"
+        "#Thu Mar 16 17:06:52 EDT 2017\n"
+        "# A comment after the timestamp\n"
+        "foo=third definition\n"
+        "\n"
+        "# Comment between values\n"
+        "\n"
+        "key=value\n"
+        "\n"
+        "zebra=horse\n"
+        "\n"
+        "# Comment at end of file\n"
+        "new=old\n"
     )
 
 
-def test_propfile_eq_empty():
+def test_propfile_eq_empty() -> None:
     pf = PropertiesFile()
     pf2 = PropertiesFile()
     assert pf is not pf2
     assert pf == pf2
 
 
-def test_propfile_eq_nonempty():
+def test_propfile_eq_nonempty() -> None:
     pf = PropertiesFile({"Foo": "bar"})
     pf2 = PropertiesFile({"Foo": "bar"})
     assert pf is not pf2
     assert pf == pf2
 
 
-def test_propfile_eq_self():
+def test_propfile_eq_self() -> None:
     pf = PropertiesFile.loads(INPUT)
     assert pf == pf
 
 
-def test_propfile_neq():
+def test_propfile_neq() -> None:
     assert PropertiesFile({"Foo": "bar"}) != PropertiesFile({"Foo": "BAR"})
 
 
-def test_propfile_eq_dict():
+def test_propfile_eq_dict() -> None:
     pf = PropertiesFile({"Foo": "BAR"})
     assert pf == {"Foo": "BAR"}
     assert {"Foo": "BAR"} == pf
@@ -613,7 +582,7 @@ def test_propfile_eq_dict():
     assert {"Foo": "bar"} != pf
 
 
-def test_propfile_eq_set_nochange():
+def test_propfile_eq_set_nochange() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf2 = PropertiesFile.loads(INPUT)
     assert pf == pf2
@@ -625,48 +594,48 @@ def test_propfile_eq_set_nochange():
     assert pf.dumps() != pf2.dumps()
 
 
-def test_propfile_neq_one_comment():
+def test_propfile_neq_one_comment() -> None:
     pf = PropertiesFile.loads("#This is a comment.\nkey=value\n")
     pf2 = PropertiesFile.loads("key=value\n")
     assert pf != pf2
     assert dict(pf) == dict(pf2)
 
 
-def test_propfile_neq_different_comments():
+def test_propfile_neq_different_comments() -> None:
     pf = PropertiesFile.loads("#This is a comment.\nkey=value\n")
     pf2 = PropertiesFile.loads("#This is also a comment.\nkey=value\n")
     assert pf != pf2
     assert dict(pf) == dict(pf2)
 
 
-def test_propfile_eq_one_repeated_key():
+def test_propfile_eq_one_repeated_key() -> None:
     pf = PropertiesFile.loads("key = value\nkey: other value\n")
     pf2 = PropertiesFile.loads("key other value")
     assert pf == pf2
     assert dict(pf) == dict(pf2) == {"key": "other value"}
 
 
-def test_propfile_eq_repeated_keys():
+def test_propfile_eq_repeated_keys() -> None:
     pf = PropertiesFile.loads("key = value\nkey: other value\n")
     pf2 = PropertiesFile.loads("key: whatever\nkey other value")
     assert pf == pf2
     assert dict(pf) == dict(pf2) == {"key": "other value"}
 
 
-def test_propfile_neq_string():
+def test_propfile_neq_string() -> None:
     pf = PropertiesFile.loads("key = value\nkey: other value\n")
     assert pf != "key = value\nkey: other value\n"
     assert "key = value\nkey: other value\n" != pf
 
 
-def test_propfile_preserve_trailing_escape():
+def test_propfile_preserve_trailing_escape() -> None:
     pf = PropertiesFile.loads("key = value\\")
     pf._check()
     assert dict(pf) == {"key": "value"}
     assert pf.dumps() == "key = value\\"
 
 
-def test_propfile_add_after_trailing_escape():
+def test_propfile_add_after_trailing_escape() -> None:
     pf = PropertiesFile.loads("key = value\\")
     pf._check()
     pf["new"] = "old"
@@ -675,14 +644,14 @@ def test_propfile_add_after_trailing_escape():
     assert pf.dumps() == "key = value\nnew=old\n"
 
 
-def test_propfile_preserve_trailing_comment_escape():
+def test_propfile_preserve_trailing_comment_escape() -> None:
     pf = PropertiesFile.loads("#key = value\\")
     pf._check()
     assert dict(pf) == {}
     assert pf.dumps() == "#key = value\\"
 
 
-def test_propfile_add_after_trailing_comment_escape():
+def test_propfile_add_after_trailing_comment_escape() -> None:
     pf = PropertiesFile.loads("#key = value\\")
     pf._check()
     pf["new"] = "old"
@@ -691,14 +660,14 @@ def test_propfile_add_after_trailing_comment_escape():
     assert pf.dumps() == "#key = value\\\nnew=old\n"
 
 
-def test_propfile_preserve_no_trailing_newline():
+def test_propfile_preserve_no_trailing_newline() -> None:
     pf = PropertiesFile.loads("key = value")
     pf._check()
     assert dict(pf) == {"key": "value"}
     assert pf.dumps() == "key = value"
 
 
-def test_propfile_add_after_no_trailing_newline():
+def test_propfile_add_after_no_trailing_newline() -> None:
     pf = PropertiesFile.loads("key = value\\")
     pf._check()
     pf["new"] = "old"
@@ -707,14 +676,14 @@ def test_propfile_add_after_no_trailing_newline():
     assert pf.dumps() == "key = value\nnew=old\n"
 
 
-def test_propfile_preserve_comment_no_trailing_newline():
+def test_propfile_preserve_comment_no_trailing_newline() -> None:
     pf = PropertiesFile.loads("#key = value")
     pf._check()
     assert dict(pf) == {}
     assert pf.dumps() == "#key = value"
 
 
-def test_propfile_add_after_comment_no_trailing_newline():
+def test_propfile_add_after_comment_no_trailing_newline() -> None:
     pf = PropertiesFile.loads("#key = value")
     pf._check()
     pf["new"] = "old"
@@ -723,14 +692,14 @@ def test_propfile_add_after_comment_no_trailing_newline():
     assert pf.dumps() == "#key = value\nnew=old\n"
 
 
-def test_propfile_preserve_trailing_escape_nl():
+def test_propfile_preserve_trailing_escape_nl() -> None:
     pf = PropertiesFile.loads("key = value\\\n")
     pf._check()
     assert dict(pf) == {"key": "value"}
     assert pf.dumps() == "key = value\\\n"
 
 
-def test_propfile_add_after_trailing_escape_nl():
+def test_propfile_add_after_trailing_escape_nl() -> None:
     pf = PropertiesFile.loads("key = value\\\n")
     pf._check()
     pf["new"] = "old"
@@ -739,14 +708,14 @@ def test_propfile_add_after_trailing_escape_nl():
     assert pf.dumps() == "key = value\nnew=old\n"
 
 
-def test_propfile_preserve_trailing_comment_escape_nl():
+def test_propfile_preserve_trailing_comment_escape_nl() -> None:
     pf = PropertiesFile.loads("#key = value\\\n")
     pf._check()
     assert dict(pf) == {}
     assert pf.dumps() == "#key = value\\\n"
 
 
-def test_propfile_add_after_trailing_comment_escape_nl():
+def test_propfile_add_after_trailing_comment_escape_nl() -> None:
     pf = PropertiesFile.loads("#key = value\\\n")
     pf._check()
     pf["new"] = "old"
@@ -755,7 +724,7 @@ def test_propfile_add_after_trailing_comment_escape_nl():
     assert pf.dumps() == "#key = value\\\nnew=old\n"
 
 
-def test_propfile_empty_setitem():
+def test_propfile_empty_setitem() -> None:
     pf = PropertiesFile()
     pf._check()
     pf["key"] = "value"
@@ -768,7 +737,7 @@ def test_propfile_empty_setitem():
     assert pf.dumps() == "key=value\n"
 
 
-def test_propfile_to_ordereddict():
+def test_propfile_to_ordereddict() -> None:
     pf = PropertiesFile.loads(INPUT)
     pf._check()
     assert OrderedDict(pf) == OrderedDict(
@@ -800,7 +769,7 @@ def test_propfile_to_ordereddict():
         ),
     ],
 )
-def test_propfile_get_timestamp(src, ts):
+def test_propfile_get_timestamp(src: str, ts: str | None) -> None:
     pf = PropertiesFile.loads(src)
     pf._check()
     assert pf.timestamp == ts
@@ -984,7 +953,9 @@ def test_propfile_get_timestamp(src, ts):
         ),
     ],
 )
-def test_propfile_set_timestamp(src, ts, ts2, result):
+def test_propfile_set_timestamp(
+    src: str, ts: str | datetime | int | bool | None, ts2: str, result: str
+) -> None:
     pf = PropertiesFile.loads(src)
     pf._check()
     pf.timestamp = ts
@@ -993,7 +964,7 @@ def test_propfile_set_timestamp(src, ts, ts2, result):
     assert pf.dumps() == result
 
 
-def test_propfile_set_timestamp_now(fixed_timestamp):
+def test_propfile_set_timestamp_now(fixed_timestamp: str) -> None:
     pf = PropertiesFile.loads("key=value\n")
     pf._check()
     pf.timestamp = True
@@ -1043,7 +1014,7 @@ def test_propfile_set_timestamp_now(fixed_timestamp):
         ),
     ],
 )
-def test_propfile_delete_timestamp(src, ts2, result):
+def test_propfile_delete_timestamp(src: str, ts2: str | None, result: str) -> None:
     pf = PropertiesFile.loads(src)
     pf._check()
     del pf.timestamp
@@ -1072,7 +1043,7 @@ def test_propfile_delete_timestamp(src, ts2, result):
         ("key=value\n# Comment\n", None),
     ],
 )
-def test_propfile_get_header_comment(src, c):
+def test_propfile_get_header_comment(src: str, c: str | None) -> None:
     pf = PropertiesFile.loads(src)
     pf._check()
     assert pf.header_comment == c
@@ -1109,7 +1080,9 @@ def test_propfile_get_header_comment(src, c):
         "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\nkey=value\n#Post-entry comment\n",
     ],
 )
-def test_propfile_set_header_comment(part1, part2, c, c2, csrc):
+def test_propfile_set_header_comment(
+    part1: str, part2: str, c: str | None, c2: str | None, csrc: str
+) -> None:
     pf = PropertiesFile.loads(part1 + part2)
     pf._check()
     pf.header_comment = c
@@ -1137,7 +1110,7 @@ def test_propfile_set_header_comment(part1, part2, c, c2, csrc):
         "#Thu Mar 16 17:06:52 EDT 2017\nkey=value\nkey=value\n#Post-entry comment\n",
     ],
 )
-def test_propfile_delete_header_comment(part1, part2):
+def test_propfile_delete_header_comment(part1: str, part2: str) -> None:
     pf = PropertiesFile.loads(part1 + part2)
     pf._check()
     del pf.header_comment

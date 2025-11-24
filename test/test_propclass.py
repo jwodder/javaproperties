@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Iterator
 from io import BytesIO, StringIO
 import pytest
@@ -37,7 +38,7 @@ XML_INPUT = """\
 """
 
 
-def test_propclass_empty(fixed_timestamp):
+def test_propclass_empty(fixed_timestamp: str) -> None:
     p = Properties()
     assert len(p) == 0
     assert not bool(p)
@@ -48,7 +49,7 @@ def test_propclass_empty(fixed_timestamp):
     assert list(p.items()) == []
 
 
-def test_propclass_load():
+def test_propclass_load() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     assert len(p) == 4
@@ -67,7 +68,7 @@ def test_propclass_load():
     ]
 
 
-def test_propclass_nonempty_load():
+def test_propclass_nonempty_load() -> None:
     p = Properties({"key": "lock", "horse": "orange"})
     p.load(StringIO(INPUT))
     assert len(p) == 5
@@ -88,7 +89,7 @@ def test_propclass_nonempty_load():
     ]
 
 
-def test_propclass_loadFromXML():
+def test_propclass_loadFromXML() -> None:
     p = Properties()
     p.loadFromXML(StringIO(XML_INPUT))
     assert len(p) == 4
@@ -107,7 +108,7 @@ def test_propclass_loadFromXML():
     ]
 
 
-def test_propclass_nonempty_loadFromXML():
+def test_propclass_nonempty_loadFromXML() -> None:
     p = Properties({"key": "lock", "horse": "orange"})
     p.loadFromXML(StringIO(XML_INPUT))
     assert len(p) == 5
@@ -128,7 +129,7 @@ def test_propclass_nonempty_loadFromXML():
     ]
 
 
-def test_propclass_getitem():
+def test_propclass_getitem() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     assert p["key"] == "value"
@@ -137,7 +138,7 @@ def test_propclass_getitem():
         p["missing"]
 
 
-def test_propclass_setitem():
+def test_propclass_setitem() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     p["key"] = "lock"
@@ -157,7 +158,7 @@ def test_propclass_setitem():
     ]
 
 
-def test_propclass_additem():
+def test_propclass_additem() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     p["new"] = "old"
@@ -179,7 +180,7 @@ def test_propclass_additem():
     ]
 
 
-def test_propclass_delitem():
+def test_propclass_delitem() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     del p["key"]
@@ -197,7 +198,7 @@ def test_propclass_delitem():
     ]
 
 
-def test_propclass_delitem_missing():
+def test_propclass_delitem_missing() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     with pytest.raises(KeyError):
@@ -218,7 +219,7 @@ def test_propclass_delitem_missing():
     ]
 
 
-def test_propclass_from_dict():
+def test_propclass_from_dict() -> None:
     p = Properties({"key": "value", "apple": "zebra"})
     assert len(p) == 2
     assert bool(p)
@@ -229,7 +230,7 @@ def test_propclass_from_dict():
     ]
 
 
-def test_propclass_from_pairs_list():
+def test_propclass_from_pairs_list() -> None:
     p = Properties([("key", "value"), ("apple", "zebra")])
     assert len(p) == 2
     assert bool(p)
@@ -240,7 +241,7 @@ def test_propclass_from_pairs_list():
     ]
 
 
-def test_propclass_copy():
+def test_propclass_copy() -> None:
     p = Properties({"Foo": "bar"})
     p2 = p.copy()
     assert p is not p2
@@ -262,7 +263,7 @@ def test_propclass_copy():
     assert p != p2
 
 
-def test_propclass_copy_more():
+def test_propclass_copy_more() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     p2 = p.copy()
@@ -299,7 +300,7 @@ def test_propclass_copy_more():
     }
 
 
-def test_propclass_eq_empty():
+def test_propclass_eq_empty() -> None:
     p = Properties()
     p2 = Properties()
     assert p is not p2
@@ -307,14 +308,14 @@ def test_propclass_eq_empty():
     assert p2 == p
 
 
-def test_propclass_defaults_neq_empty():
+def test_propclass_defaults_neq_empty() -> None:
     p = Properties()
     p2 = Properties(defaults=Properties({"key": "lock", "horse": "orange"}))
     assert p != p2
     assert p2 != p
 
 
-def test_propclass_eq_nonempty():
+def test_propclass_eq_nonempty() -> None:
     p = Properties({"Foo": "bar"})
     p2 = Properties({"Foo": "bar"})
     assert p is not p2
@@ -322,7 +323,7 @@ def test_propclass_eq_nonempty():
     assert p2 == p
 
 
-def test_propclass_eq_nonempty_defaults():
+def test_propclass_eq_nonempty_defaults() -> None:
     p = Properties({"Foo": "bar"}, defaults=Properties({"key": "lock"}))
     p2 = Properties({"Foo": "bar"}, defaults=Properties({"key": "lock"}))
     assert p is not p2
@@ -330,24 +331,24 @@ def test_propclass_eq_nonempty_defaults():
     assert p2 == p
 
 
-def test_propclass_neq_nonempty_neq_defaults():
+def test_propclass_neq_nonempty_neq_defaults() -> None:
     p = Properties({"Foo": "bar"}, defaults=Properties({"key": "lock"}))
     p2 = Properties({"Foo": "bar"}, defaults=Properties({"key": "Florida"}))
     assert p != p2
     assert p2 != p
 
 
-def test_propclass_eq_self():
+def test_propclass_eq_self() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     assert p == p
 
 
-def test_propclass_neq():
+def test_propclass_neq() -> None:
     assert Properties({"Foo": "bar"}) != Properties({"Foo": "BAR"})
 
 
-def test_propclass_eq_dict():
+def test_propclass_eq_dict() -> None:
     p = Properties({"Foo": "BAR"})
     assert p == {"Foo": "BAR"}
     assert {"Foo": "BAR"} == p
@@ -355,7 +356,7 @@ def test_propclass_eq_dict():
     assert {"Foo": "bar"} != p
 
 
-def test_propclass_defaults_eq_dict():
+def test_propclass_defaults_eq_dict() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"Foo": "BAR"}, defaults=defs)
     assert p == {"Foo": "BAR"}
@@ -364,7 +365,7 @@ def test_propclass_defaults_eq_dict():
     assert {"Foo": "bar"} != p
 
 
-def test_propclass_eq_set_nochange():
+def test_propclass_eq_set_nochange() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     p2 = Properties()
@@ -376,7 +377,7 @@ def test_propclass_eq_set_nochange():
     assert dict(p) == dict(p2)
 
 
-def test_propclass_eq_one_comment():
+def test_propclass_eq_one_comment() -> None:
     p = Properties()
     p.load(StringIO("#This is a comment.\nkey=value\n"))
     p2 = Properties()
@@ -385,7 +386,7 @@ def test_propclass_eq_one_comment():
     assert dict(p) == dict(p2)
 
 
-def test_propclass_eq_different_comments():
+def test_propclass_eq_different_comments() -> None:
     p = Properties()
     p.load(StringIO("#This is a comment.\nkey=value\n"))
     p2 = Properties()
@@ -394,7 +395,7 @@ def test_propclass_eq_different_comments():
     assert dict(p) == dict(p2)
 
 
-def test_propclass_eq_one_repeated_key():
+def test_propclass_eq_one_repeated_key() -> None:
     p = Properties()
     p.load(StringIO("key = value\nkey: other value\n"))
     p2 = Properties()
@@ -403,7 +404,7 @@ def test_propclass_eq_one_repeated_key():
     assert dict(p) == dict(p2) == {"key": "other value"}
 
 
-def test_propclass_eq_repeated_keys():
+def test_propclass_eq_repeated_keys() -> None:
     p = Properties()
     p.load(StringIO("key = value\nkey: other value\n"))
     p2 = Properties()
@@ -412,7 +413,7 @@ def test_propclass_eq_repeated_keys():
     assert dict(p) == dict(p2) == {"key": "other value"}
 
 
-def test_propclass_load_eq_from_dict():
+def test_propclass_load_eq_from_dict() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     assert p == Properties(
@@ -425,46 +426,46 @@ def test_propclass_load_eq_from_dict():
     )
 
 
-def test_propclass_neq_string():
+def test_propclass_neq_string() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     assert p != INPUT
     assert INPUT != p
 
 
-def test_propclass_propertyNames():
+def test_propclass_propertyNames() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     names = p.propertyNames()
     assert isinstance(names, Iterator)
     assert sorted(names) == ["apple", "foo", "key"]
 
 
-def test_propclass_stringPropertyNames():
+def test_propclass_stringPropertyNames() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.stringPropertyNames() == {"key", "apple", "foo"}
 
 
-def test_propclass_getProperty():
+def test_propclass_getProperty() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("key") == "value"
 
 
-def test_propclass_getProperty_default():
+def test_propclass_getProperty_default() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("key", "default") == "value"
 
 
-def test_propclass_getProperty_missing():
+def test_propclass_getProperty_missing() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("missing") is None
 
 
-def test_propclass_getProperty_missing_default():
+def test_propclass_getProperty_missing_default() -> None:
     p = Properties({"key": "value", "apple": "zebra", "foo": "bar"})
     assert p.getProperty("missing", "default") == "default"
 
 
-def test_propclass_defaults():
+def test_propclass_defaults() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert len(p) == 2
@@ -472,44 +473,44 @@ def test_propclass_defaults():
     assert dict(p) == {"key": "value", "apple": "zebra"}
 
 
-def test_propclass_defaults_getitem():
+def test_propclass_defaults_getitem() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p["apple"] == "zebra"
 
 
-def test_propclass_defaults_getitem_overridden():
+def test_propclass_defaults_getitem_overridden() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p["key"] == "value"
 
 
-def test_propclass_defaults_getitem_defaulted():
+def test_propclass_defaults_getitem_defaulted() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     with pytest.raises(KeyError):
         p["horse"]
 
 
-def test_propclass_defaults_getProperty():
+def test_propclass_defaults_getProperty() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p.getProperty("apple") == "zebra"
 
 
-def test_propclass_defaults_getProperty_overridden():
+def test_propclass_defaults_getProperty_overridden() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p.getProperty("key") == "value"
 
 
-def test_propclass_defaults_getProperty_defaulted():
+def test_propclass_defaults_getProperty_defaulted() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p.getProperty("horse") == "orange"
 
 
-def test_propclass_defaults_propertyNames():
+def test_propclass_defaults_propertyNames() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     names = p.propertyNames()
@@ -517,13 +518,13 @@ def test_propclass_defaults_propertyNames():
     assert sorted(names) == ["apple", "horse", "key"]
 
 
-def test_propclass_defaults_stringPropertyNames():
+def test_propclass_defaults_stringPropertyNames() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     assert p.stringPropertyNames() == {"key", "apple", "horse"}
 
 
-def test_propclass_setProperty():
+def test_propclass_setProperty() -> None:
     p = Properties()
     p.load(StringIO(INPUT))
     p.setProperty("key", "lock")
@@ -537,7 +538,7 @@ def test_propclass_setProperty():
     }
 
 
-def test_propclass_defaults_setProperty():
+def test_propclass_defaults_setProperty() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p.setProperty("apple", "banana")
@@ -545,7 +546,7 @@ def test_propclass_defaults_setProperty():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setProperty_overridden():
+def test_propclass_defaults_setProperty_overridden() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p.setProperty("key", "hole")
@@ -553,7 +554,7 @@ def test_propclass_defaults_setProperty_overridden():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setProperty_new():
+def test_propclass_defaults_setProperty_new() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p.setProperty("new", "old")
@@ -561,7 +562,7 @@ def test_propclass_defaults_setProperty_new():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setProperty_new_override():
+def test_propclass_defaults_setProperty_new_override() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p.setProperty("horse", "pony")
@@ -569,7 +570,7 @@ def test_propclass_defaults_setProperty_new_override():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setitem():
+def test_propclass_defaults_setitem() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p["apple"] = "banana"
@@ -577,7 +578,7 @@ def test_propclass_defaults_setitem():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setitem_overridden():
+def test_propclass_defaults_setitem_overridden() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p["key"] = "hole"
@@ -585,7 +586,7 @@ def test_propclass_defaults_setitem_overridden():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setitem_new():
+def test_propclass_defaults_setitem_new() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p["new"] = "old"
@@ -593,7 +594,7 @@ def test_propclass_defaults_setitem_new():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_defaults_setitem_new_override():
+def test_propclass_defaults_setitem_new_override() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value", "apple": "zebra"}, defaults=defs)
     p["horse"] = "pony"
@@ -601,7 +602,7 @@ def test_propclass_defaults_setitem_new_override():
     assert dict(defs) == {"key": "lock", "horse": "orange"}
 
 
-def test_propclass_empty_setitem(fixed_timestamp):
+def test_propclass_empty_setitem(fixed_timestamp: str) -> None:
     p = Properties()
     p["key"] = "value"
     assert len(p) == 1
@@ -612,21 +613,21 @@ def test_propclass_empty_setitem(fixed_timestamp):
     assert s.getvalue() == "#" + fixed_timestamp + "\nkey=value\n"
 
 
-def test_propclass_store(fixed_timestamp):
+def test_propclass_store(fixed_timestamp: str) -> None:
     p = Properties({"key": "value"})
     s = StringIO()
     p.store(s)
     assert s.getvalue() == "#" + fixed_timestamp + "\nkey=value\n"
 
 
-def test_propclass_store_comment(fixed_timestamp):
+def test_propclass_store_comment(fixed_timestamp: str) -> None:
     p = Properties({"key": "value"})
     s = StringIO()
     p.store(s, comments="Testing")
     assert s.getvalue() == "#Testing\n#" + fixed_timestamp + "\nkey=value\n"
 
 
-def test_propclass_store_defaults(fixed_timestamp):
+def test_propclass_store_defaults(fixed_timestamp: str) -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value"}, defaults=defs)
     s = StringIO()
@@ -634,57 +635,48 @@ def test_propclass_store_defaults(fixed_timestamp):
     assert s.getvalue() == "#" + fixed_timestamp + "\nkey=value\n"
 
 
-def test_propclass_storeToXML():
+def test_propclass_storeToXML() -> None:
     p = Properties({"key": "value"})
     s = BytesIO()
     p.storeToXML(s)
-    assert (
-        s.getvalue()
-        == b"""\
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-</properties>
-"""
+    assert s.getvalue() == (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b'<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        b"<properties>\n"
+        b'<entry key="key">value</entry>\n'
+        b"</properties>\n"
     )
 
 
-def test_propclass_storeToXML_comment():
+def test_propclass_storeToXML_comment() -> None:
     p = Properties({"key": "value"})
     s = BytesIO()
     p.storeToXML(s, comment="Testing")
-    assert (
-        s.getvalue()
-        == b"""\
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<comment>Testing</comment>
-<entry key="key">value</entry>
-</properties>
-"""
+    assert s.getvalue() == (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b'<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        b"<properties>\n"
+        b"<comment>Testing</comment>\n"
+        b'<entry key="key">value</entry>\n'
+        b"</properties>\n"
     )
 
 
-def test_propclass_storeToXML_defaults():
+def test_propclass_storeToXML_defaults() -> None:
     defs = Properties({"key": "lock", "horse": "orange"})
     p = Properties({"key": "value"}, defaults=defs)
     s = BytesIO()
     p.storeToXML(s)
-    assert (
-        s.getvalue()
-        == b"""\
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-<entry key="key">value</entry>
-</properties>
-"""
+    assert s.getvalue() == (
+        b'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        b'<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">\n'
+        b"<properties>\n"
+        b'<entry key="key">value</entry>\n'
+        b"</properties>\n"
     )
 
 
-def test_propclass_dumps_function():
+def test_propclass_dumps_function() -> None:
     assert dumps(Properties({"key": "value"}), timestamp=False) == "key=value\n"
 
 
@@ -704,14 +696,14 @@ def test_propclass_dumps_function():
         Properties({"zebra": "apple"}),
     ],
 )
-def test_propclass_repr(data, defaults):
+def test_propclass_repr(data: dict[str, str], defaults: Properties | None) -> None:
     p = Properties(data, defaults=defaults)
     assert repr(p) == (
         f"javaproperties.propclass.Properties({data!r}, defaults={defaults!r})"
     )
 
 
-def test_propclass_repr_noinit():
+def test_propclass_repr_noinit() -> None:
     p = Properties()
     assert repr(p) == "javaproperties.propclass.Properties({}, defaults=None)"
 
